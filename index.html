@@ -6,583 +6,608 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     *{box-sizing:border-box;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
-    body{margin:0;background:radial-gradient(circle at top left,#ffe7f2 0,#ffeef7 45%,#fff5fb 100%);color:#1f2933;}
-    header{padding:14px 16px 12px;border-bottom:2px solid #111827;background:#ffffff;position:relative;}
-    .header-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;}
-    header h1{margin:0;font-size:1.15rem;color:#111827;}
-    header p{margin:4px 0 0;font-size:0.82rem;color:#6b7280;}
-    .snoopy-tag{position:absolute;right:60px;top:10px;width:56px;height:26px;border-radius:999px;border:2px solid #111827;background:#fff;display:flex;align-items:center;justify-content:center;font-size:0.66rem;color:#111827;font-weight:700;letter-spacing:0.03em;}
-    .logout-btn{position:absolute;right:12px;top:10px;padding:4px 10px;border-radius:999px;border:1px solid #fcd5e5;background:#fff7fb;color:#b91c1c;font-size:0.72rem;font-weight:600;cursor:pointer;}
-    .logout-btn:hover{background:#ffe4f1;}
-    #loginScreen{position:fixed;inset:0;z-index:9999;background:radial-gradient(circle at top left,#ffe7f2 0,#ffeef7 45%,#fff5fb 100%);display:flex;align-items:center;justify-content:center;}
-    .login-box{background:#fff;border:1px solid #ffe4f1;border-radius:24px;padding:32px 28px 28px;width:100%;max-width:340px;box-shadow:0 12px 40px rgba(248,187,208,0.35);text-align:center;position:relative;}
-    .login-box::before,.login-box::after{content:"";position:absolute;top:-14px;width:22px;height:22px;border-radius:4px 18px 4px 18px;background:linear-gradient(135deg,#fecaca,#f9a8d4);opacity:0.85;}
+    body{
+      margin:0;
+      background:radial-gradient(circle at top left,#ffe7f2 0,#ffeef7 45%,#fff5fb 100%);
+      color:#1f2933;
+    }
+
+    /* LOGIN */
+    #loginScreen{
+      position:fixed;inset:0;z-index:9999;
+      background:radial-gradient(circle at top left,#ffe7f2 0,#ffeef7 45%,#fff5fb 100%);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .login-box{
+      background:#fff;
+      border:1px solid #ffe4f1;
+      border-radius:24px;
+      padding:32px 28px 28px;
+      width:100%;max-width:340px;
+      box-shadow:0 12px 40px rgba(248,187,208,0.35);
+      text-align:center;
+      position:relative;
+    }
+    .login-box::before,.login-box::after{
+      content:"";
+      position:absolute;top:-14px;
+      width:22px;height:22px;
+      border-radius:4px 18px 4px 18px;
+      background:linear-gradient(135deg,#fecaca,#f9a8d4);
+      opacity:0.85;
+    }
     .login-box::before{left:18px;transform:rotate(-18deg);}
     .login-box::after{right:18px;transform:scaleX(-1) rotate(-18deg);}
-    .snoopy-login{display:block;margin:0 auto 12px;width:52px;height:28px;border-radius:999px;border:2px solid #111827;background:#fff;line-height:28px;font-size:0.72rem;color:#111827;letter-spacing:0.04em;font-weight:700;}
-    .login-title{font-size:1.1rem;font-weight:700;color:#111827;margin-bottom:4px;}
-    .login-sub{font-size:0.78rem;color:#9ca3af;margin-bottom:20px;}
-    .login-box label{display:block;text-align:left;font-size:0.78rem;color:#4b5563;margin-bottom:3px;margin-top:10px;}
-    .login-box input{width:100%;padding:8px 10px;border-radius:10px;border:1px solid #fcd5e5;background:#fff7fb;color:#111827;font-size:0.88rem;}
-    .login-box input:focus{outline:2px solid #f9a8d4;border-color:transparent;background:#fff;}
-    .login-btn{margin-top:18px;width:100%;padding:9px;border-radius:999px;border:none;background:linear-gradient(135deg,#f9739b,#fbbf24);color:#fff;font-weight:700;font-size:0.9rem;cursor:pointer;box-shadow:0 6px 14px rgba(248,113,150,0.35);}
+
+    .login-snoopy-img{
+      width:70px;
+      margin:0 auto 8px;
+      display:block;
+    }
+
+    .snoopy-login{
+      display:block;margin:0 auto 12px;
+      width:52px;height:28px;border-radius:999px;
+      border:2px solid #111827;
+      background:#fff;
+      line-height:28px;font-size:0.72rem;
+      color:#111827;letter-spacing:0.04em;
+      font-weight:700;
+    }
+    .login-title{
+      font-size:1.1rem;font-weight:700;color:#111827;margin-bottom:4px;
+    }
+    .login-sub{
+      font-size:0.78rem;color:#9ca3af;margin-bottom:20px;
+    }
+    .login-box label{
+      display:block;text-align:left;font-size:0.78rem;
+      color:#4b5563;margin-bottom:3px;margin-top:10px;
+    }
+    .login-box input{
+      width:100%;padding:8px 10px;border-radius:10px;
+      border:1px solid #fcd5e5;background:#fff7fb;
+      color:#111827;font-size:0.88rem;
+    }
+    .login-box input:focus{
+      outline:2px solid #f9a8d4;border-color:transparent;background:#fff;
+    }
+    .login-btn{
+      margin-top:18px;width:100%;padding:9px;border-radius:999px;border:none;
+      background:linear-gradient(135deg,#f9739b,#fbbf24);
+      color:#fff;font-weight:700;font-size:0.9rem;cursor:pointer;
+      box-shadow:0 6px 14px rgba(248,113,150,0.35);
+    }
     .login-btn:hover{filter:brightness(1.04);}
-    .login-error{margin-top:10px;font-size:0.76rem;color:#b91c1c;display:none;}
-    .strawberry-row{display:flex;justify-content:center;gap:8px;margin-top:18px;}
-    .seed-dot{width:7px;height:7px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff 0,#fff 35%,#fb7185 36%,#b91c1c 100%);opacity:0.75;}
+    .login-error{
+      margin-top:10px;font-size:0.76rem;color:#b91c1c;
+      display:none;
+    }
+    .strawberry-row{
+      display:flex;justify-content:center;gap:8px;margin-top:18px;
+    }
+    .seed-dot{
+      width:7px;height:7px;border-radius:50%;
+      background:radial-gradient(circle at 30% 30%,#fff 0,#fff 35%,#fb7185 36%,#b91c1c 100%);
+      opacity:0.75;
+    }
+
+    /* CABEÇALHO */
+    header{
+      padding:14px 16px 12px;
+      border-bottom:2px solid #111827;
+      background:#ffffff;
+      position:relative;
+    }
+    .header-inner{
+      max-width:1200px;margin:0 auto;
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+    }
+    header h1{margin:0;font-size:1.15rem;color:#111827;display:inline-block;vertical-align:middle;}
+    .header-moranguinho{
+      height:32px;
+      margin-left:8px;
+      vertical-align:middle;
+      border-radius:999px;
+      border:1px solid #fecaca;
+      background:#fff0f5;
+      padding:2px 6px;
+    }
+    header p{margin:4px 0 0;font-size:0.82rem;color:#6b7280;}
+    .snoopy-tag{
+      position:absolute;right:76px;top:10px;
+      width:56px;height:26px;border-radius:999px;
+      border:2px solid #111827;
+      background:#fff;
+      display:flex;align-items:center;justify-content:center;
+      font-size:0.66rem;color:#111827;font-weight:700;
+      letter-spacing:0.03em;
+    }
+    .logout-btn{
+      position:absolute;right:12px;top:10px;
+      padding:4px 10px;border-radius:999px;border:1px solid #fcd5e5;
+      background:#fff7fb;color:#b91c1c;font-size:0.72rem;
+      font-weight:600;cursor:pointer;
+    }
+    .logout-btn:hover{background:#ffe4f1;}
+
     main{padding:12px;max-width:1200px;margin:0 auto 20px;}
-    .kpi-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:10px;}
+
+    .kpi-row{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:10px;
+      margin-bottom:10px;
+    }
     @media(max-width:900px){.kpi-row{grid-template-columns:repeat(2,minmax(0,1fr));}}
     @media(max-width:600px){.kpi-row{grid-template-columns:1fr;}}
-    .kpi-card{position:relative;border-radius:16px;padding:9px 10px 8px;background:#ffffff;border:1px solid #ffcfe4;box-shadow:0 6px 16px rgba(248,187,208,0.25);overflow:hidden;}
+
+    .kpi-card{
+      position:relative;
+      border-radius:16px;
+      padding:9px 10px 8px;
+      background:#ffffff;
+      border:1px solid #ffcfe4;
+      box-shadow:0 6px 16px rgba(248,187,208,0.25);
+      overflow:hidden;
+    }
     .kpi-label{font-size:0.78rem;color:#6b7280;margin-bottom:3px;}
     .kpi-value{font-size:1.02rem;font-weight:600;color:#111827;}
     .kpi-sub{font-size:0.7rem;color:#9ca3af;margin-top:2px;}
-    .grid{display:grid;grid-template-columns:1.5fr 1.5fr;gap:10px;align-items:flex-start;}
+
+    .grid{
+      display:grid;
+      grid-template-columns:1.5fr 1.5fr;
+      gap:10px;
+      align-items:flex-start;
+    }
     @media(max-width:800px){.grid{grid-template-columns:1fr;}}
-    .card{position:relative;background:#ffffff;border-radius:16px;padding:12px 12px 10px;border:1px solid #ffe4f1;box-shadow:0 6px 16px rgba(248,187,208,0.25);margin-bottom:8px;overflow:hidden;}
-    .card::before,.card::after{content:"";position:absolute;top:-10px;width:18px;height:18px;border-radius:4px 16px 4px 16px;background:linear-gradient(135deg,#fecaca,#f9a8d4);opacity:0.75;}
+
+    .card{
+      position:relative;
+      background:#ffffff;
+      border-radius:16px;
+      padding:12px 12px 10px;
+      border:1px solid #ffe4f1;
+      box-shadow:0 6px 16px rgba(248,187,208,0.25);
+      margin-bottom:8px;
+      overflow:hidden;
+    }
+    .card::before,.card::after{
+      content:"";
+      position:absolute;top:-10px;
+      width:18px;height:18px;
+      border-radius:4px 16px 4px 16px;
+      background:linear-gradient(135deg,#fecaca,#f9a8d4);
+      opacity:0.75;
+    }
     .card::before{left:10px;transform:rotate(-18deg);}
     .card::after{right:10px;transform:scaleX(-1) rotate(-18deg);}
-    .card h2{margin:0 0 3px;font-size:0.9rem;color:#111827;}
+
+    /* TÍTULOS COM GATINHO */
+    .card h2{
+      margin:0 0 3px;
+      font-size:0.9rem;
+      color:#111827;
+      padding-left:26px;
+      position:relative;
+    }
+    .card h2::before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:50%;
+      transform:translateY(-50%);
+      width:18px;
+      height:18px;
+      background:url("gatinho.png") center/contain no-repeat;
+      opacity:0.9;
+    }
     .card small{color:#9ca3af;font-size:0.76rem;}
+
     label{display:block;font-size:0.78rem;margin-top:6px;margin-bottom:3px;color:#4b5563;}
-    input,select,textarea{width:100%;padding:6px 8px;border-radius:10px;border:1px solid #fcd5e5;background:#fff7fb;color:#111827;font-size:0.84rem;}
+    input,select,textarea{
+      width:100%;padding:6px 8px;border-radius:10px;
+      border:1px solid #fcd5e5;background:#fff7fb;color:#111827;font-size:0.84rem;
+    }
     input::placeholder,textarea::placeholder{color:#9ca3af;}
-    input:focus,select:focus,textarea:focus{outline:2px solid #f9a8d4;border-color:transparent;background:#ffffff;}
-    button{margin-top:8px;padding:7px 11px;border-radius:999px;border:none;background:linear-gradient(135deg,#f9739b,#fbbf24);color:#ffffff;font-weight:600;font-size:0.8rem;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 6px 14px rgba(248,113,150,0.35);}
+    input:focus,select:focus,textarea:focus{
+      outline:2px solid #f9a8d4;border-color:transparent;background:#ffffff;
+    }
+
+    button{
+      margin-top:8px;padding:7px 11px;border-radius:999px;border:none;
+      background:linear-gradient(135deg,#f9739b,#fbbf24);
+      color:#ffffff;font-weight:600;font-size:0.8rem;cursor:pointer;
+      display:inline-flex;align-items:center;gap:6px;
+      box-shadow:0 6px 14px rgba(248,113,150,0.35);
+    }
     button:hover{filter:brightness(1.04);}
-    button.secondary{background:#ffffff;color:#4b5563;border:1px solid #e5e7eb;box-shadow:none;}
-    button.mini{padding:3px 7px;font-size:0.7rem;margin-top:0;margin-left:4px;}
-    .stats-list{margin-top:6px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;}
+    button.secondary{
+      background:#ffffff;color:#4b5563;border:1px solid #e5e7eb;box-shadow:none;
+    }
+    button.mini{
+      padding:3px 7px;font-size:0.7rem;margin-top:0;margin-left:4px;
+    }
+
+    .stats-list{
+      margin-top:6px;
+      display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;
+    }
     @media(max-width:480px){.stats-list{grid-template-columns:1fr;}}
-    .stat{border-radius:12px;padding:7px 8px;background:#fff7fb;border:1px solid #ffe4f1;position:relative;overflow:hidden;}
-    .stat::after{content:"";position:absolute;right:-6px;top:-6px;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffffff 0,#ffffff 40%,#fb7185 41%,#b91c1c 100%);opacity:0.8;}
+    .stat{
+      border-radius:12px;padding:7px 8px;background:#fff7fb;border:1px solid #ffe4f1;
+      position:relative;overflow:hidden;
+    }
+    .stat::after{
+      content:"";
+      position:absolute;right:-6px;top:-6px;
+      width:18px;height:18px;border-radius:50%;
+      background:radial-gradient(circle at 30% 30%,#ffffff 0,#ffffff 40%,#fb7185 41%,#b91c1c 100%);
+      opacity:0.8;
+    }
     .stat span{display:block;font-size:0.7rem;color:#6b7280;}
     .stat strong{display:block;margin-top:1px;font-size:0.88rem;color:#111827;}
     .stat.danger strong{color:#b91c1c;}
     .stat.ok strong{color:#15803d;}
+
     .chips-row{margin-top:6px;display:flex;flex-wrap:wrap;gap:5px;font-size:0.73rem;}
-    .person-chip{border-radius:999px;padding:5px 8px;background:#ffeef7;border:1px solid #fbcfe8;display:flex;flex-direction:column;gap:1px;cursor:pointer;min-width:135px;}
+
+    .person-chip{
+      border-radius:999px;padding:5px 8px;
+      background:#ffeef7;border:1px solid #fbcfe8;
+      display:flex;flex-direction:column;gap:1px;cursor:pointer;
+      min-width:135px;
+    }
     .person-chip-name{font-weight:700;font-size:0.74rem;color:#111827;}
     .person-chip-value{font-size:0.72rem;color:#6b7280;}
-    .person-panel{margin-top:6px;border-radius:14px;border:1px solid #ffe4f1;background:#ffffff;padding:8px 9px;box-shadow:0 6px 14px rgba(248,187,208,0.35);font-size:0.75rem;}
+
+    .person-panel{
+      margin-top:6px;border-radius:14px;border:1px solid #ffe4f1;
+      background:#ffffff;padding:8px 9px;
+      box-shadow:0 6px 14px rgba(248,187,208,0.35);
+      font-size:0.75rem;
+    }
     .person-header{display:flex;justify-content:space-between;align-items:center;gap:6px;}
     .person-name{font-weight:700;font-size:0.8rem;color:#111827;}
     .person-close{font-size:0.74rem;color:#6b7280;cursor:pointer;}
     .person-item{padding:4px 0;border-bottom:1px solid #f3f4f6;}
     .person-item:last-child{border-bottom:none;}
     .person-total{margin-top:4px;font-size:0.76rem;font-weight:600;color:#111827;}
+
     .months-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px;margin-top:6px;}
     .month-card{border-radius:14px;padding:7px 8px;color:#111827;font-size:0.76rem;background:#fff7fb;border:1px solid #ffe4f1;}
     .month-name{font-weight:600;font-size:0.78rem;margin-bottom:1px;}
     .month-value{font-size:0.84rem;font-weight:600;}
+
     .banks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:6px;margin-top:6px;font-size:0.76rem;}
-    .bank-card{border-radius:14px;padding:7px 8px;background:#ffffff;border:1px solid #ffe4f1;display:flex;flex-direction:column;gap:3px;}
+    .bank-card{
+      border-radius:14px;padding:7px 8px;background:#ffffff;border:1px solid #ffe4f1;
+      display:flex;flex-direction:column;gap:3px;
+    }
     .bank-name{font-weight:700;font-size:0.8rem;margin-bottom:1px;color:#111827;}
     .bank-total{font-size:0.76rem;color:#374151;}
     .bank-card-header{display:flex;justify-content:space-between;align-items:center;}
-    .badge-count{font-size:0.7rem;padding:3px 8px;border-radius:999px;background:#eef2ff;border:1px solid #c7d2fe;color:#3730a3;}
+
+    .badge-count{
+      font-size:0.7rem;padding:3px 8px;border-radius:999px;
+      background:#eef2ff;border:1px solid #c7d2fe;color:#3730a3;
+    }
+
     .months-select{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;margin-bottom:6px;}
-    .month-pill{padding:4px 8px;border-radius:999px;font-size:0.7rem;border:1px solid #e5e7eb;background:#f9fafb;color:#4b5563;cursor:pointer;font-weight:500;}
-    .month-pill.active{background:#eef2ff;border-color:#c7d2fe;color:#3730a3;font-weight:600;}
+    .month-pill{
+      padding:4px 8px;border-radius:999px;font-size:0.7rem;
+      border:1px solid #e5e7eb;background:#f9fafb;color:#4b5563;
+      cursor:pointer;font-weight:500;
+    }
+    .month-pill.active{
+      background:#eef2ff;border-color:#c7d2fe;color:#3730a3;font-weight:600;
+    }
     .payments-list{margin-top:6px;font-size:0.76rem;max-height:190px;overflow:auto;}
-    .payment-row{display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:1px solid #f3f4f6;}
+    .payment-row{
+      display:flex;align-items:center;gap:7px;
+      padding:5px 0;border-bottom:1px solid #f3f4f6;
+    }
     .payment-row:last-child{border-bottom:none;}
     .payment-row input[type="checkbox"]{width:16px;height:16px;cursor:pointer;}
+
     .summary-line{font-size:0.72rem;color:#6b7280;margin-top:4px;}
-    #spendPieCanvas{width:100%;max-width:260px;height:260px;display:block;margin:6px auto 0;}
-    .migrate-banner{background:#fef3c7;border:1px solid #facc15;padding:8px;text-align:center;border-radius:8px;margin:8px auto;max-width:1200px;font-size:0.76rem;color:#92400e;}
-    .migrate-banner button{background:#f59e0b;color:#ffffff;padding:6px 12px;border:none;border-radius:999px;font-weight:600;cursor:pointer;margin-top:4px;font-size:0.74rem;}
+
+    #spendPieCanvas{
+      width:100%;max-width:260px;height:260px;
+      display:block;margin:6px auto 0;
+    }
+
+    .migrate-banner{
+      background:#fef3c7;border:1px solid #facc15;padding:8px;
+      text-align:center;border-radius:8px;margin:8px auto;max-width:1200px;
+      font-size:0.76rem;color:#92400e;
+    }
+    .migrate-banner button{
+      background:#f59e0b;color:#ffffff;padding:6px 12px;border:none;
+      border-radius:999px;font-weight:600;cursor:pointer;margin-top:4px;font-size:0.74rem;
+    }
   </style>
 </head>
 <body>
 
-<div id="loginScreen">
-  <div class="login-box">
-    <span class="snoopy-login">SNOOPY</span>
-    <div class="login-title">Controle financeiro</div>
-    <div class="login-sub">Acesso restrito — só você entra aqui.</div>
-    <label for="loginUser">Usuário</label>
-    <input id="loginUser" type="text" placeholder="seu usuário" autocomplete="username" />
-    <label for="loginPass">Senha</label>
-    <input id="loginPass" type="password" placeholder="sua senha" autocomplete="current-password" />
-    <button class="login-btn" id="loginBtn">Entrar</button>
-    <div class="login-error" id="loginError">Usuário ou senha incorretos.</div>
-    <div class="strawberry-row">
-      <div class="seed-dot"></div><div class="seed-dot"></div><div class="seed-dot"></div>
-      <div class="seed-dot"></div><div class="seed-dot"></div>
-    </div>
-  </div>
-</div>
+  <!-- LOGIN -->
+  <div id="loginScreen">
+    <div class="login-box">
+      <img src="snoopy.png" alt="Snoopy" class="login-snoopy-img">
+      <span class="snoopy-login">SNOOPY</span>
+      <div class="login-title">Controle financeiro</div>
+      <div class="login-sub">Acesso restrito — só você entra aqui.</div>
 
-<div id="migrateBanner" class="migrate-banner" style="display:none;">
-  <div>Seus dados antigos foram encontrados!</div>
-  <button onclick="migrateOldData()">Migrar dados antigos</button>
-</div>
+      <label for="loginUser">Usuário</label>
+      <input id="loginUser" type="text" placeholder="seu usuário" autocomplete="username" />
 
-<header>
-  <div class="header-inner">
-    <div>
-      <h1>Controle financeiro</h1>
-      <p>Painel fofinho para acompanhar renda, dividas e gastos.</p>
-    </div>
-  </div>
-  <div class="snoopy-tag">SNOOPY</div>
-  <button class="logout-btn" id="logoutBtn">Sair</button>
-</header>
+      <label for="loginPass">Senha</label>
+      <input id="loginPass" type="password" placeholder="sua senha" autocomplete="current-password" />
 
-<main>
-  <div class="kpi-row">
-    <div class="kpi-card"><div class="kpi-label">Renda do mes</div><div class="kpi-value" id="kpiIncome">R$ 0,00</div><div class="kpi-sub">Salario + VT que sobra + extras</div></div>
-    <div class="kpi-card"><div class="kpi-label">Despesas do mes</div><div class="kpi-value" id="kpiExpenses">R$ 0,00</div><div class="kpi-sub">Parcelas + assinaturas + debito</div></div>
-    <div class="kpi-card"><div class="kpi-label">Saldo do mes</div><div class="kpi-value" id="kpiMonthBalance">R$ 0,00</div><div class="kpi-sub">Renda menos despesas</div></div>
-    <div class="kpi-card"><div class="kpi-label">Resultado do ano</div><div class="kpi-value" id="kpiYearBalance">R$ 0,00</div><div class="kpi-sub">Todos os meses somados</div></div>
-  </div>
+      <button class="login-btn" id="loginBtn">Entrar</button>
+      <div class="login-error" id="loginError">Usuário ou senha incorretos.</div>
 
-  <div class="grid">
-    <div>
-      <section class="card">
-        <h2>Renda e resumo</h2>
-        <small>Mes de <span id="currentMonthLabel"></span>.</small>
-        <label for="salaryInput">Salario base (R$)</label>
-        <input id="salaryInput" type="number" min="0" step="0.01" placeholder="Ex: 1600,00" />
-        <label for="vtTotal">VT depositado no mes (R$)</label>
-        <input id="vtTotal" type="number" min="0" step="0.01" placeholder="Ex: 400,00" />
-        <label for="vtCost">Quanto voce realmente gasta de transporte (R$)</label>
-        <input id="vtCost" type="number" min="0" step="0.01" placeholder="Ex: 200,00" />
-        <button id="saveIncomeBtn">Salvar renda</button>
-        <p id="incomeInfo" class="summary-line"></p>
-        <div class="stats-list">
-          <div class="stat"><span>Salario base</span><strong id="statSalary">R$ 0,00</strong></div>
-          <div class="stat"><span>VT que sobra</span><strong id="statVTSobra">R$ 0,00</strong></div>
-          <div class="stat"><span>Renda disponivel</span><strong id="statRendaDisponivel">R$ 0,00</strong></div>
-          <div class="stat"><span>Parcelas deste mes</span><strong id="statThisMonth">R$ 0,00</strong></div>
-          <div class="stat"><span>Total dividas parceladas</span><strong id="statTotalDebt">R$ 0,00</strong></div>
-          <div class="stat" id="negativityBox"><span>Sobra/falta so com parcelas</span><strong id="statBalance">R$ 0,00</strong></div>
-        </div>
-        <p class="summary-line">Dividas parceladas vao ate: <strong id="statEndDate">-</strong></p>
-      </section>
-
-      <section class="card">
-        <h2>Parcelas do mes</h2>
-        <small>O que cai neste mes, por pessoa/conta.</small>
-        <div class="chips-row" id="thisMonthChips"></div>
-        <div style="margin-top:6px;border-top:1px dashed #fbcfe8;padding-top:4px;">
-          <span style="font-size:0.72rem;color:#6b7280;">Parcelas congeladas</span>
-          <div class="chips-row" id="frozenChips"></div>
-        </div>
-        <div id="personDetails" class="person-panel" style="display:none;"></div>
-      </section>
-
-      <section class="card">
-        <h2>Pagamentos por mes</h2>
-        <small>Marque o que ja foi pago.</small>
-        <div class="months-select" id="monthsSelect"></div>
-        <div class="payments-list" id="paymentsList"></div>
-      </section>
-
-      <section class="card">
-        <h2>Visao por mes</h2>
-        <small>Total de parcelas nos proximos meses.</small>
-        <div class="months-grid" id="monthsGrid"></div>
-      </section>
-
-      <section class="card">
-        <h2>Grafico por categoria</h2>
-        <small>Distribuicao dos gastos no debito/dinheiro.</small>
-        <canvas id="spendPieCanvas" width="260" height="260"></canvas>
-        <p class="summary-line">Quanto maior o pedaco, mais aquela categoria esta pesando.</p>
-      </section>
-
-      <section class="card">
-        <h2>Recebimentos extras</h2>
-        <small>Entradas alem do salario fixo.</small>
-        <label for="incDesc">Descricao</label>
-        <input id="incDesc" type="text" placeholder="Ex: Pix amiga, pagamento, reembolso" />
-        <label for="incAmount">Valor (R$)</label>
-        <input id="incAmount" type="number" min="0" step="0.01" placeholder="Ex: 200,00" />
-        <label for="incCategory">Categoria</label>
-        <select id="incCategory">
-          <option value="">Selecione...</option>
-          <option value="Salario">Salario</option>
-          <option value="Pagamentos">Pagamentos</option>
-          <option value="Reembolso">Reembolso</option>
-          <option value="Outro">Outro</option>
-        </select>
-        <label for="incDate">Data do recebimento</label>
-        <input id="incDate" type="date" />
-        <button id="addIncomeExtraBtn">Adicionar recebimento</button>
-        <p class="summary-line" id="incExtraSummary">Total de extras no ano: R$ 0,00</p>
-        <div class="banks-grid" id="incExtrasGrid"></div>
-      </section>
-    </div>
-
-    <div>
-      <section class="card">
-        <h2>Adicionar / editar divida</h2>
-        <small>Parcelado, a vista, dividido ou congelado.</small>
-        <label for="paymentType">Tipo de pagamento</label>
-        <select id="paymentType"><option value="parcelado">Parcelado</option><option value="avista">A vista</option></select>
-        <label for="lender">De quem e a divida?</label>
-        <select id="lender"><option value="">Selecione ou digite novo...</option></select>
-        <input id="lenderCustom" type="text" placeholder="Ou digite um nome novo" style="margin-top:4px;" />
-        <label for="category">Categoria geral</label>
-        <select id="category">
-          <option value="">Selecione ou deixe em branco</option>
-          <option value="Cartao de credito">Cartao de credito</option>
-          <option value="Banco / Emprestimo">Banco / Emprestimo</option>
-          <option value="Faculdade / Curso">Faculdade / Curso</option>
-          <option value="Celular / Eletronico">Celular / Eletronico</option>
-          <option value="Moradia / Aluguel / Viagem">Moradia / Aluguel / Viagem</option>
-          <option value="Pessoa fisica">Pessoa fisica</option>
-          <option value="Outro">Outro</option>
-        </select>
-        <label for="specialType">Para onde essa divida vai?</label>
-        <select id="specialType"><option value="normal">Conta normal</option><option value="congelada">Parcela congelada</option></select>
-        <label for="customCategory">Descricao curta da categoria (opcional)</label>
-        <input id="customCategory" type="text" placeholder="Ex: Parcela celular, Emprestimo amigo" />
-        <label for="description">Descricao da divida</label>
-        <input id="description" type="text" placeholder="Ex: Fatura cartao, Restaurante, Mensalidade curso" />
-        <label for="debtTotal">Valor total (R$)</label>
-        <input id="debtTotal" type="number" min="0" step="0.01" placeholder="Ex: 320,00" />
-        <label for="debtQty">Quantidade de parcelas</label>
-        <input id="debtQty" type="number" min="1" step="1" placeholder="Ex: 4" />
-        <label for="debtInstallment">Valor da parcela (R$)</label>
-        <input id="debtInstallment" type="number" min="0" step="0.01" placeholder="Calculado automaticamente" />
-        <label for="splitParts">Dividindo com alguem? (numero de pessoas)</label>
-        <input id="splitParts" type="number" min="1" step="1" placeholder="Ex: 1 (so voce) ou 2 (voce + 1)" />
-        <label for="debtStart">Data da primeira parcela/pagamento</label>
-        <input id="debtStart" type="date" />
-        <button id="saveDebtBtn">Adicionar divida</button>
-        <button id="cancelEditBtn" class="secondary" style="display:none;">Cancelar edicao</button>
-      </section>
-
-      <section class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-          <div><h2>Todas as dividas cadastradas</h2><small>Bloquinhos com editar/remover.</small></div>
-          <span class="badge-count" id="debtsCountBadge">0 dividas</span>
-        </div>
-        <div class="banks-grid" id="debtsBlocks"></div>
-      </section>
-
-      <section class="card">
-        <h2>Gastos no debito / dinheiro</h2>
-        <small>iFood, mercado, Uber, role, etc.</small>
-        <label for="spendDesc">Descricao do gasto</label>
-        <input id="spendDesc" type="text" placeholder="Ex: iFood, Mercado, Uber" />
-        <label for="spendAmount">Valor (R$)</label>
-        <input id="spendAmount" type="number" min="0" step="0.01" placeholder="Ex: 30,00" />
-        <label for="spendCategory">Categoria</label>
-        <select id="spendCategory">
-          <option value="">Selecione...</option>
-          <option value="Alimentacao">Alimentacao</option>
-          <option value="Transporte">Transporte</option>
-          <option value="Besteira">Besteira / role</option>
-          <option value="Pessoal">Pessoal / fisico</option>
-          <option value="Outros">Outros</option>
-        </select>
-        <button id="addSpendBtn">Adicionar gasto</button>
-        <p class="summary-line" id="spendTotalLine">Total no mes: R$ 0,00</p>
-        <p class="summary-line" id="spendByCatLine">Por categoria: -</p>
-        <div class="banks-grid" id="spendsGrid"></div>
-      </section>
-
-      <section class="card">
-        <h2>Dividas negativadas / cartoes</h2>
-        <small>Cartoes, bancos e limites estourados.</small>
-        <label for="negLender">Banco / cartao</label>
-        <input id="negLender" type="text" placeholder="Ex: Nubank, Santander, Mercado Pago" />
-        <label for="negAmount">Valor em aberto (R$)</label>
-        <input id="negAmount" type="number" min="0" step="0.01" placeholder="Ex: 1500,00" />
-        <label for="negNotes">Observacoes</label>
-        <textarea id="negNotes" rows="2" placeholder="Ex: em negociacao, com juros, acordo x de entrada"></textarea>
-        <button id="addNegDebtBtn">Adicionar divida negativada</button>
-        <div class="banks-grid" id="negGrid"></div>
-      </section>
-
-      <section class="card">
-        <h2>Assinaturas mensais</h2>
-        <small>Spotify, iCloud, Google Drive, apps, etc.</small>
-        <label for="subName">Nome da assinatura</label>
-        <input id="subName" type="text" placeholder="Ex: Spotify, iCloud" />
-        <label for="subAmount">Valor mensal (R$)</label>
-        <input id="subAmount" type="number" min="0" step="0.01" placeholder="Ex: 34,90" />
-        <label for="subNotes">Observacoes</label>
-        <textarea id="subNotes" rows="2" placeholder="Ex: renova dia 10 no cartao tal"></textarea>
-        <button id="addSubBtn">Adicionar assinatura</button>
-        <div class="banks-grid" id="subsGrid"></div>
-      </section>
+      <div class="strawberry-row">
+        <div class="seed-dot"></div><div class="seed-dot"></div><div class="seed-dot"></div>
+        <div class="seed-dot"></div><div class="seed-dot"></div>
+      </div>
     </div>
   </div>
 
-  <p style="text-align:center;font-size:0.72rem;color:#9ca3af;margin-top:8px;">Os dados ficam salvos apenas neste navegador.</p>
-</main>
+  <!-- MIGRAÇÃO -->
+  <div id="migrateBanner" class="migrate-banner" style="display:none;">
+    <div>Seus dados antigos foram encontrados!</div>
+    <button onclick="migrateOldData()">Migrar dados antigos</button>
+  </div>
 
-<script>
-const VALID_USER='leticia';
-const VALID_PASS='1020';
-const CURRENT_VERSION='moranguinho_v1';
+  <!-- CABEÇALHO -->
+  <header>
+    <div class="header-inner">
+      <div>
+        <h1>Controle financeiro</h1>
+        <img src="moranguinho.png" alt="Moranguinho" class="header-moranguinho">
+        <p>Painel fofinho para acompanhar renda, dívidas e gastos.</p>
+      </div>
+    </div>
+    <div class="snoopy-tag">SNOOPY</div>
+    <button class="logout-btn" id="logoutBtn">Sair</button>
+  </header>
 
-const loginScreen=document.getElementById('loginScreen');
-const loginBtn=document.getElementById('loginBtn');
-const logoutBtn=document.getElementById('logoutBtn');
-const loginError=document.getElementById('loginError');
+  <main>
+    <!-- KPIs -->
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Renda do mês</div>
+        <div class="kpi-value" id="kpiIncome">R$ 0,00</div>
+        <div class="kpi-sub">Salário + VT que sobra + extras</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Despesas do mês</div>
+        <div class="kpi-value" id="kpiExpenses">R$ 0,00</div>
+        <div class="kpi-sub">Parcelas + assinaturas + débito</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Saldo do mês</div>
+        <div class="kpi-value" id="kpiMonthBalance">R$ 0,00</div>
+        <div class="kpi-sub">Renda − despesas</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Resultado do ano</div>
+        <div class="kpi-value" id="kpiYearBalance">R$ 0,00</div>
+        <div class="kpi-sub">Todos os meses somados</div>
+      </div>
+    </div>
 
-function isLoggedIn(){return sessionStorage.getItem('cf_auth')==='ok';}
-function showApp(){loginScreen.style.display='none';}
-function doLogin(){
-  const u=document.getElementById('loginUser').value.trim().toLowerCase();
-  const p=document.getElementById('loginPass').value;
-  if(u===VALID_USER&&p===VALID_PASS){
-    sessionStorage.setItem('cf_auth','ok');
-    loginError.style.display='none';
-    showApp();initApp();
-  }else{loginError.style.display='block';}
-}
-loginBtn.addEventListener('click',doLogin);
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&loginScreen.style.display!=='none')doLogin();});
-logoutBtn.addEventListener('click',()=>{sessionStorage.removeItem('cf_auth');location.reload();});
+    <div class="grid">
+      <!-- COLUNA ESQUERDA -->
+      <div>
+        <section class="card">
+          <h2>Renda e resumo</h2>
+          <small>Mês de <span id="currentMonthLabel"></span>.</small>
 
-function checkForOldData(){if(localStorage.getItem('myFinanceDebts_final'))document.getElementById('migrateBanner').style.display='block';}
-function migrateOldData(){
-  const pairs=[['myFinanceIncome_final','myFinanceIncome_'+CURRENT_VERSION],['myFinanceDebts_final','myFinanceDebts_'+CURRENT_VERSION],['myFinanceNegDebts_final','myFinanceNegDebts_'+CURRENT_VERSION],['myFinanceSubs_final','myFinanceSubs_'+CURRENT_VERSION],['myFinanceSpends_final','myFinanceSpends_'+CURRENT_VERSION],['myFinancePaid_final','myFinancePaid_'+CURRENT_VERSION],['myFinanceIncExtras_final','myFinanceIncExtras_'+CURRENT_VERSION]];
-  let moved=false;
-  pairs.forEach(([o,n])=>{const v=localStorage.getItem(o);if(v!==null){localStorage.setItem(n,v);moved=true;}});
-  if(moved){alert('Dados migrados! Recarregando...');location.reload();}else alert('Nenhum dado antigo encontrado.');
-}
+          <label for="salaryInput">Salário base (R$)</label>
+          <input id="salaryInput" type="number" min="0" step="0.01" placeholder="Ex: 1600,00" />
 
-function formatMoney(v){return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
-function loadData(){
-  const parse=k=>{const j=localStorage.getItem(k);return j?JSON.parse(j):null;};
-  return{income:parse('myFinanceIncome_'+CURRENT_VERSION),debts:parse('myFinanceDebts_'+CURRENT_VERSION)||[],negDebts:parse('myFinanceNegDebts_'+CURRENT_VERSION)||[],subs:parse('myFinanceSubs_'+CURRENT_VERSION)||[],spends:parse('myFinanceSpends_'+CURRENT_VERSION)||[],paid:parse('myFinancePaid_'+CURRENT_VERSION)||{},incExtras:parse('myFinanceIncExtras_'+CURRENT_VERSION)||[]};
-}
-const saveIncome=o=>localStorage.setItem('myFinanceIncome_'+CURRENT_VERSION,JSON.stringify(o));
-const saveDebts=d=>localStorage.setItem('myFinanceDebts_'+CURRENT_VERSION,JSON.stringify(d));
-const saveNegDebts=d=>localStorage.setItem('myFinanceNegDebts_'+CURRENT_VERSION,JSON.stringify(d));
-const saveSubs=d=>localStorage.setItem('myFinanceSubs_'+CURRENT_VERSION,JSON.stringify(d));
-const saveSpends=d=>localStorage.setItem('myFinanceSpends_'+CURRENT_VERSION,JSON.stringify(d));
-const savePaid=o=>localStorage.setItem('myFinancePaid_'+CURRENT_VERSION,JSON.stringify(o));
-const saveIncExtras=a=>localStorage.setItem('myFinanceIncExtras_'+CURRENT_VERSION,JSON.stringify(a));
+          <label for="vtTotal">VT depositado no mês (R$)</label>
+          <input id="vtTotal" type="number" min="0" step="0.01" placeholder="Ex: 400,00" />
 
-function calculateEndDate(s,q){if(!s||!q)return null;const d=new Date(s+'T00:00:00');d.setMonth(d.getMonth()+(q-1));return d;}
-function monthYear(d){return d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});}
-function isSame(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth();}
-function mKey(d){return d.getFullYear()+'-'+String(d.getMonth()).padStart(2,'0');}
-function addM(map,k,v){map[k]=(map[k]||0)+v;}
+          <label for="vtCost">Quanto você realmente gasta de transporte (R$)</label>
+          <input id="vtCost" type="number" min="0" step="0.01" placeholder="Ex: 200,00" />
 
-let editingIndex=null,selectedMonthKey=null;
+          <button id="saveIncomeBtn">Salvar renda</button>
+          <p id="incomeInfo" class="summary-line"></p>
 
-function updateLenderSelect(){
-  const {debts}=loadData();const names=new Set(debts.map(d=>d.lender).filter(Boolean));
-  const sel=document.getElementById('lender');
-  sel.innerHTML='<option value="">Selecione ou digite novo...</option>';
-  [...names].sort().forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});
-}
+          <div class="stats-list">
+            <div class="stat"><span>Salário base</span><strong id="statSalary">R$ 0,00</strong></div>
+            <div class="stat"><span>VT que sobra</span><strong id="statVTSobra">R$ 0,00</strong></div>
+            <div class="stat"><span>Renda disponível</span><strong id="statRendaDisponivel">R$ 0,00</strong></div>
+            <div class="stat"><span>Parcelas deste mês</span><strong id="statThisMonth">R$ 0,00</strong></div>
+            <div class="stat"><span>Total dívidas parceladas</span><strong id="statTotalDebt">R$ 0,00</strong></div>
+            <div class="stat" id="negativityBox"><span>Sobra/falta só com parcelas</span><strong id="statBalance">R$ 0,00</strong></div>
+          </div>
 
-function recompute(){
-  const {income,debts,negDebts,subs,spends,paid,incExtras}=loadData();
-  const now=new Date();
-  let salary=0,vt=0,cost=0;
-  if(income){salary=income.salary||0;vt=income.vtTotal||0;cost=income.vtCost||0;}
-  const vtExtra=Math.max(vt-cost,0);const rendaDisp=salary+vtExtra;
-  document.getElementById('statSalary').textContent=formatMoney(salary);
-  document.getElementById('statVTSobra').textContent=formatMoney(vtExtra);
-  document.getElementById('statRendaDisponivel').textContent=formatMoney(rendaDisp);
-  let totalDebt=0;debts.forEach(d=>{if(!isNaN(d.total))totalDebt+=d.total;});
-  document.getElementById('statTotalDebt').textContent=formatMoney(totalDebt);
-  let thisMonthInst=0,lastEnd=null;
-  const chips=[],frozen={},monthsTotals={},mExp={},mInc={};
-  debts.forEach(d=>{
-    if(d.special==='congelada'){const nm=d.lender||'Sem nome';if(!frozen[nm])frozen[nm]={total:0};frozen[nm].total+=(d.myInstallment||d.installment||0);}
-    if(d.special==='congelada'&&!d.startDate){if(d.endDate){const e=new Date(d.endDate);if(!lastEnd||e>lastEnd)lastEnd=e;}return;}
-    if(!d.startDate||!d.qty||!d.installment)return;
-    const start=new Date(d.startDate+'T00:00:00');
-    for(let i=0;i<d.qty;i++){
-      const inst=new Date(start);inst.setMonth(start.getMonth()+i);
-      const k=mKey(inst);const my=d.myInstallment||d.installment;
-      monthsTotals[k]=(monthsTotals[k]||0)+my;addM(mExp,k,my);
-      if(d.special!=='congelada'&&isSame(inst,now)){thisMonthInst+=my;chips.push({lender:d.lender,amount:my,totalAll:d.total});}
-    }
-    if(d.endDate){const e=new Date(d.endDate);if(!lastEnd||e>lastEnd)lastEnd=e;}
-  });
-  subs.forEach(s=>{const y=now.getFullYear();for(let m=0;m<12;m++)addM(mExp,y+'-'+String(m).padStart(2,'0'),s.amount||0);});
-  spends.forEach(s=>{if(s.date)addM(mExp,mKey(new Date(s.date+'T00:00:00')),s.amount||0);});
-  incExtras.forEach(e=>{if(e.date)addM(mInc,mKey(new Date(e.date+'T00:00:00')),e.amount||0);});
-  document.getElementById('statThisMonth').textContent=formatMoney(thisMonthInst);
-  const bal=rendaDisp-thisMonthInst;
-  const bEl=document.getElementById('statBalance');const bBox=document.getElementById('negativityBox');
-  bEl.textContent=formatMoney(bal);bBox.classList.toggle('danger',bal<0);bBox.classList.toggle('ok',bal>=0);
-  document.getElementById('statEndDate').textContent=lastEnd?monthYear(lastEnd):'-';
-  const yr=now.getFullYear();let yearBal=0,mExpNow=0;
-  Object.keys(mExp).forEach(k=>{
-    const[y,m]=k.split('-').map(Number);
-    if(y===yr){yearBal+=(rendaDisp+(mInc[k]||0))-(mExp[k]||0);}
-    if(y===yr&&m===now.getMonth())mExpNow+=mExp[k]||0;
-  });
-  const thisK=mKey(now),extNow=mInc[thisK]||0;
-  document.getElementById('kpiIncome').textContent=formatMoney(rendaDisp+extNow);
-  document.getElementById('kpiExpenses').textContent=formatMoney(mExpNow);
-  const mb=(rendaDisp+extNow)-mExpNow;
-  const mbEl=document.getElementById('kpiMonthBalance');mbEl.textContent=formatMoney(mb);mbEl.style.color=mb<0?'#b91c1c':'#15803d';
-  const ybEl=document.getElementById('kpiYearBalance');ybEl.textContent=formatMoney(yearBal);ybEl.style.color=yearBal<0?'#b91c1c':'#15803d';
-  renderChips(chips);renderFrozen(frozen);renderMonthsGrid(monthsTotals);renderDebts(debts);renderNeg(negDebts);renderSubs(subs);renderSpends(spends);renderSpendSummary(spends);renderMonthsSel();renderPayments();renderExtras(incExtras);renderExtrasSummary(incExtras);drawPie(spends);updateLenderSelect();
-}
+          <p class="summary-line">Dívidas parceladas vão até: <strong id="statEndDate">—</strong></p>
+        </section>
 
-function renderChips(chips){
-  const el=document.getElementById('personDetails');el.style.display='none';
-  const box=document.getElementById('thisMonthChips');box.innerHTML='';
-  if(!chips.length){box.innerHTML='<div class="person-chip"><div class="person-chip-name">Nenhuma parcela</div><div class="person-chip-value">Cadastre uma divida para aparecer aqui.</div></div>';return;}
-  const g={};chips.forEach(c=>{const n=c.lender||'Sem nome';if(!g[n])g[n]={m:0,t:0};g[n].m+=c.amount;g[n].t+=c.totalAll;});
-  Object.entries(g).forEach(([n,d])=>{const div=document.createElement('div');div.className='person-chip';div.onclick=()=>showPerson(n);div.innerHTML=`<div class="person-chip-name">${n}</div><div class="person-chip-value">Mes: ${formatMoney(d.m)} - Total: ${formatMoney(d.t)}</div>`;box.appendChild(div);});
-}
+        <section class="card">
+          <h2>Parcelas do mês</h2>
+          <small>O que cai neste mês, por pessoa/conta.</small>
+          <div class="chips-row" id="thisMonthChips"></div>
+          <div style="margin-top:6px;border-top:1px dashed #fbcfe8;padding-top:4px;">
+            <span style="font-size:0.72rem;color:#6b7280;">Parcelas congeladas</span>
+            <div class="chips-row" id="frozenChips"></div>
+          </div>
+          <div id="personDetails" class="person-panel" style="display:none;"></div>
+        </section>
 
-function renderFrozen(fr){
-  const box=document.getElementById('frozenChips');box.innerHTML='';
-  const entries=Object.entries(fr);
-  if(!entries.length){box.innerHTML='<div class="person-chip"><div class="person-chip-name">Nenhuma congelada</div><div class="person-chip-value">Use Parcela congelada ao adicionar.</div></div>';return;}
-  entries.forEach(([n,d])=>{const div=document.createElement('div');div.className='person-chip';div.onclick=()=>showPerson(n);div.innerHTML=`<div class="person-chip-name">${n}</div><div class="person-chip-value">Congelado: ${formatMoney(d.total)}</div>`;box.appendChild(div);});
-}
+        <section class="card">
+          <h2>Pagamentos por mês</h2>
+          <small>Marque o que já foi pago.</small>
+          <div class="months-select" id="monthsSelect"></div>
+          <div class="payments-list" id="paymentsList"></div>
+        </section>
 
-function renderMonthsGrid(totals){
-  const box=document.getElementById('monthsGrid');box.innerHTML='';
-  const entries=Object.entries(totals).sort((a,b)=>a[0]>b[0]?1:-1).slice(0,5);
-  if(!entries.length){box.innerHTML='<p class="summary-line">Ainda nao ha parcelas suficientes.</p>';return;}
-  entries.forEach(([k,total])=>{const[y,m]=k.split('-').map(Number);const d=new Date(y,m,1);const card=document.createElement('div');card.className='month-card';card.innerHTML=`<div class="month-name">${d.toLocaleDateString('pt-BR',{month:'short',year:'numeric'})}</div><div class="month-value">${formatMoney(total)}</div>`;box.appendChild(card);});
-}
+        <section class="card">
+          <h2>Visão por mês</h2>
+          <small>Total de parcelas (sua parte) nos próximos meses.</small>
+          <div class="months-grid" id="monthsGrid"></div>
+        </section>
 
-function renderDebts(debts){
-  const box=document.getElementById('debtsBlocks');box.innerHTML='';
-  const badge=document.getElementById('debtsCountBadge');
-  if(!debts.length){box.innerHTML='<p class="summary-line">Nenhuma divida cadastrada ainda.</p>';badge.textContent='0 dividas';return;}
-  badge.textContent=debts.length===1?'1 divida':debts.length+' dividas';
-  debts.forEach((d,i)=>{
-    const card=document.createElement('div');card.className='bank-card';card.style.cursor='pointer';card.onclick=()=>showPerson(d.lender||'');
-    const tipo=d.type==='avista'?'A vista':'Parcelado';const esp=d.special==='congelada'?' - congelada':'';
-    card.innerHTML=`<div class="bank-card-header"><div class="bank-name">${d.lender||'Sem nome'}</div><div style="display:flex;gap:2px"><button class="secondary mini" onclick="event.stopPropagation();startEdit(${i})">Editar</button><button class="secondary mini" onclick="event.stopPropagation();removeDebt(${i})">Remover</button></div></div><div class="bank-total">${tipo}${esp} - Total ${formatMoney(d.total||0)}</div><div style="font-size:0.7rem;color:#6b7280">Sua parte: ${formatMoney(d.myInstallment||d.installment||0)} - ${d.description||''}</div>`;
-    box.appendChild(card);
-  });
-}
-window.removeDebt=i=>{const data=loadData();data.debts.splice(i,1);saveDebts(data.debts);recompute();};
-window.startEdit=i=>{
-  const{debts}=loadData();const d=debts[i];if(!d)return;editingIndex=i;
-  document.getElementById('paymentType').value=d.type||'parcelado';document.getElementById('specialType').value=d.special||'normal';document.getElementById('lender').value=d.lender||'';document.getElementById('lenderCustom').value='';document.getElementById('customCategory').value=d.category||'';document.getElementById('description').value=d.description||'';document.getElementById('debtTotal').value=d.total||'';document.getElementById('debtInstallment').value=d.installment||'';document.getElementById('debtQty').value=d.qty||'';document.getElementById('debtStart').value=d.startDate?d.startDate.split('T')[0]:'';document.getElementById('splitParts').value=d.myInstallment&&d.installment?Math.round(d.installment/d.myInstallment):'';
-  document.getElementById('saveDebtBtn').textContent='Salvar edicao';document.getElementById('cancelEditBtn').style.display='inline-flex';
-};
+        <section class="card">
+          <h2>Gráfico por categoria</h2>
+          <small>Distribuição dos gastos no débito/dinheiro.</small>
+          <canvas id="spendPieCanvas" width="260" height="260"></canvas>
+          <p class="summary-line">Quanto maior o pedaço, mais aquela categoria está pesando.</p>
+        </section>
 
-function resetDebtForm(){
-  editingIndex=null;
-  ['paymentType','specialType','lender','category','customCategory','description','debtTotal','debtInstallment','debtQty','splitParts','debtStart'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('lenderCustom').value='';document.getElementById('paymentType').value='parcelado';document.getElementById('specialType').value='normal';document.getElementById('saveDebtBtn').textContent='Adicionar divida';document.getElementById('cancelEditBtn').style.display='none';
-}
-document.getElementById('cancelEditBtn').addEventListener('click',resetDebtForm);
+        <section class="card">
+          <h2>Recebimentos extras</h2>
+          <small>Entradas além do salário fixo.</small>
+          <label for="incDesc">Descrição</label>
+          <input id="incDesc" type="text" placeholder="Ex: Pix amiga, pagamento, reembolso" />
+          <label for="incAmount">Valor (R$)</label>
+          <input id="incAmount" type="number" min="0" step="0.01" placeholder="Ex: 200,00" />
+          <label for="incCategory">Categoria</label>
+          <select id="incCategory">
+            <option value="">Selecione...</option>
+            <option value="Salário">Salário</option>
+            <option value="Pagamentos">Pagamentos</option>
+            <option value="Reembolso">Reembolso</option>
+            <option value="Outro">Outro</option>
+          </select>
+          <label for="incDate">Data do recebimento</label>
+          <input id="incDate" type="date" />
+          <button id="addIncomeExtraBtn">Adicionar recebimento</button>
+          <p class="summary-line" id="incExtraSummary">Total de extras no ano: R$ 0,00</p>
+          <div class="banks-grid" id="incExtrasGrid"></div>
+        </section>
+      </div>
 
-function showPerson(name){
-  if(!name)return;const{debts}=loadData();const list=debts.filter(d=>(d.lender||'').toLowerCase()===name.toLowerCase());
-  const el=document.getElementById('personDetails');if(!list.length){el.style.display='none';return;}
-  el.style.display='block';let total=0;
-  let html=`<div class="person-header"><div class="person-name">${name}</div><div class="person-close" onclick="document.getElementById('personDetails').style.display='none'">Fechar</div></div>`;
-  list.forEach(d=>{total+=d.total||0;const end=d.endDate?monthYear(new Date(d.endDate)):'-';const tipo=d.type==='avista'?'A vista':'Parcelado';const esp=d.special==='congelada'?' (congelada)':'';html+=`<div class="person-item">${d.description||'Sem descricao'}${esp} - ${tipo} - Total ${formatMoney(d.total||0)} - Sua parte ${formatMoney(d.myInstallment||d.installment||0)} - Termina em ${end}</div>`;});
-  html+=`<div class="person-total">Total dessa pessoa/conta: ${formatMoney(total)}</div>`;el.innerHTML=html;
-}
+      <!-- COLUNA DIREITA -->
+      <div>
+        <section class="card">
+          <h2>Adicionar / editar dívida</h2>
+          <small>Parcelado, à vista, dividido ou congelado.</small>
+          <label for="paymentType">Tipo de pagamento</label>
+          <select id="paymentType">
+            <option value="parcelado">Parcelado</option>
+            <option value="avista">À vista</option>
+          </select>
+          <label for="lender">De quem é a dívida?</label>
+          <select id="lender"><option value="">Selecione ou digite novo...</option></select>
+          <input id="lenderCustom" type="text" placeholder="Ou digite um nome novo" style="margin-top:4px;" />
+          <label for="category">Categoria geral</label>
+          <select id="category">
+            <option value="">Selecione ou deixe em branco</option>
+            <option value="Cartão de crédito">Cartão de crédito</option>
+            <option value="Banco / Empréstimo">Banco / Empréstimo</option>
+            <option value="Faculdade / Curso">Faculdade / Curso</option>
+            <option value="Celular / Eletrônico">Celular / Eletrônico</option>
+            <option value="Moradia / Aluguel / Viagem">Moradia / Aluguel / Viagem</option>
+            <option value="Pessoa física">Pessoa física</option>
+            <option value="Outro">Outro</option>
+          </select>
+          <label for="specialType">Para onde essa dívida vai?</label>
+          <select id="specialType">
+            <option value="normal">Conta normal</option>
+            <option value="congelada">Parcela congelada</option>
+          </select>
+          <label for="customCategory">Descrição curta da categoria (opcional)</label>
+          <input id="customCategory" type="text" placeholder="Ex: Parcela celular, Empréstimo amigo" />
+          <label for="description">Descrição da dívida</label>
+          <input id="description" type="text" placeholder="Ex: Fatura cartão, Restaurante, Mensalidade curso" />
+          <label for="debtTotal">Valor total (R$)</label>
+          <input id="debtTotal" type="number" min="0" step="0.01" placeholder="Ex: 320,00" />
+          <label for="debtQty">Quantidade de parcelas</label>
+          <input id="debtQty" type="number" min="1" step="1" placeholder="Ex: 4" />
+          <label for="debtInstallment">Valor da parcela (R$)</label>
+          <input id="debtInstallment" type="number" min="0" step="0.01" placeholder="Calculado automaticamente" />
+          <label for="splitParts">Dividindo com alguém? (número de pessoas)</label>
+          <input id="splitParts" type="number" min="1" step="1" placeholder="Ex: 1 (só você) ou 2 (você + 1)" />
+          <label for="debtStart">Data da primeira parcela/pagamento</label>
+          <input id="debtStart" type="date" />
+          <button id="saveDebtBtn">Adicionar dívida</button>
+          <button id="cancelEditBtn" class="secondary" style="display:none;">Cancelar edição</button>
+        </section>
 
-function renderNeg(list){
-  const box=document.getElementById('negGrid');box.innerHTML='';
-  if(!list.length){box.innerHTML='<p class="summary-line">Nenhuma divida negativada cadastrada.</p>';return;}
-  list.forEach((d,i)=>{const card=document.createElement('div');card.className='bank-card';card.innerHTML=`<div class="bank-card-header"><div class="bank-name">${d.lender||'Sem nome'}</div><button class="secondary mini" onclick="removeNeg(${i})">Remover</button></div><div class="bank-total">Em aberto: ${formatMoney(d.amount||0)}</div>${d.notes?`<div style="font-size:0.7rem;color:#6b7280">${d.notes}</div>`:''}`;box.appendChild(card);});
-}
-window.removeNeg=i=>{const data=loadData();data.negDebts.splice(i,1);saveNegDebts(data.negDebts);recompute();};
+        <section class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+            <div>
+              <h2>Todas as dívidas cadastradas</h2>
+              <small>Bloquinhos com editar/remover.</small>
+            </div>
+            <span class="badge-count" id="debtsCountBadge">0 dívidas</span>
+          </div>
+          <div class="banks-grid" id="debtsBlocks"></div>
+        </section>
 
-function renderSubs(subs){
-  const box=document.getElementById('subsGrid');box.innerHTML='';
-  if(!subs.length){box.innerHTML='<p class="summary-line">Nenhuma assinatura cadastrada.</p>';return;}
-  subs.forEach((d,i)=>{const card=document.createElement('div');card.className='bank-card';card.innerHTML=`<div class="bank-card-header"><div class="bank-name">${d.name||'Sem nome'}</div><button class="secondary mini" onclick="removeSub(${i})">Remover</button></div><div class="bank-total">Mensal: ${formatMoney(d.amount||0)}</div>${d.notes?`<div style="font-size:0.7rem;color:#6b7280">${d.notes}</div>`:''}`;box.appendChild(card);});
-}
-window.removeSub=i=>{const data=loadData();data.subs.splice(i,1);saveSubs(data.subs);recompute();};
+        <section class="card">
+          <h2>Gastos no débito / dinheiro</h2>
+          <small>iFood, mercado, Uber, rolê, etc.</small>
+          <label for="spendDesc">Descrição do gasto</label>
+          <input id="spendDesc" type="text" placeholder="Ex: iFood, Mercado, Uber" />
+          <label for="spendAmount">Valor (R$)</label>
+          <input id="spendAmount" type="number" min="0" step="0.01" placeholder="Ex: 30,00" />
+          <label for="spendCategory">Categoria</label>
+          <select id="spendCategory">
+            <option value="">Selecione...</option>
+            <option value="Alimentação">Alimentação</option>
+            <option value="Transporte">Transporte</option>
+            <option value="Besteira">Besteira / rolê</option>
+            <option value="Pessoal">Pessoal / físico</option>
+            <option value="Outros">Outros</option>
+          </select>
+          <button id="addSpendBtn">Adicionar gasto</button>
+          <p class="summary-line" id="spendTotalLine">Total no mês: R$ 0,00</p>
+          <p class="summary-line" id="spendByCatLine">Por categoria: —</p>
+          <div class="banks-grid" id="spendsGrid"></div>
+        </section>
 
-function renderSpends(spends){
-  const box=document.getElementById('spendsGrid');box.innerHTML='';
-  if(!spends.length){box.innerHTML='<p class="summary-line">Nenhum gasto cadastrado ainda.</p>';return;}
-  spends.forEach((s,i)=>{const card=document.createElement('div');card.className='bank-card';card.innerHTML=`<div class="bank-card-header"><div class="bank-name">${s.description||'Sem descricao'}</div><button class="secondary mini" onclick="removeSpend(${i})">Remover</button></div><div class="bank-total">${formatMoney(s.amount||0)} - ${s.category||'Sem categoria'}</div>`;box.appendChild(card);});
-}
-window.removeSpend=i=>{const data=loadData();data.spends.splice(i,1);saveSpends(data.spends);recompute();};
+        <section class="card">
+          <h2>Dívidas negativadas / cartões</h2>
+          <small>Cartões, bancos e limites estourados.</small>
+          <label for="negLender">Banco / cartão</label>
+          <input id="negLender" type="text" placeholder="Ex: Nubank, Santander, Mercado Pago" />
+          <label for="negAmount">Valor em aberto (R$)</label>
+          <input id="negAmount" type="number" min="0" step="0.01" placeholder="Ex: 1500,00" />
+          <label for="negNotes">Observações</label>
+          <textarea id="negNotes" rows="2" placeholder="Ex: em negociação, com juros, acordo x de entrada"></textarea>
+          <button id="addNegDebtBtn">Adicionar dívida negativada</button>
+          <div class="banks-grid" id="negGrid"></div>
+        </section>
 
-function renderSpendSummary(spends){
-  if(!spends.length){document.getElementById('spendTotalLine').textContent='Total no mes: R$ 0,00';document.getElementById('spendByCatLine').textContent='Por categoria: -';return;}
-  let total=0;const byCat={};spends.forEach(s=>{total+=s.amount||0;const c=s.category||'Outros';byCat[c]=(byCat[c]||0)+(s.amount||0);});
-  document.getElementById('spendTotalLine').textContent='Total no mes: '+formatMoney(total);
-  document.getElementById('spendByCatLine').textContent='Por categoria: '+Object.entries(byCat).map(([c,v])=>`${c}: ${formatMoney(v)} (${Math.round(v/total*100)}%)`).join(' - ');
-}
+        <section class="card">
+          <h2>Assinaturas mensais</h2>
+          <small>Spotify, iCloud, Google Drive, apps, etc.</small>
+          <label for="subName">Nome da assinatura</label>
+          <input id="subName" type="text" placeholder="Ex: Spotify, iCloud" />
+          <label for="subAmount">Valor mensal (R$)</label>
+          <input id="subAmount" type="number" min="0" step="0.01" placeholder="Ex: 34,90" />
+          <label for="subNotes">Observações</label>
+          <textarea id="subNotes" rows="2" placeholder="Ex: renova dia 10 no cartão tal"></textarea>
+          <button id="addSubBtn">Adicionar assinatura</button>
+          <div class="banks-grid" id="subsGrid"></div>
+        </section>
+      </div>
+    </div>
 
-function renderExtras(extras){
-  const box=document.getElementById('incExtrasGrid');box.innerHTML='';
-  if(!extras.length){box.innerHTML='<p class="summary-line">Nenhum recebimento extra cadastrado.</p>';return;}
-  extras.forEach((e,i)=>{const card=document.createElement('div');card.className='bank-card';const dateText=e.date?new Date(e.date+'T00:00:00').toLocaleDateString('pt-BR'):'sem data';card.innerHTML=`<div class="bank-card-header"><div class="bank-name">${e.description||'Sem descricao'}</div><button class="secondary mini" onclick="removeExtra(${i})">Remover</button></div><div class="bank-total">${formatMoney(e.amount||0)} - ${e.category||'Outro'} - ${dateText}</div>`;box.appendChild(card);});
-}
-window.removeExtra=i=>{const data=loadData();data.incExtras.splice(i,1);saveIncExtras(data.incExtras);recompute();};
+    <p style="text-align:center;font-size:0.72rem;color:#9ca3af;margin-top:8px;">
+      Os dados ficam salvos apenas neste navegador.
+    </p>
+  </main>
 
-function renderExtrasSummary(extras){let t=0;extras.forEach(e=>{t+=e.amount||0;});document.getElementById('incExtraSummary').textContent='Total de extras no ano: '+formatMoney(t);}
+  <script>
+    const VALID_USER='leticia';
+    const VALID_PASS='1020';
+    const CURRENT_VERSION='moranguinho_v1';
 
-function renderMonthsSel(){
-  const box=document.getElementById('monthsSelect');box.innerHTML='';
-  const now=new Date();const yr=now.getFullYear();
-  const months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  if(!selectedMonthKey)selectedMonthKey=mKey(now);
-  months.forEach((m,i)=>{const k=yr+'-'+String(i).padStart(2,'0');const btn=document.createElement('div');btn.className='month-pill'+(selectedMonthKey===k?' active':'');btn.textContent=m;btn.onclick=()=>{selectedMonthKey=k;renderMonthsSel();renderPayments();};box.appendChild(btn);});
-}
+    const loginScreen=document.getElementById('loginScreen');
+    const loginBtn=document.getElementById('loginBtn');
+    const logoutBtn=document.getElementById('logoutBtn');
+    const loginError=document.getElementById('loginError');
 
-function renderPayments(){
-  const{debts,subs,paid}=loadData();const box=document.getElementById('paymentsList');box.innerHTML='';
-  if(!selectedMonthKey){box.innerHTML='<p class="summary-line">Selecione um mes acima.</p>';return;}
-  const[yStr,mStr]=selectedMonthKey.split('-');const yr=parseInt(yStr);const mo=parseInt(mStr);const base=new Date(yr,mo,1);const rows=[];
-  debts.forEach((d,i)=>{if(d.special==='congelada'&&!d.startDate)return;if(!d.startDate||!d.qty||!d.installment)return;const start=new Date(d.startDate+'T00:00:00');for(let j=0;j<d.qty;j++){const inst=new Date(start);inst.setMonth(start.getMonth()+j);if(isSame(inst,base))rows.push({id:`debt_${i}_${yr}-${mo}`,label:`${d.lender||'Sem nome'} - ${d.description||''}`,amount:d.myInstallment||d.installment||0});}});
-  subs.forEach((s,i)=>rows.push({id:`sub_${i}_${yr}-${mo}`,label:`Assinatura - ${s.name||'Sem nome'}`,amount:s.amount||0}));
-  if(!rows.length){box.innerHTML='<p class="summary-line">Nenhum pagamento para este mes ainda.</p>';return;}
-  rows.forEach(r=>{const row=document.createElement('div');row.className='payment-row';const cb=document.createElement('input');cb.type='checkbox';cb.checked=!!paid[r.id];cb.onchange=()=>{const data=loadData();data.paid[r.id]=cb.checked;savePaid(data.paid);};const txt=document.createElement('span');txt.textContent=`${r.label} - ${formatMoney(r.amount)}`;row.appendChild(cb);row.appendChild(txt);box.appendChild(row);});
-}
-
-function drawPie(spends){
-  const canvas=document.getElementById('spendPieCanvas');if(!canvas)return;
-  const ctx=canvas.getContext('2d');const w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);
-  const byCat={};spends.forEach(s=>{const c=s.category||'Outros';byCat[c]=(byCat[c]||0)+(s.amount||0);});
-  const entries=Object.entries(byCat);
-  if(!entries.length){ctx.fillStyle='#9ca3af';ctx.font='12px system-ui';ctx.textAlign='center';ctx.fillText('Sem dados de gastos',w/2,h/2);return;}
-  const total=entries.reduce((s,[,v])=>s+v,0);const colors=['#fb7185','#f97316','#22c55e','#3b82f6','#a855f7','#eab308','#14b8a6','#f472b6'];
-  let angle=-Math.PI/2;
-  entries.forEach(([,v],i)=>{const slice=(v/total)*Math.PI*2;ctx.beginPath();ctx.moveTo(w/2,h/2);ctx.arc(w/2,h/2,Math.min(w,h)/2-10,angle,angle+slice);ctx.closePath();ctx.fillStyle=colors[i%colors.length];ctx.fill();const mid=angle+slice/2;const r=Math.min(w,h)/2-35;ctx.fillStyle='#fff';ctx.font='11px system-ui';ctx.textAlign='center';ctx.fillText(Math.round(v/total*100)+'%',w/2+Math.cos(mid)*r,h/2+Math.sin(mid)*r);angle+=slice;});
-}
-
-function wireButtons(){
-  document.getElementById('saveIncomeBtn').addEventListener('click',()=>{
-    const s=parseFloat(document.getElementById('salaryInput').value||'0');const v=parseFloat(document.getElementById('vtTotal').value||'0');const c=parseFloat(document.getElementById('vtCost').value||'0');
-    if(isNaN(s)||s<0){alert('Informe um salario valido.');return;}
-    saveIncome({salary:s,vtTotal:v,vtCost:c});document.getElementById('incomeInfo').textContent='Renda salva.';recompute();
-  });
-  const autoCalc=()=>{const t=parseFloat(document.getElementById('debtTotal').value||'0');let q=parseInt(document.getElementById('debtQty').value||'0');if(document.getElementById('paymentType').value==='avista')q=1;if(!isNaN(t)&&!isNaN(q)&&q>0)document.getElementById('debtInstallment').value=(t/q).toFixed(2);};
-  document.getElementById('debtTotal').addEventListener('blur',autoCalc);document.getElementById('debtQty').addEventListener('blur',autoCalc);
-  document.getElementById('paymentType').addEventListener('change',()=>{if(document.getElementById('paymentType').value==='avista')document.getElementById('debtQty').value='1';autoCalc();});
-  document.getElementById('saveDebtBtn').addEventListener('click',()=>{
-    const lv=(document.getElementById('lender').value||document.getElementById('lenderCustom').value).trim();const cv=document.getElementById('customCategory').value.trim()||document.getElementById('category').value.trim();const dv=document.getElementById('description').value.trim();const total=parseFloat(document.getElementById('debtTotal').value||'0');let qty=parseInt(document.getElementById('debtQty').value||'0');const start=document.getElementById('debtStart').value;const type=document.getElementById('paymentType').value;const special=document.getElementById('specialType').value;
-    if(type==='avista')qty=1;const inst=parseFloat(document.getElementById('debtInstallment').value||'0');const parts=parseInt(document.getElementById('splitParts').value||'1');const requireDate=!(special==='congelada'&&!start);
-    if(!lv||!dv||isNaN(total)||isNaN(inst)||isNaN(qty)||qty<=0||(requireDate&&!start)){alert('Preencha todos os campos obrigatorios.');return;}
-    const myInst=parts>0?inst/parts:inst;const end=start?calculateEndDate(start,qty):null;const data=loadData();const obj={type,special,lender:lv,category:cv||'Sem categoria',description:dv,total,installment:inst,myInstallment:myInst,qty,startDate:start||null,endDate:end?end.toISOString():null};
-    if(editingIndex!==null)data.debts[editingIndex]=obj;else data.debts.push(obj);saveDebts(data.debts);resetDebtForm();recompute();
-  });
-  document.getElementById('addNegDebtBtn').addEventListener('click',()=>{const l=document.getElementById('negLender').value.trim();const a=parseFloat(document.getElementById('negAmount').value||'0');const n=document.getElementById('negNotes').value.trim();if(!l||isNaN(a)||a<=0){alert('Preencha banco/cartao e valor.');return;}const data=loadData();data.negDebts.push({lender:l,amount:a,notes:n});saveNegDebts(data.negDebts);document.getElementById('negLender').value='';document.getElementById('negAmount').value='';document.getElementById('negNotes').value='';recompute();});
-  document.getElementById('addSubBtn').addEventListener('click',()=>{const n=document.getElementById('subName').value.trim();const a=parseFloat(document.getElementById('subAmount').value||'0');const nt=document.getElementById('subNotes').value.trim();if(!n||isNaN(a)||a<=0){alert('Preencha nome e valor mensal.');return;}const data=loadData();data.subs.push({name:n,amount:a,notes:nt});saveSubs(data.subs);document.getElementById('subName').value='';document.getElementById('subAmount').value='';document.getElementById('subNotes').value='';recompute();});
-  document.getElementById('addSpendBtn').addEventListener('click',()=>{const d=document.getElementById('spendDesc').value.trim();const a=parseFloat(document.getElementById('spendAmount').value||'0');const c=document.getElementById('spendCategory').value||'Outros';if(!d||isNaN(a)||a<=0){alert('Preencha descricao e valor.');return;}const today=new Date().toISOString().slice(0,10);const data=loadData();data.spends.push({description:d,amount:a,category:c,date:today});saveSpends(data.spends);document.getElementById('spendDesc').value='';document.getElementById('spendAmount').value='';document.getElementById('spendCategory').value='';recompute();});
-  document.getElementById('addIncomeExtraBtn').addEventListener('click',()=>{const d=document.getElementById('incDesc').value.trim();const a=parseFloat(document.getElementById('incAmount').value||'0');const c=document.getElementById('incCategory').value||'Outro';const dt=document.getElementById('incDate').value;if(!d||isNaN(a)||a<=0||!dt){alert('Preencha descricao, valor e data.');return;}const data=loadData();data.incExtras.push({description:d,amount:a,category:c,date:dt});saveIncExtras(data.incExtras);document.getElementById('incDesc').value='';document.getElementById('incAmount').value='';document.getElementById('incCategory').value='';document.getElementById('incDate').value='';recompute();});
-}
-
-function initApp(){
-  checkForOldData();const now=new Date();
-  document.getElementById('currentMonthLabel').textContent=now.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
-  const{income,spends}=loadData();
-  if(income){document.getElementById('salaryInput').value=income.salary||'';document.getElementById('vtTotal').value=income.vtTotal||'';document.getElementById('vtCost').value=income.vtCost||'';document.getElementById('incomeInfo').textContent='Renda carregada.';}
-  renderMonthsSel();recompute();drawPie(spends||[]);
-}
-
-window.addEventListener('DOMContentLoaded',()=>{wireButtons();if(isLoggedIn()){showApp();initApp();}});
-</script>
-</body>
-</html>
+    function isLoggedIn(){return sessionStorage.getItem('cf_auth')==='ok';}
+    function showApp(){loginScreen.style.display='none';}
+    function doLogin(){
+      const u=document.get
