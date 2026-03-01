@@ -1,0 +1,93 @@
+<!DOCTYPE htm<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Controle financeiro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    *{box-sizing:border-box;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+    body{
+      margin:0;
+      background:radial-gradient(circle at top left,#ffe7f2 0,#ffeef7 45%,#fff5fb 100%);
+      color:#1f2933;
+    }
+
+    /* ── LOGIN ── */
+    #loginScreen{
+      position:fixed;inset:0;z-index:9999;
+      background:radial-gradient(circle at top left,#ffe7f2 0,#ffeef7 45%,#fff5fb 100%);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .login-box{
+      background:#fff;
+      border:1px solid #ffe4f1;
+      border-radius:24px;
+      padding:32px 28px 28px;
+      width:100%;max-width:340px;
+      box-shadow:0 12px 40px rgba(248,187,208,0.35);
+      text-align:center;
+      position:relative;
+    }
+    /* orelhinhas de gato no login-box */
+    .login-box::before,.login-box::after{
+      content:"";
+      position:absolute;top:-14px;
+      width:22px;height:22px;
+      border-radius:4px 18px 4px 18px;
+      background:linear-gradient(135deg,#fecaca,#f9a8d4);
+      opacity:0.85;
+    }
+    .login-box::before{left:18px;transform:rotate(-18deg);}
+    .login-box::after{right:18px;transform:scaleX(-1) rotate(-18deg);}
+
+    /* silhueta Snoopy minimalista no topo do card */
+    .snoopy-login{
+      display:block;margin:0 auto 12px;
+      width:52px;height:28px;border-radius:999px;
+      border:2px solid #111827;
+      background:#fff;
+      line-height:28px;font-size:0.72rem;
+      color:#111827;letter-spacing:0.04em;
+      font-weight:700;
+    }
+
+    .login-title{
+      font-size:1.1rem;font-weight:700;color:#111827;margin-bottom:4px;
+    }
+    .login-sub{
+      font-size:0.78rem;color:#9ca3af;margin-bottom:20px;
+    }
+    .login-box label{
+      display:block;text-align:left;font-size:0.78rem;
+      color:#4b5563;margin-bottom:3px;margin-top:10px;
+    }
+    .login-box input{
+      width:100%;padding:8px 10px;border-radius:10px;
+      border:1px solid #fcd5e5;background:#fff7fb;
+      color:#111827;font-size:0.88rem;
+    }
+    .login-box input:focus{
+      outline:2px solid #f9a8d4;border-color:transparent;background:#fff;
+    }
+    .login-btn{
+      margin-top:18px;width:100%;padding:9px;border-radius:999px;border:none;
+      background:linear-gradient(135deg,#f9739b,#fbbf24);
+      color:#fff;font-weight:700;font-size:0.9rem;cursor:pointer;
+      box-shadow:0 6px 14px rgba(248,113,150,0.35);
+    }
+    .login-btn:hover{filter:brightness(1.04);}
+    .login-error{
+      margin-top:10px;font-size:0.76rem;color:#b91c1c;
+      display:none;
+    }
+
+    /* detalhe de morango no rodapé do card de login */
+    .strawberry-row{
+      display:flex;justify-content:center;gap:8px;margin-top:18px;
+    }
+    .seed-dot{
+      width:7px;height:7px;border-radius:50%;
+      background:radial-gradient(circle at 30% 30%,#fff 0,#fff 35%,#fb7185 36%,#b91c1c 100%);
+      opa
+
+</html>
