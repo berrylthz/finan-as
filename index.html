@@ -45,15 +45,6 @@
       display:block;
     }
 
-    .snoopy-login{
-      display:block;margin:0 auto 12px;
-      width:52px;height:28px;border-radius:999px;
-      border:2px solid #111827;
-      background:#fff;
-      line-height:28px;font-size:0.72rem;
-      color:#111827;letter-spacing:0.04em;
-      font-weight:700;
-    }
     .login-title{
       font-size:1.1rem;font-weight:700;color:#111827;margin-bottom:4px;
     }
@@ -114,15 +105,6 @@
       padding:2px 6px;
     }
     header p{margin:4px 0 0;font-size:0.82rem;color:#6b7280;}
-    .snoopy-tag{
-      position:absolute;right:76px;top:10px;
-      width:56px;height:26px;border-radius:999px;
-      border:2px solid #111827;
-      background:#fff;
-      display:flex;align-items:center;justify-content:center;
-      font-size:0.66rem;color:#111827;font-weight:700;
-      letter-spacing:0.03em;
-    }
     .logout-btn{
       position:absolute;right:12px;top:10px;
       padding:4px 10px;border-radius:999px;border:1px solid #fcd5e5;
@@ -184,7 +166,6 @@
     .card::before{left:10px;transform:rotate(-18deg);}
     .card::after{right:10px;transform:scaleX(-1) rotate(-18deg);}
 
-    /* TÍTULOS COM GATINHO */
     .card h2{
       margin:0 0 3px;
       font-size:0.9rem;
@@ -335,7 +316,6 @@
   <div id="loginScreen">
     <div class="login-box">
       <img src="snoopy.png" alt="Snoopy" class="login-snoopy-img">
-      <span class="snoopy-login">SNOOPY</span>
       <div class="login-title">Controle financeiro</div>
       <div class="login-sub">Acesso restrito — só você entra aqui.</div>
 
@@ -370,7 +350,6 @@
         <p>Painel fofinho para acompanhar renda, dívidas e gastos.</p>
       </div>
     </div>
-    <div class="snoopy-tag">SNOOPY</div>
     <button class="logout-btn" id="logoutBtn">Sair</button>
   </header>
 
@@ -610,4 +589,540 @@
     function isLoggedIn(){return sessionStorage.getItem('cf_auth')==='ok';}
     function showApp(){loginScreen.style.display='none';}
     function doLogin(){
-      const u=document.get
+      const u=document.getElementById('loginUser').value.trim();
+      const p=document.getElementById('loginPass').value;
+      if(u===VALID_USER && p===VALID_PASS){
+        sessionStorage.setItem('cf_auth','ok');
+        loginError.style.display='none';
+        showApp();
+        init();
+      } else {
+        loginError.style.display='block';
+      }
+    }
+    loginBtn.addEventListener('click',doLogin);
+    document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!isLoggedIn())doLogin();});
+    logoutBtn.addEventListener('click',()=>{sessionStorage.removeItem('cf_auth');location.reload();});
+    if(isLoggedIn()){showApp();init();}
+
+    function fmt(v){return'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function monthKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
+    function monthLabel(k){const[y,m]=k.split('-');const names=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];return names[parseInt(m)-1]+'/'+y;}
+
+    function loadData(){
+      try{return JSON.parse(localStorage.getItem(CURRENT_VERSION))||{};}
+      catch{return{};}
+    }
+    function saveData(d){localStorage.setItem(CURRENT_VERSION,JSON.stringify(d));}
+
+    function migrateOldData(){
+      const old=localStorage.getItem('financeData');
+      if(!old)return;
+      const o=JSON.parse(old);
+      const cur=loadData();
+      if(o.debts)cur.debts=(cur.debts||[]).concat(o.debts);
+      if(o.income)cur.income=cur.income||o.income;
+      saveData(cur);
+      document.getElementById('migrateBanner').style.display='none';
+      init();
+    }
+
+    let editingIndex=null;
+
+    function init(){
+      const old=localStorage.getItem('financeData');
+      if(old){document.getElementById('migrateBanner').style.display='block';}
+      renderAll();
+    }
+
+    function renderAll(){
+      const data=loadData();
+      const now=new Date();
+      const mk=monthKey(now);
+      document.getElementById('currentMonthLabel').textContent=monthLabel(mk);
+      renderKPIs(data,mk);
+      renderThisMonth(data,mk);
+      renderMonthsGrid(data);
+      renderDebtsBlocks(data);
+      renderSpends(data,mk);
+      renderNegDebts(data);
+      renderSubs(data);
+      renderIncomeExtras(data);
+      renderPaymentsSection(data);
+      renderPieChart(data,mk);
+    }
+
+    function renderKPIs(data,mk){
+      const income=data.income&&data.income[mk]||{};
+      const salary=parseFloat(income.salary)||0;
+      const vtTotal=parseFloat(income.vtTotal)||0;
+      const vtCost=parseFloat(income.vtCost)||0;
+      const vtSobra=Math.max(0,vtTotal-vtCost);
+      const extras=(data.incomeExtras||[]).filter(e=>e.date&&e.date.startsWith(mk.replace('-','').slice(0,4)+'-'+mk.slice(-2))).reduce((a,e)=>a+parseFloat(e.amount||0),0);
+      const totalIncome=salary+vtSobra+extras;
+
+      const debts=data.debts||[];
+      let parcelasThisMonth=0;
+      debts.forEach(d=>{
+        if(d.specialType==='congelada')return;
+        const months=getDebtMonths(d);
+        if(months.includes(mk))parcelasThisMonth+=parseFloat(d.installmentPerPerson)||0;
+      });
+
+      const spendsThisMonth=(data.spends||[]).filter(s=>s.date&&s.date.startsWith(mk)).reduce((a,s)=>a+parseFloat(s.amount||0),0);
+      const subsTotal=(data.subs||[]).reduce((a,s)=>a+parseFloat(s.amount||0),0);
+      const totalExpenses=parcelasThisMonth+spendsThisMonth+subsTotal;
+      const monthBalance=totalIncome-totalExpenses;
+
+      const allMonths=new Set();
+      (data.debts||[]).forEach(d=>getDebtMonths(d).forEach(m=>allMonths.add(m)));
+      (data.incomeExtras||[]).forEach(e=>{if(e.date)allMonths.add(e.date.slice(0,7));});
+      if(data.income)Object.keys(data.income).forEach(m=>allMonths.add(m));
+
+      let yearBalance=0;
+      allMonths.forEach(m=>{
+        const inc=data.income&&data.income[m]||{};
+        const s=parseFloat(inc.salary)||0;
+        const vt=Math.max(0,(parseFloat(inc.vtTotal)||0)-(parseFloat(inc.vtCost)||0));
+        const ex=(data.incomeExtras||[]).filter(e=>e.date&&e.date.startsWith(m)).reduce((a,e)=>a+parseFloat(e.amount||0),0);
+        let parc=0;
+        (data.debts||[]).forEach(d=>{
+          if(d.specialType==='congelada')return;
+          if(getDebtMonths(d).includes(m))parc+=parseFloat(d.installmentPerPerson)||0;
+        });
+        const sp=(data.spends||[]).filter(x=>x.date&&x.date.startsWith(m)).reduce((a,x)=>a+parseFloat(x.amount||0),0);
+        yearBalance+=(s+vt+ex)-parc-sp-subsTotal;
+      });
+
+      document.getElementById('kpiIncome').textContent=fmt(totalIncome);
+      document.getElementById('kpiExpenses').textContent=fmt(totalExpenses);
+      document.getElementById('kpiMonthBalance').textContent=fmt(monthBalance);
+      document.getElementById('kpiYearBalance').textContent=fmt(yearBalance);
+    }
+
+    function getDebtMonths(d){
+      const months=[];
+      if(!d.startDate)return months;
+      const start=new Date(d.startDate+'T12:00:00');
+      const qty=parseInt(d.qty)||1;
+      for(let i=0;i<qty;i++){
+        const dt=new Date(start);
+        dt.setMonth(dt.getMonth()+i);
+        months.push(monthKey(dt));
+      }
+      return months;
+    }
+
+    function renderThisMonth(data,mk){
+      const debts=data.debts||[];
+      const byPerson={};
+      const frozen=[];
+      debts.forEach(d=>{
+        const months=getDebtMonths(d);
+        if(!months.includes(mk))return;
+        if(d.specialType==='congelada'){frozen.push(d);return;}
+        const name=d.lender||'Sem nome';
+        if(!byPerson[name])byPerson[name]={items:[],total:0};
+        byPerson[name].items.push(d);
+        byPerson[name].total+=parseFloat(d.installmentPerPerson)||0;
+      });
+
+      const chipsEl=document.getElementById('thisMonthChips');
+      chipsEl.innerHTML='';
+      Object.entries(byPerson).forEach(([name,info])=>{
+        const chip=document.createElement('div');
+        chip.className='person-chip';
+        chip.innerHTML=`<span class="person-chip-name">${name}</span><span class="person-chip-value">${fmt(info.total)}</span>`;
+        chip.addEventListener('click',()=>showPersonPanel(name,info,mk));
+        chipsEl.appendChild(chip);
+      });
+
+      const frozenEl=document.getElementById('frozenChips');
+      frozenEl.innerHTML='';
+      frozen.forEach(d=>{
+        const chip=document.createElement('div');
+        chip.className='person-chip';
+        chip.innerHTML=`<span class="person-chip-name">${d.lender||'?'}</span><span class="person-chip-value">${fmt(d.installmentPerPerson)} ❄️</span>`;
+        frozenEl.appendChild(chip);
+      });
+
+      const sal=document.getElementById('salaryInput');
+      const vtt=document.getElementById('vtTotal');
+      const vtc=document.getElementById('vtCost');
+      const inc=data.income&&data.income[mk]||{};
+      sal.value=inc.salary||'';
+      vtt.value=inc.vtTotal||'';
+      vtc.value=inc.vtCost||'';
+
+      const salary=parseFloat(inc.salary)||0;
+      const vtSobra=Math.max(0,(parseFloat(inc.vtTotal)||0)-(parseFloat(inc.vtCost)||0));
+      const rendaDisponivel=salary+vtSobra;
+      let totalParcelas=0;
+      let totalDebt=0;
+      let lastMonth='';
+      debts.forEach(d=>{
+        if(d.specialType==='congelada')return;
+        const months=getDebtMonths(d);
+        if(months.includes(mk))totalParcelas+=parseFloat(d.installmentPerPerson)||0;
+        totalDebt+=parseFloat(d.installmentPerPerson||0)*(parseInt(d.qty)||1);
+        const last=months[months.length-1];
+        if(last>lastMonth)lastMonth=last;
+      });
+      const balance=rendaDisponivel-totalParcelas;
+
+      document.getElementById('statSalary').textContent=fmt(salary);
+      document.getElementById('statVTSobra').textContent=fmt(vtSobra);
+      document.getElementById('statRendaDisponivel').textContent=fmt(rendaDisponivel);
+      document.getElementById('statThisMonth').textContent=fmt(totalParcelas);
+      document.getElementById('statTotalDebt').textContent=fmt(totalDebt);
+      document.getElementById('statBalance').textContent=fmt(balance);
+      document.getElementById('statEndDate').textContent=lastMonth?monthLabel(lastMonth):'—';
+
+      const box=document.getElementById('negativityBox');
+      box.className='stat'+(balance<0?' danger':' ok');
+
+      document.getElementById('saveIncomeBtn').onclick=()=>{
+        const data2=loadData();
+        if(!data2.income)data2.income={};
+        data2.income[mk]={salary:sal.value,vtTotal:vtt.value,vtCost:vtc.value};
+        saveData(data2);
+        document.getElementById('incomeInfo').textContent='Renda salva!';
+        setTimeout(()=>document.getElementById('incomeInfo').textContent='',2000);
+        renderAll();
+      };
+    }
+
+    function showPersonPanel(name,info,mk){
+      const panel=document.getElementById('personDetails');
+      let html=`<div class="person-header"><span class="person-name">${name}</span><span class="person-close" onclick="document.getElementById('personDetails').style.display='none'">✕ fechar</span></div>`;
+      info.items.forEach(d=>{
+        const months=getDebtMonths(d);
+        const idx=months.indexOf(mk)+1;
+        html+=`<div class="person-item">${d.description||d.category||'Sem descrição'} — ${fmt(d.installmentPerPerson)} (${idx}/${d.qty})</div>`;
+      });
+      html+=`<div class="person-total">Total: ${fmt(info.total)}</div>`;
+      panel.innerHTML=html;
+      panel.style.display='block';
+    }
+
+    function renderMonthsGrid(data){
+      const debts=data.debts||[];
+      const monthTotals={};
+      debts.forEach(d=>{
+        if(d.specialType==='congelada')return;
+        getDebtMonths(d).forEach(m=>{
+          monthTotals[m]=(monthTotals[m]||0)+parseFloat(d.installmentPerPerson||0);
+        });
+      });
+      const keys=Object.keys(monthTotals).sort();
+      const grid=document.getElementById('monthsGrid');
+      grid.innerHTML='';
+      keys.forEach(k=>{
+        const card=document.createElement('div');
+        card.className='month-card';
+        card.innerHTML=`<div class="month-name">${monthLabel(k)}</div><div class="month-value">${fmt(monthTotals[k])}</div>`;
+        grid.appendChild(card);
+      });
+    }
+
+    function renderDebtsBlocks(data){
+      const debts=data.debts||[];
+      const grid=document.getElementById('debtsBlocks');
+      grid.innerHTML='';
+      document.getElementById('debtsCountBadge').textContent=debts.length+' dívida'+(debts.length!==1?'s':'');
+      debts.forEach((d,i)=>{
+        const card=document.createElement('div');
+        card.className='bank-card';
+        const months=getDebtMonths(d);
+        const firstM=months[0]?monthLabel(months[0]):'—';
+        const lastM=months[months.length-1]?monthLabel(months[months.length-1]):'—';
+        card.innerHTML=`
+          <div class="bank-card-header">
+            <span class="bank-name">${d.lender||'Sem nome'}</span>
+            <span style="font-size:0.68rem;color:#9ca3af;">${d.specialType==='congelada'?'❄️ congelada':''}</span>
+          </div>
+          <div class="bank-total">${d.description||''}</div>
+          <div style="font-size:0.7rem;color:#6b7280;">${d.category||''} ${d.customCategory?'· '+d.customCategory:''}</div>
+          <div style="font-size:0.72rem;margin-top:2px;">Parcela: <strong>${fmt(d.installmentPerPerson)}</strong> × ${d.qty}x</div>
+          <div style="font-size:0.7rem;color:#9ca3af;">${firstM} → ${lastM}</div>
+          <div style="margin-top:4px;display:flex;gap:4px;">
+            <button class="mini" onclick="editDebt(${i})">✏️ editar</button>
+            <button class="mini secondary" onclick="removeDebt(${i})">🗑️ remover</button>
+          </div>`;
+        grid.appendChild(card);
+      });
+    }
+
+    function editDebt(i){
+      const data=loadData();
+      const d=data.debts[i];
+      editingIndex=i;
+      document.getElementById('paymentType').value=d.paymentType||'parcelado';
+      document.getElementById('lenderCustom').value=d.lender||'';
+      document.getElementById('category').value=d.category||'';
+      document.getElementById('specialType').value=d.specialType||'normal';
+      document.getElementById('customCategory').value=d.customCategory||'';
+      document.getElementById('description').value=d.description||'';
+      document.getElementById('debtTotal').value=d.total||'';
+      document.getElementById('debtQty').value=d.qty||'';
+      document.getElementById('debtInstallment').value=d.installment||'';
+      document.getElementById('splitParts').value=d.splitParts||1;
+      document.getElementById('debtStart').value=d.startDate||'';
+      document.getElementById('cancelEditBtn').style.display='inline-flex';
+      document.getElementById('saveDebtBtn').textContent='Salvar edição';
+      window.scrollTo({top:document.getElementById('saveDebtBtn').offsetTop-80,behavior:'smooth'});
+    }
+
+    function removeDebt(i){
+      if(!confirm('Remover esta dívida?'))return;
+      const data=loadData();
+      data.debts.splice(i,1);
+      saveData(data);
+      renderAll();
+    }
+
+    document.getElementById('cancelEditBtn').addEventListener('click',()=>{
+      editingIndex=null;
+      document.getElementById('cancelEditBtn').style.display='none';
+      document.getElementById('saveDebtBtn').textContent='Adicionar dívida';
+    });
+
+    document.getElementById('debtTotal').addEventListener('input',()=>{
+      const t=parseFloat(document.getElementById('debtTotal').value)||0;
+      const q=parseInt(document.getElementById('debtQty').value)||1;
+      if(t&&q)document.getElementById('debtInstallment').value=(t/q).toFixed(2);
+    });
+    document.getElementById('debtQty').addEventListener('input',()=>{
+      const t=parseFloat(document.getElementById('debtTotal').value)||0;
+      const q=parseInt(document.getElementById('debtQty').value)||1;
+      if(t&&q)document.getElementById('debtInstallment').value=(t/q).toFixed(2);
+    });
+
+    document.getElementById('saveDebtBtn').addEventListener('click',()=>{
+      const lender=document.getElementById('lenderCustom').value.trim()||document.getElementById('lender').value;
+      const category=document.getElementById('category').value;
+      const specialType=document.getElementById('specialType').value;
+      const customCategory=document.getElementById('customCategory').value.trim();
+      const description=document.getElementById('description').value.trim();
+      const total=parseFloat(document.getElementById('debtTotal').value)||0;
+      const qty=parseInt(document.getElementById('debtQty').value)||1;
+      const installment=parseFloat(document.getElementById('debtInstallment').value)||(total/qty);
+      const splitParts=parseInt(document.getElementById('splitParts').value)||1;
+      const installmentPerPerson=installment/splitParts;
+      const startDate=document.getElementById('debtStart').value;
+      const paymentType=document.getElementById('paymentType').value;
+      if(!lender||!startDate){alert('Preencha pelo menos o nome e a data.');return;}
+      const entry={lender,category,specialType,customCategory,description,total,qty,installment,splitParts,installmentPerPerson,startDate,paymentType};
+      const data=loadData();
+      if(!data.debts)data.debts=[];
+      if(editingIndex!==null){data.debts[editingIndex]=entry;editingIndex=null;document.getElementById('cancelEditBtn').style.display='none';document.getElementById('saveDebtBtn').textContent='Adicionar dívida';}
+      else{data.debts.push(entry);}
+      saveData(data);
+      ['lenderCustom','customCategory','description','debtTotal','debtQty','debtInstallment','splitParts','debtStart'].forEach(id=>document.getElementById(id).value='');
+      renderAll();
+    });
+
+    function renderSpends(data,mk){
+      const spends=(data.spends||[]).filter(s=>s.date&&s.date.startsWith(mk));
+      const total=spends.reduce((a,s)=>a+parseFloat(s.amount||0),0);
+      document.getElementById('spendTotalLine').textContent='Total no mês: '+fmt(total);
+      const byCat={};
+      spends.forEach(s=>{const c=s.category||'Outros';byCat[c]=(byCat[c]||0)+parseFloat(s.amount||0);});
+      document.getElementById('spendByCatLine').textContent='Por categoria: '+Object.entries(byCat).map(([c,v])=>c+' '+fmt(v)).join(' · ')||'—';
+      const grid=document.getElementById('spendsGrid');
+      grid.innerHTML='';
+      (data.spends||[]).slice().reverse().forEach((s,ri)=>{
+        const i=(data.spends.length-1-ri);
+        const card=document.createElement('div');
+        card.className='bank-card';
+        card.innerHTML=`<div class="bank-card-header"><span class="bank-name">${s.description||'Gasto'}</span><span style="font-size:0.7rem;color:#6b7280;">${s.date||''}</span></div><div class="bank-total">${fmt(s.amount)} · ${s.category||''}</div><div style="margin-top:4px;"><button class="mini secondary" onclick="removeSpend(${i})">🗑️</button></div>`;
+        grid.appendChild(card);
+      });
+
+      document.getElementById('addSpendBtn').onclick=()=>{
+        const desc=document.getElementById('spendDesc').value.trim();
+        const amount=parseFloat(document.getElementById('spendAmount').value)||0;
+        const category=document.getElementById('spendCategory').value;
+        if(!desc||!amount){alert('Preencha descrição e valor.');return;}
+        const data2=loadData();
+        if(!data2.spends)data2.spends=[];
+        const today=new Date();
+        data2.spends.push({description:desc,amount,category,date:monthKey(today)});
+        saveData(data2);
+        document.getElementById('spendDesc').value='';
+        document.getElementById('spendAmount').value='';
+        renderAll();
+      };
+    }
+
+    function removeSpend(i){
+      const data=loadData();
+      data.spends.splice(i,1);
+      saveData(data);
+      renderAll();
+    }
+
+    function renderNegDebts(data){
+      const grid=document.getElementById('negGrid');
+      grid.innerHTML='';
+      (data.negDebts||[]).forEach((n,i)=>{
+        const card=document.createElement('div');
+        card.className='bank-card';
+        card.innerHTML=`<div class="bank-card-header"><span class="bank-name">${n.lender}</span></div><div class="bank-total">${fmt(n.amount)}</div><div style="font-size:0.7rem;color:#6b7280;">${n.notes||''}</div><div style="margin-top:4px;"><button class="mini secondary" onclick="removeNeg(${i})">🗑️</button></div>`;
+        grid.appendChild(card);
+      });
+      document.getElementById('addNegDebtBtn').onclick=()=>{
+        const lender=document.getElementById('negLender').value.trim();
+        const amount=parseFloat(document.getElementById('negAmount').value)||0;
+        const notes=document.getElementById('negNotes').value.trim();
+        if(!lender||!amount){alert('Preencha banco e valor.');return;}
+        const data2=loadData();
+        if(!data2.negDebts)data2.negDebts=[];
+        data2.negDebts.push({lender,amount,notes});
+        saveData(data2);
+        document.getElementById('negLender').value='';
+        document.getElementById('negAmount').value='';
+        document.getElementById('negNotes').value='';
+        renderAll();
+      };
+    }
+    function removeNeg(i){const data=loadData();data.negDebts.splice(i,1);saveData(data);renderAll();}
+
+    function renderSubs(data){
+      const grid=document.getElementById('subsGrid');
+      grid.innerHTML='';
+      (data.subs||[]).forEach((s,i)=>{
+        const card=document.createElement('div');
+        card.className='bank-card';
+        card.innerHTML=`<div class="bank-card-header"><span class="bank-name">${s.name}</span><span style="font-size:0.72rem;color:#374151;">${fmt(s.amount)}/mês</span></div><div style="font-size:0.7rem;color:#6b7280;">${s.notes||''}</div><div style="margin-top:4px;"><button class="mini secondary" onclick="removeSub(${i})">🗑️</button></div>`;
+        grid.appendChild(card);
+      });
+      document.getElementById('addSubBtn').onclick=()=>{
+        const name=document.getElementById('subName').value.trim();
+        const amount=parseFloat(document.getElementById('subAmount').value)||0;
+        const notes=document.getElementById('subNotes').value.trim();
+        if(!name||!amount){alert('Preencha nome e valor.');return;}
+        const data2=loadData();
+        if(!data2.subs)data2.subs=[];
+        data2.subs.push({name,amount,notes});
+        saveData(data2);
+        document.getElementById('subName').value='';
+        document.getElementById('subAmount').value='';
+        document.getElementById('subNotes').value='';
+        renderAll();
+      };
+    }
+    function removeSub(i){const data=loadData();data.subs.splice(i,1);saveData(data);renderAll();}
+
+    function renderIncomeExtras(data){
+      const extras=data.incomeExtras||[];
+      const total=extras.reduce((a,e)=>a+parseFloat(e.amount||0),0);
+      document.getElementById('incExtraSummary').textContent='Total de extras no ano: '+fmt(total);
+      const grid=document.getElementById('incExtrasGrid');
+      grid.innerHTML='';
+      extras.slice().reverse().forEach((e,ri)=>{
+        const i=extras.length-1-ri;
+        const card=document.createElement('div');
+        card.className='bank-card';
+        card.innerHTML=`<div class="bank-card-header"><span class="bank-name">${e.description||'Extra'}</span><span style="font-size:0.7rem;color:#6b7280;">${e.date||''}</span></div><div class="bank-total">${fmt(e.amount)} · ${e.category||''}</div><div style="margin-top:4px;"><button class="mini secondary" onclick="removeIncExtra(${i})">🗑️</button></div>`;
+        grid.appendChild(card);
+      });
+      document.getElementById('addIncomeExtraBtn').onclick=()=>{
+        const desc=document.getElementById('incDesc').value.trim();
+        const amount=parseFloat(document.getElementById('incAmount').value)||0;
+        const category=document.getElementById('incCategory').value;
+        const date=document.getElementById('incDate').value;
+        if(!desc||!amount){alert('Preencha descrição e valor.');return;}
+        const data2=loadData();
+        if(!data2.incomeExtras)data2.incomeExtras=[];
+        data2.incomeExtras.push({description:desc,amount,category,date:date||monthKey(new Date())});
+        saveData(data2);
+        document.getElementById('incDesc').value='';
+        document.getElementById('incAmount').value='';
+        document.getElementById('incDate').value='';
+        renderAll();
+      };
+    }
+    function removeIncExtra(i){const data=loadData();data.incomeExtras.splice(i,1);saveData(data);renderAll();}
+
+    function renderPaymentsSection(data){
+      const debts=data.debts||[];
+      const allMonths=new Set();
+      debts.forEach(d=>getDebtMonths(d).forEach(m=>allMonths.add(m)));
+      const sorted=[...allMonths].sort();
+      const now=monthKey(new Date());
+      let active=data._activePayMonth||now;
+      if(!allMonths.has(active)&&sorted.length)active=sorted[0];
+
+      const sel=document.getElementById('monthsSelect');
+      sel.innerHTML='';
+      sorted.forEach(m=>{
+        const pill=document.createElement('div');
+        pill.className='month-pill'+(m===active?' active':'');
+        pill.textContent=monthLabel(m);
+        pill.addEventListener('click',()=>{
+          const d2=loadData();d2._activePayMonth=m;saveData(d2);renderAll();
+        });
+        sel.appendChild(pill);
+      });
+
+      const list=document.getElementById('paymentsList');
+      list.innerHTML='';
+      const paid=data.paid||{};
+      debts.forEach((d,i)=>{
+        const months=getDebtMonths(d);
+        if(!months.includes(active))return;
+        const idx=months.indexOf(active)+1;
+        const key=`${i}_${active}`;
+        const isPaid=paid[key]||false;
+        const row=document.createElement('div');
+        row.className='payment-row';
+        row.innerHTML=`<input type="checkbox" ${isPaid?'checked':''} data-key="${key}"><span style="${isPaid?'text-decoration:line-through;color:#9ca3af;':''}">${d.lender||'?'} — ${d.description||d.category||''} ${fmt(d.installmentPerPerson)} (${idx}/${d.qty})</span>`;
+        row.querySelector('input').addEventListener('change',function(){
+          const d2=loadData();if(!d2.paid)d2.paid={};
+          d2.paid[this.dataset.key]=this.checked;saveData(d2);renderAll();
+        });
+        list.appendChild(row);
+      });
+    }
+
+    function renderPieChart(data,mk){
+      const canvas=document.getElementById('spendPieCanvas');
+      const ctx=canvas.getContext('2d');
+      const spends=(data.spends||[]).filter(s=>s.date&&s.date.startsWith(mk));
+      const byCat={};
+      spends.forEach(s=>{const c=s.category||'Outros';byCat[c]=(byCat[c]||0)+parseFloat(s.amount||0);});
+      const entries=Object.entries(byCat);
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      if(!entries.length){
+        ctx.fillStyle='#9ca3af';ctx.font='13px system-ui';ctx.textAlign='center';
+        ctx.fillText('Nenhum gasto registrado',canvas.width/2,canvas.height/2);return;
+      }
+      const total=entries.reduce((a,[,v])=>a+v,0);
+      const colors=['#f9739b','#fbbf24','#34d399','#60a5fa','#a78bfa','#fb923c'];
+      let start=0;
+      const cx=canvas.width/2,cy=canvas.height/2,r=Math.min(cx,cy)-18;
+      entries.forEach(([cat,val],i)=>{
+        const slice=(val/total)*2*Math.PI;
+        ctx.beginPath();ctx.moveTo(cx,cy);
+        ctx.arc(cx,cy,r,start,start+slice);ctx.closePath();
+        ctx.fillStyle=colors[i%colors.length];ctx.fill();
+        ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
+        const mid=start+slice/2;
+        const lx=cx+Math.cos(mid)*(r*0.62),ly=cy+Math.sin(mid)*(r*0.62);
+        ctx.fillStyle='#fff';ctx.font='bold 11px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText(Math.round(val/total*100)+'%',lx,ly);
+        start+=slice;
+      });
+      const legendY=canvas.height-14;
+      let lx2=10;
+      entries.forEach(([cat],i)=>{
+        ctx.fillStyle=colors[i%colors.length];ctx.fillRect(lx2,legendY-8,10,10);
+        ctx.fillStyle='#374151';ctx.font='10px system-ui';ctx.textAlign='left';ctx.textBaseline='middle';
+        ctx.fillText(cat,lx2+13,legendY-3);
+        lx2+=ctx.measureText(cat).width+28;
+      });
+    }
+  </script>
+</body>
+</html>
