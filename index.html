@@ -101,7 +101,7 @@
     .payment-row:last-child{border-bottom:none;}
     .payment-row input[type="checkbox"]{width:16px;height:16px;cursor:pointer;}
     .summary-line{font-size:0.72rem;color:#6b7280;margin-top:4px;}
-    #spendPieCanvas{width:100%;max-width:260px;height:260px;display:block;margin:6px auto 0;}
+    #spendPieCanvas{width:100%;max-width:280px;height:280px;display:block;margin:6px auto 0;}
     .two-col-card{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
     @media(max-width:600px){.two-col-card{grid-template-columns:1fr;}}
     .two-col-card .card{margin-bottom:0;}
@@ -200,7 +200,7 @@
         <section class="card" id="spendChartCard">
           <h2>Gráfico por categoria</h2>
           <small>Distribuição dos gastos de <span id="spendChartMonthLabel" style="font-weight:bold;"></span> no débito/dinheiro.</small>
-          <canvas id="spendPieCanvas" width="260" height="260"></canvas>
+          <canvas id="spendPieCanvas" width="280" height="280"></canvas>
         </section>
 
         <section class="card">
@@ -291,7 +291,6 @@
 
           <button id="addSpendBtn">Adicionar gasto</button>
 
-          <!-- ÁREA ORGANIZADA COM BOTÕES DE MÊS E BLOQUINHOS (CHIPS) DE CATEGORIA -->
           <div style="margin-top:16px; border-top: 1px dashed #ffe4f1; padding-top: 10px;">
             <span style="font-size:0.8rem; font-weight: 600; color: #111827;">Resumo de Gastos</span>
             
@@ -410,7 +409,6 @@
     function monthLabel(k){const[y,m]=k.split('-');const names=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];return names[parseInt(m)-1]+'/'+y;}
 
     let editingIndex=null;
-    // Variável para saber se o app acabou de carregar pela primeira vez
     let isInitialLoad = true; 
 
     function populateLenderSelect(){
@@ -428,10 +426,9 @@
       const mk=monthKey(now);
       document.getElementById('currentMonthLabel').textContent=monthLabel(mk);
       
-      // Ao iniciar o app, define o mês ativo de gastos como o mês ATUAL (se não houver um salvo)
       if (isInitialLoad) {
         data._activeSpendMonth = mk;
-        saveData(data); // salva pra não perder
+        saveData(data);
         isInitialLoad = false;
       }
       
@@ -445,7 +442,6 @@
       renderIncomeExtras(data);
       renderPaymentsSection(data);
       
-      // O gráfico agora desenha o mês que está selecionado nos botões de Gastos
       const chartMonth = data._activeSpendMonth || mk;
       renderPieChart(data, chartMonth);
     }
@@ -652,9 +648,6 @@
       renderAll();
     });
 
-    // ============================================
-    // GASTOS (ORDEM CRESCENTE + ROLA PARA GRÁFICO AO CLICAR)
-    // ============================================
     function renderSpends(data, mk, scrollToChart = false) {
       const allSpends = data.spends || [];
       
@@ -664,11 +657,9 @@
       
       const sortedMonths = [...allMonths].sort(); 
 
-      // Pega o mês que estava salvo como ativo, ou o mês atual
       let activeSpendMonth = data._activeSpendMonth || mk;
       if (!allMonths.has(activeSpendMonth)) activeSpendMonth = sortedMonths[0];
 
-      // Rolar a tela para o gráfico (só se veio do clique)
       if (scrollToChart) {
         setTimeout(() => {
           const el = document.getElementById('spendChartCard');
@@ -687,8 +678,6 @@
           d2._activeSpendMonth = m;
           saveData(d2);
           document.getElementById('spendDetailsPanel').style.display = 'none';
-          
-          // Chama o renderAll, mas avisa que é para rolar até o gráfico
           renderAll(true);
         });
         sel.appendChild(pill);
@@ -783,7 +772,6 @@
       document.getElementById('spendDetailsPanel').style.display='none';
       renderAll();
     }
-    // ============================================
 
     function renderNegDebts(data){
       const grid=document.getElementById('negGrid');grid.innerHTML='';
@@ -872,76 +860,90 @@
       });
     }
 
-    // ============================================
-    // O GRÁFICO AGORA MOSTRA O MÊS SELECIONADO
-    // ============================================
     function renderPieChart(data, mk) {
       const label = document.getElementById('spendChartMonthLabel');
       if(label) label.textContent = monthLabel(mk);
 
-      const canvas=document.getElementById('spendPieCanvas');
-      const ctx=canvas.getContext('2d');
+      const canvas = document.getElementById('spendPieCanvas');
+      const ctx = canvas.getContext('2d');
 
-      const spends=(data.spends||[]).filter(s=>s.date&&s.date.startsWith(mk));
-      const byCat={};
-      spends.forEach(s=>{
-        const c=s.category||'Outros';
-        byCat[c]=(byCat[c]||0)+parseFloat(s.amount||0);
+      const spends = (data.spends||[]).filter(s => s.date && s.date.startsWith(mk));
+      const byCat = {};
+      spends.forEach(s => {
+        const c = s.category || 'Outros';
+        byCat[c] = (byCat[c] || 0) + parseFloat(s.amount || 0);
       });
 
-      const entries=Object.entries(byCat);
-      ctx.clearRect(0,0,canvas.width,canvas.height);
+      const entries = Object.entries(byCat);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       if(!entries.length){
-        ctx.fillStyle='#9ca3af';
-        ctx.font='13px system-ui';
-        ctx.textAlign='center';
-        ctx.fillText('Nenhum gasto registrado',canvas.width/2,canvas.height/2);
+        ctx.fillStyle = '#9ca3af';
+        ctx.font = '13px system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillText('Nenhum gasto registrado', canvas.width/2, canvas.height/2);
         return;
       }
 
-      const total=entries.reduce((a,[,v])=>a+v,0);
-      const colors=['#f9739b','#fbbf24','#34d399','#60a5fa','#a78bfa','#fb923c'];
+      const total = entries.reduce((a, [,v]) => a + v, 0);
+      const colors = ['#f9739b', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa', '#fb923c'];
 
-      let start=0;
-      const cx=canvas.width/2, cy=canvas.height/2;
-      const r=Math.min(cx,cy)-18;
+      const cx = canvas.width / 2;
+      const cy = (canvas.height / 2) - 15; 
+      const r = Math.min(cx, cy) - 5; 
+      let start = 0;
 
-      entries.forEach(([cat,val],i)=>{
-        const slice=(val/total)*2*Math.PI;
+      entries.forEach(([cat, val], i) => {
+        const slice = (val / total) * 2 * Math.PI;
         ctx.beginPath();
-        ctx.moveTo(cx,cy);
-        ctx.arc(cx,cy,r,start,start+slice);
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, r, start, start + slice);
         ctx.closePath();
-        ctx.fillStyle=colors[i%colors.length];
+        ctx.fillStyle = colors[i % colors.length];
         ctx.fill();
-        ctx.strokeStyle='#fff';
-        ctx.lineWidth=2;
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2.5;
         ctx.stroke();
 
-        const mid=start+slice/2;
-        const lx=cx+Math.cos(mid)*(r*0.62);
-        const ly=cy+Math.sin(mid)*(r*0.62);
-        ctx.fillStyle='#fff';
-        ctx.font='bold 11px system-ui';
-        ctx.textAlign='center';
-        ctx.textBaseline='middle';
-        ctx.fillText(Math.round(val/total*100)+'%',lx,ly);
+        const percent = Math.round((val / total) * 100);
+        if (percent > 4) {
+          const mid = start + slice / 2;
+          const lx = cx + Math.cos(mid) * (r * 0.65);
+          const ly = cy + Math.sin(mid) * (r * 0.65);
+          ctx.fillStyle = '#fff';
+          ctx.font = 'bold 11px system-ui';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(percent + '%', lx, ly);
+        }
 
-        start+=slice;
+        start += slice;
       });
 
-      let lx2=10;
-      const legendY=canvas.height-14;
-      entries.forEach(([cat],i)=>{
-        ctx.fillStyle=colors[i%colors.length];
-        ctx.fillRect(lx2,legendY-8,10,10);
-        ctx.fillStyle='#374151';
-        ctx.font='10px system-ui';
-        ctx.textAlign='left';
-        ctx.textBaseline='middle';
-        ctx.fillText(cat,lx2+13,legendY-3);
-        lx2+=ctx.measureText(cat).width+28;
+      const legendStartY = canvas.height - 30; 
+      let currentX = 10;
+      let currentY = legendStartY;
+
+      entries.forEach(([cat], i) => {
+        ctx.font = '11px system-ui';
+        const textWidth = ctx.measureText(cat).width + 25; 
+
+        if (currentX + textWidth > canvas.width) {
+          currentX = 10;
+          currentY += 18; 
+        }
+
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.beginPath();
+        ctx.roundRect(currentX, currentY - 9, 10, 10, 2); 
+        ctx.fill();
+
+        ctx.fillStyle = '#4b5563';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(cat, currentX + 16, currentY - 4);
+
+        currentX += textWidth; 
       });
     }
   </script>
