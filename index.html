@@ -101,7 +101,10 @@
     .payment-row:last-child{border-bottom:none;}
     .payment-row input[type="checkbox"]{width:16px;height:16px;cursor:pointer;}
     .summary-line{font-size:0.72rem;color:#6b7280;margin-top:4px;}
-    #spendPieCanvas{width:100%;max-width:280px;height:280px;display:block;margin:6px auto 0;}
+    
+    /* Aumentei a largura pra dar mais espaço pra legenda na mesma linha */
+    #spendPieCanvas{width:100%;max-width:300px;height:260px;display:block;margin:6px auto 0;}
+    
     .two-col-card{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
     @media(max-width:600px){.two-col-card{grid-template-columns:1fr;}}
     .two-col-card .card{margin-bottom:0;}
@@ -200,7 +203,8 @@
         <section class="card" id="spendChartCard">
           <h2>Gráfico por categoria</h2>
           <small>Distribuição dos gastos de <span id="spendChartMonthLabel" style="font-weight:bold;"></span> no débito/dinheiro.</small>
-          <canvas id="spendPieCanvas" width="280" height="280"></canvas>
+          <!-- Aumentei o Canvas internamente pra caber uma linha só de legenda -->
+          <canvas id="spendPieCanvas" width="300" height="260"></canvas>
         </section>
 
         <section class="card">
@@ -852,7 +856,7 @@
       const paid=data.paid||{};
       debts.forEach((d,i)=>{
         const months=getDebtMonths(d);if(!months.includes(active))return;
-        const idx=months.indexOf(active)+1;const key=`${i}_${active}`;const isPaid=paid[key]||false;
+        const idx=months.indexOf(active)+1;const key=`${i}_active`;const isPaid=paid[key]||false;
         const row=document.createElement('div');row.className='payment-row';
         row.innerHTML=`<input type="checkbox" ${isPaid?'checked':''} data-key="${key}"><span style="${isPaid?'text-decoration:line-through;color:#9ca3af;':''}">${d.lender||'?'} — ${d.description||d.category||''} ${fmt(d.installmentPerPerson)} (${idx}/${d.qty})</span>`;
         row.querySelector('input').addEventListener('change',function(){const d2=loadData();if(!d2.paid)d2.paid={};d2.paid[this.dataset.key]=this.checked;saveData(d2);renderAll();});
@@ -888,9 +892,10 @@
       const total = entries.reduce((a, [,v]) => a + v, 0);
       const colors = ['#f9739b', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa', '#fb923c'];
 
+      // Voltando a pizza pro centro da tela, mas deixando um espacinho em baixo
       const cx = canvas.width / 2;
-      const cy = (canvas.height / 2) - 15; 
-      const r = Math.min(cx, cy) - 5; 
+      const cy = (canvas.height / 2) - 8; 
+      const r = Math.min(cx, cy) - 10; 
       let start = 0;
 
       entries.forEach(([cat, val], i) => {
@@ -902,10 +907,11 @@
         ctx.fillStyle = colors[i % colors.length];
         ctx.fill();
         ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 2.5;
+        ctx.lineWidth = 2;
         ctx.stroke();
 
         const percent = Math.round((val / total) * 100);
+        // Oculta textinhos de fatias menores que 4%
         if (percent > 4) {
           const mid = start + slice / 2;
           const lx = cx + Math.cos(mid) * (r * 0.65);
@@ -916,34 +922,46 @@
           ctx.textBaseline = 'middle';
           ctx.fillText(percent + '%', lx, ly);
         }
-
         start += slice;
       });
 
-      const legendStartY = canvas.height - 30; 
-      let currentX = 10;
-      let currentY = legendStartY;
+      // === LEGENDA EM LINHA ÚNICA ===
+      // Calculamos a largura total de tudo para centralizar
+      ctx.font = '10px system-ui';
+      let totalLegendWidth = 0;
+      const spacing = 12; // espaço entre cada item
+      
+      const legendItems = entries.map(entry => {
+        const textWidth = ctx.measureText(entry[0]).width;
+        // 10 (quadradinho) + 4 (espacinho) + texto
+        const itemWidth = 14 + textWidth; 
+        totalLegendWidth += itemWidth;
+        return { cat: entry[0], width: itemWidth };
+      });
+      // Adiciona os espaçamentos no total
+      totalLegendWidth += (entries.length - 1) * spacing;
 
-      entries.forEach(([cat], i) => {
-        ctx.font = '11px system-ui';
-        const textWidth = ctx.measureText(cat).width + 25; 
+      // Ponto de partida para centralizar
+      let currentX = (canvas.width - totalLegendWidth) / 2;
+      const legendY = canvas.height - 12; 
 
-        if (currentX + textWidth > canvas.width) {
-          currentX = 10;
-          currentY += 18; 
-        }
-
+      entries.forEach((entry, i) => {
+        const item = legendItems[i];
+        
+        // Desenha o quadradinho
         ctx.fillStyle = colors[i % colors.length];
         ctx.beginPath();
-        ctx.roundRect(currentX, currentY - 9, 10, 10, 2); 
+        ctx.roundRect(currentX, legendY - 8, 10, 10, 2); 
         ctx.fill();
 
+        // Desenha o texto
         ctx.fillStyle = '#4b5563';
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
-        ctx.fillText(cat, currentX + 16, currentY - 4);
+        ctx.fillText(item.cat, currentX + 14, legendY - 3);
 
-        currentX += textWidth; 
+        // Avança o X para o próximo item
+        currentX += item.width + spacing;
       });
     }
   </script>
