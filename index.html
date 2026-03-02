@@ -267,13 +267,17 @@
           <div class="banks-grid" id="debtsBlocks"></div>
         </section>
 
+        <!-- NOVO: GASTOS NO DÉBITO COM DATA -->
         <section class="card">
           <h2>Gastos no débito / dinheiro</h2>
           <small>iFood, mercado, Uber, rolê, etc.</small>
+
           <label for="spendDesc">Descrição do gasto</label>
           <input id="spendDesc" type="text" placeholder="Ex: iFood, Mercado, Uber" />
+
           <label for="spendAmount">Valor (R$)</label>
           <input id="spendAmount" type="number" min="0" step="0.01" placeholder="Ex: 30,00" />
+
           <label for="spendCategory">Categoria</label>
           <select id="spendCategory">
             <option value="">Selecione...</option>
@@ -283,7 +287,12 @@
             <option value="Pessoal">Pessoal / físico</option>
             <option value="Outros">Outros</option>
           </select>
+
+          <label for="spendDate">Data do gasto</label>
+          <input id="spendDate" type="date" />
+
           <button id="addSpendBtn">Adicionar gasto</button>
+
           <p class="summary-line" id="spendTotalLine">Total no mês: R$ 0,00</p>
           <p class="summary-line" id="spendByCatLine">Por categoria: —</p>
           <div class="banks-grid" id="spendsGrid"></div>
@@ -594,27 +603,70 @@
       renderAll();
     });
 
+    // ATUALIZADO: GASTOS NO DÉBITO
     function renderSpends(data,mk){
       const spends=(data.spends||[]).filter(s=>s.date&&s.date.startsWith(mk));
       const total=spends.reduce((a,s)=>a+parseFloat(s.amount||0),0);
       document.getElementById('spendTotalLine').textContent='Total no mês: '+fmt(total);
-      const byCat={};spends.forEach(s=>{const c=s.category||'Outros';byCat[c]=(byCat[c]||0)+parseFloat(s.amount||0);});
-      document.getElementById('spendByCatLine').textContent='Por categoria: '+Object.entries(byCat).map(([c,v])=>c+' '+fmt(v)).join(' · ')||'—';
-      const grid=document.getElementById('spendsGrid');grid.innerHTML='';
+
+      const byCat={};
+      spends.forEach(s=>{
+        const c=s.category||'Outros';
+        byCat[c]=(byCat[c]||0)+parseFloat(s.amount||0);
+      });
+      document.getElementById('spendByCatLine').textContent=
+        'Por categoria: '+(Object.entries(byCat).map(([c,v])=>c+' '+fmt(v)).join(' · ')||'—');
+
+      const grid=document.getElementById('spendsGrid');
+      grid.innerHTML='';
+
       (data.spends||[]).slice().reverse().forEach((s,ri)=>{
         const i=(data.spends.length-1-ri);
-        const card=document.createElement('div');card.className='bank-card';
-        card.innerHTML=`<div class="bank-card-header"><span class="bank-name">${s.description||'Gasto'}</span><span style="font-size:0.7rem;color:#6b7280;">${s.date||''}</span></div><div class="bank-total">${fmt(s.amount)} · ${s.category||''}</div><div style="margin-top:4px;"><button class="mini secondary" onclick="removeSpend(${i})">🗑️</button></div>`;
+        const card=document.createElement('div');
+        card.className='bank-card';
+        card.innerHTML=
+          `<div class="bank-card-header">
+             <span class="bank-name">${s.description||'Gasto'}</span>
+             <span style="font-size:0.7rem;color:#6b7280;">${s.date||''}</span>
+           </div>
+           <div class="bank-total">${fmt(s.amount)} · ${s.category||''}</div>
+           <div style="margin-top:4px;">
+             <button class="mini secondary" onclick="removeSpend(${i})">🗑️</button>
+           </div>`;
         grid.appendChild(card);
       });
+
       document.getElementById('addSpendBtn').onclick=()=>{
         const desc=document.getElementById('spendDesc').value.trim();
         const amount=parseFloat(document.getElementById('spendAmount').value)||0;
         const category=document.getElementById('spendCategory').value;
-        if(!desc||!amount){alert('Preencha descrição e valor.');return;}
-        const data2=loadData();if(!data2.spends)data2.spends=[];
-        data2.spends.push({description:desc,amount,category,date:monthKey(new Date())});
-        saveData(data2);document.getElementById('spendDesc').value='';document.getElementById('spendAmount').value='';renderAll();
+        const dateInput=document.getElementById('spendDate').value;
+
+        if(!desc||!amount){
+          alert('Preencha descrição e valor.');
+          return;
+        }
+
+        const today=new Date();
+        const todayStr=today.toISOString().slice(0,10);
+        const finalDate=dateInput || todayStr;
+
+        const data2=loadData();
+        if(!data2.spends)data2.spends=[];
+
+        data2.spends.push({
+          description:desc,
+          amount,
+          category,
+          date:finalDate
+        });
+
+        saveData(data2);
+        document.getElementById('spendDesc').value='';
+        document.getElementById('spendAmount').value='';
+        document.getElementById('spendCategory').value='';
+        document.getElementById('spendDate').value='';
+        renderAll();
       };
     }
 
