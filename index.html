@@ -67,12 +67,10 @@
     .stat.ok strong{color:#15803d;}
     .chips-row{margin-top:6px;display:flex;flex-wrap:wrap;gap:5px;font-size:0.73rem;}
     
-    /* BLOQUINHOS DAS PESSOAS (Rosa) */
     .person-chip{border-radius:999px;padding:5px 8px;background:#ffeef7;border:1px solid #fbcfe8;display:flex;flex-direction:column;gap:1px;cursor:pointer;min-width:135px;}
     .person-chip-name{font-weight:700;font-size:0.74rem;color:#111827;}
     .person-chip-value{font-size:0.72rem;color:#6b7280;}
     
-    /* BLOQUINHOS DAS CATEGORIAS DE GASTOS (Laranjinha) */
     .spend-chip{border-radius:999px;padding:5px 10px;background:#fff7ed;border:1px solid #ffedd5;display:flex;flex-direction:column;gap:1px;cursor:pointer;min-width:115px;transition:0.2s;}
     .spend-chip:hover{background:#ffedd5;}
     .spend-chip-name{font-weight:700;font-size:0.74rem;color:#c2410c;}
@@ -199,9 +197,9 @@
           <div class="months-grid" id="monthsGrid"></div>
         </section>
 
-        <section class="card">
+        <section class="card" id="spendChartCard">
           <h2>Gráfico por categoria</h2>
-          <small>Distribuição dos gastos no débito/dinheiro.</small>
+          <small>Distribuição dos gastos de <span id="spendChartMonthLabel" style="font-weight:bold;"></span> no débito/dinheiro.</small>
           <canvas id="spendPieCanvas" width="260" height="260"></canvas>
         </section>
 
@@ -267,8 +265,8 @@
           <button id="cancelEditBtn" class="secondary" style="display:none;">Cancelar edição</button>
         </section>
 
-        <!-- GASTOS NO DÉBITO COM BLOQUINHOS CLICÁVEIS -->
-        <section class="card">
+        <!-- GASTOS NO DÉBITO -->
+        <section class="card" id="spendsSection">
           <h2>Gastos no débito / dinheiro</h2>
           <small>iFood, mercado, Uber, rolê, etc.</small>
 
@@ -297,15 +295,12 @@
           <div style="margin-top:16px; border-top: 1px dashed #ffe4f1; padding-top: 10px;">
             <span style="font-size:0.8rem; font-weight: 600; color: #111827;">Resumo de Gastos</span>
             
-            <!-- Seleção de Mês (AGORA EM ORDEM CRESCENTE) -->
             <div class="months-select" id="spendMonthsSelect"></div>
             <p class="summary-line" id="spendTotalLine" style="margin-top:4px; font-weight:bold; color:#111827;"></p>
             
             <small style="display:block; margin-top:6px; color:#9ca3af;">Clique na categoria para ver e editar:</small>
-            <!-- Bloquinhos das Categorias -->
             <div class="chips-row" id="spendCategoryChips" style="margin-top:4px;"></div>
             
-            <!-- Painel de Detalhes da Categoria -->
             <div id="spendDetailsPanel" class="person-panel" style="display:none; margin-top:8px;"></div>
           </div>
         </section>
@@ -415,6 +410,8 @@
     function monthLabel(k){const[y,m]=k.split('-');const names=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];return names[parseInt(m)-1]+'/'+y;}
 
     let editingIndex=null;
+    // Variável para saber se o app acabou de carregar pela primeira vez
+    let isInitialLoad = true; 
 
     function populateLenderSelect(){
       const data=loadData();
@@ -425,21 +422,32 @@
       names.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});
     }
 
-    function renderAll(){
+    function renderAll(scrollToChart = false){
       const data=loadData();
       const now=new Date();
       const mk=monthKey(now);
       document.getElementById('currentMonthLabel').textContent=monthLabel(mk);
+      
+      // Ao iniciar o app, define o mês ativo de gastos como o mês ATUAL (se não houver um salvo)
+      if (isInitialLoad) {
+        data._activeSpendMonth = mk;
+        saveData(data); // salva pra não perder
+        isInitialLoad = false;
+      }
+      
       populateLenderSelect();
       renderKPIs(data,mk);
       renderThisMonth(data,mk);
       renderMonthsGrid(data);
-      renderSpends(data,mk);
+      renderSpends(data,mk, scrollToChart); 
       renderNegDebts(data);
       renderSubs(data);
       renderIncomeExtras(data);
       renderPaymentsSection(data);
-      renderPieChart(data,mk);
+      
+      // O gráfico agora desenha o mês que está selecionado nos botões de Gastos
+      const chartMonth = data._activeSpendMonth || mk;
+      renderPieChart(data, chartMonth);
     }
 
     function renderKPIs(data,mk){
@@ -645,23 +653,29 @@
     });
 
     // ============================================
-    // NOVA RENDERIZAÇÃO DE GASTOS (ORDEM CRESCENTE)
+    // GASTOS (ORDEM CRESCENTE + ROLA PARA GRÁFICO AO CLICAR)
     // ============================================
-    function renderSpends(data, mk) {
+    function renderSpends(data, mk, scrollToChart = false) {
       const allSpends = data.spends || [];
       
-      // Descobrir todos os meses que têm gastos (e garantir que o mês atual apareça)
       const allMonths = new Set();
       allSpends.forEach(s => { if(s.date) allMonths.add(s.date.slice(0, 7)); });
       allMonths.add(mk);
       
-      // MUDANÇA AQUI: Ordem crescente (Jan, Fev, Mar)
       const sortedMonths = [...allMonths].sort(); 
 
+      // Pega o mês que estava salvo como ativo, ou o mês atual
       let activeSpendMonth = data._activeSpendMonth || mk;
       if (!allMonths.has(activeSpendMonth)) activeSpendMonth = sortedMonths[0];
 
-      // 1. Renderiza os botões de selecionar o mês
+      // Rolar a tela para o gráfico (só se veio do clique)
+      if (scrollToChart) {
+        setTimeout(() => {
+          const el = document.getElementById('spendChartCard');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 50);
+      }
+
       const sel = document.getElementById('spendMonthsSelect');
       sel.innerHTML = '';
       sortedMonths.forEach(m => {
@@ -673,12 +687,13 @@
           d2._activeSpendMonth = m;
           saveData(d2);
           document.getElementById('spendDetailsPanel').style.display = 'none';
-          renderAll();
+          
+          // Chama o renderAll, mas avisa que é para rolar até o gráfico
+          renderAll(true);
         });
         sel.appendChild(pill);
       });
 
-      // 2. Filtra os gastos do mês ativo e guarda o index real para poder excluir
       const monthSpends = allSpends
         .map((s, i) => ({ ...s, originalIndex: i }))
         .filter(s => s.date && s.date.startsWith(activeSpendMonth));
@@ -686,7 +701,6 @@
       const monthTotal = monthSpends.reduce((a, s) => a + parseFloat(s.amount || 0), 0);
       document.getElementById('spendTotalLine').textContent = `Total em ${monthLabel(activeSpendMonth)}: ` + fmt(monthTotal);
 
-      // 3. Agrupa por categoria
       const byCat = {};
       monthSpends.forEach(s => {
         const c = s.category || 'Outros';
@@ -695,7 +709,6 @@
         byCat[c].total += parseFloat(s.amount || 0);
       });
 
-      // 4. Renderiza os bloquinhos (Chips) de cada categoria
       const chipsContainer = document.getElementById('spendCategoryChips');
       chipsContainer.innerHTML = '';
 
@@ -703,7 +716,6 @@
         const chip = document.createElement('div');
         chip.className = 'spend-chip';
         chip.innerHTML = `<span class="spend-chip-name">${catName}</span><span class="spend-chip-value">${fmt(info.total)}</span>`;
-        // Ao clicar, mostra o painelzinho
         chip.addEventListener('click', () => showSpendPanel(catName, info));
         chipsContainer.appendChild(chip);
       });
@@ -712,7 +724,6 @@
         chipsContainer.innerHTML = '<span style="font-size:0.75rem; color:#9ca3af;">Nenhum gasto neste mês ainda.</span>';
       }
 
-      // Função de Adicionar Gasto
       document.getElementById('addSpendBtn').onclick = () => {
         const desc = document.getElementById('spendDesc').value.trim();
         const amount = parseFloat(document.getElementById('spendAmount').value) || 0;
@@ -729,7 +740,6 @@
         if (!data2.spends) data2.spends = [];
 
         data2.spends.push({ description: desc, amount, category, date: finalDate });
-
         data2._activeSpendMonth = finalDate.slice(0, 7);
 
         saveData(data2);
@@ -742,12 +752,10 @@
       };
     }
 
-    // Função que abre o painelzinho ao clicar na categoria
     function showSpendPanel(catName, info) {
       const panel = document.getElementById('spendDetailsPanel');
       let html = `<div class="person-header"><span class="person-name">${catName}</span><span class="person-close" onclick="document.getElementById('spendDetailsPanel').style.display='none'">✕ fechar</span></div>`;
       
-      // Para cada gasto dessa categoria, cria uma linhazinha
       info.items.slice().reverse().forEach(s => {
         const dFormat = s.date ? s.date.split('-').reverse().join('/') : '';
         html += `
@@ -864,28 +872,76 @@
       });
     }
 
-    function renderPieChart(data,mk){
-      const canvas=document.getElementById('spendPieCanvas');const ctx=canvas.getContext('2d');
+    // ============================================
+    // O GRÁFICO AGORA MOSTRA O MÊS SELECIONADO
+    // ============================================
+    function renderPieChart(data, mk) {
+      const label = document.getElementById('spendChartMonthLabel');
+      if(label) label.textContent = monthLabel(mk);
+
+      const canvas=document.getElementById('spendPieCanvas');
+      const ctx=canvas.getContext('2d');
+
       const spends=(data.spends||[]).filter(s=>s.date&&s.date.startsWith(mk));
-      const byCat={};spends.forEach(s=>{const c=s.category||'Outros';byCat[c]=(byCat[c]||0)+parseFloat(s.amount||0);});
-      const entries=Object.entries(byCat);ctx.clearRect(0,0,canvas.width,canvas.height);
-      if(!entries.length){ctx.fillStyle='#9ca3af';ctx.font='13px system-ui';ctx.textAlign='center';ctx.fillText('Nenhum gasto registrado',canvas.width/2,canvas.height/2);return;}
+      const byCat={};
+      spends.forEach(s=>{
+        const c=s.category||'Outros';
+        byCat[c]=(byCat[c]||0)+parseFloat(s.amount||0);
+      });
+
+      const entries=Object.entries(byCat);
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+
+      if(!entries.length){
+        ctx.fillStyle='#9ca3af';
+        ctx.font='13px system-ui';
+        ctx.textAlign='center';
+        ctx.fillText('Nenhum gasto registrado',canvas.width/2,canvas.height/2);
+        return;
+      }
+
       const total=entries.reduce((a,[,v])=>a+v,0);
       const colors=['#f9739b','#fbbf24','#34d399','#60a5fa','#a78bfa','#fb923c'];
-      let start=0;const cx=canvas.width/2,cy=canvas.height/2,r=Math.min(cx,cy)-18;
+
+      let start=0;
+      const cx=canvas.width/2, cy=canvas.height/2;
+      const r=Math.min(cx,cy)-18;
+
       entries.forEach(([cat,val],i)=>{
         const slice=(val/total)*2*Math.PI;
-        ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,start+slice);ctx.closePath();
-        ctx.fillStyle=colors[i%colors.length];ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
-        const mid=start+slice/2;const lx=cx+Math.cos(mid)*(r*0.62),ly=cy+Math.sin(mid)*(r*0.62);
-        ctx.fillStyle='#fff';ctx.font='bold 11px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';
-        ctx.fillText(Math.round(val/total*100)+'%',lx,ly);start+=slice;
+        ctx.beginPath();
+        ctx.moveTo(cx,cy);
+        ctx.arc(cx,cy,r,start,start+slice);
+        ctx.closePath();
+        ctx.fillStyle=colors[i%colors.length];
+        ctx.fill();
+        ctx.strokeStyle='#fff';
+        ctx.lineWidth=2;
+        ctx.stroke();
+
+        const mid=start+slice/2;
+        const lx=cx+Math.cos(mid)*(r*0.62);
+        const ly=cy+Math.sin(mid)*(r*0.62);
+        ctx.fillStyle='#fff';
+        ctx.font='bold 11px system-ui';
+        ctx.textAlign='center';
+        ctx.textBaseline='middle';
+        ctx.fillText(Math.round(val/total*100)+'%',lx,ly);
+
+        start+=slice;
       });
-      let lx2=10;const legendY=canvas.height-14;
+
+      let lx2=10;
+      const legendY=canvas.height-14;
       entries.forEach(([cat],i)=>{
-        ctx.fillStyle=colors[i%colors.length];ctx.fillRect(lx2,legendY-8,10,10);
-        ctx.fillStyle='#374151';ctx.font='10px system-ui';ctx.textAlign='left';ctx.textBaseline='middle';
-        ctx.fillText(cat,lx2+13,legendY-3);lx2+=ctx.measureText(cat).width+28;
+        ctx.fillStyle=colors[i%colors.length];
+        ctx.fillRect(lx2,legendY-8,10,10);
+        ctx.fillStyle='#374151';
+        ctx.font='10px system-ui';
+        ctx.textAlign='left';
+        ctx.textBaseline='middle';
+        ctx.fillText(cat,lx2+13,legendY-3);
+        lx2+=ctx.measureText(cat).width+28;
       });
     }
   </script>
