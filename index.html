@@ -66,17 +66,26 @@
     .stat.danger strong{color:#b91c1c;}
     .stat.ok strong{color:#15803d;}
     .chips-row{margin-top:6px;display:flex;flex-wrap:wrap;gap:5px;font-size:0.73rem;}
+    
+    /* BLOQUINHOS DAS PESSOAS (Rosa) */
     .person-chip{border-radius:999px;padding:5px 8px;background:#ffeef7;border:1px solid #fbcfe8;display:flex;flex-direction:column;gap:1px;cursor:pointer;min-width:135px;}
     .person-chip-name{font-weight:700;font-size:0.74rem;color:#111827;}
     .person-chip-value{font-size:0.72rem;color:#6b7280;}
+    
+    /* BLOQUINHOS DAS CATEGORIAS DE GASTOS (Laranjinha) */
+    .spend-chip{border-radius:999px;padding:5px 10px;background:#fff7ed;border:1px solid #ffedd5;display:flex;flex-direction:column;gap:1px;cursor:pointer;min-width:115px;transition:0.2s;}
+    .spend-chip:hover{background:#ffedd5;}
+    .spend-chip-name{font-weight:700;font-size:0.74rem;color:#c2410c;}
+    .spend-chip-value{font-size:0.72rem;color:#ea580c;}
+
     .person-panel{margin-top:6px;border-radius:14px;border:1px solid #ffe4f1;background:#ffffff;padding:8px 9px;box-shadow:0 6px 14px rgba(248,187,208,0.35);font-size:0.75rem;}
-    .person-header{display:flex;justify-content:space-between;align-items:center;gap:6px;}
+    .person-header{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:6px;border-bottom:1px dashed #fbcfe8;padding-bottom:4px;}
     .person-name{font-weight:700;font-size:0.8rem;color:#111827;}
     .person-close{font-size:0.74rem;color:#6b7280;cursor:pointer;}
     .person-item{padding:6px 0;border-bottom:1px solid #f3f4f6;display:flex;justify-content:space-between;align-items:center;}
     .person-item:last-child{border-bottom:none;}
     .person-item-details{flex-grow:1;}
-    .person-total{margin-top:4px;font-size:0.76rem;font-weight:600;color:#111827;}
+    .person-total{margin-top:6px;font-size:0.76rem;font-weight:600;color:#111827;}
     .months-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px;margin-top:6px;}
     .month-card{border-radius:14px;padding:7px 8px;color:#111827;font-size:0.76rem;background:#fff7fb;border:1px solid #ffe4f1;}
     .month-name{font-weight:600;font-size:0.78rem;margin-bottom:1px;}
@@ -86,7 +95,6 @@
     .bank-name{font-weight:700;font-size:0.8rem;margin-bottom:1px;color:#111827;}
     .bank-total{font-size:0.76rem;color:#374151;}
     .bank-card-header{display:flex;justify-content:space-between;align-items:center;}
-    .badge-count{font-size:0.7rem;padding:3px 8px;border-radius:999px;background:#eef2ff;border:1px solid #c7d2fe;color:#3730a3;}
     .months-select{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;margin-bottom:6px;}
     .month-pill{padding:4px 8px;border-radius:999px;font-size:0.7rem;border:1px solid #e5e7eb;background:#f9fafb;color:#4b5563;cursor:pointer;font-weight:500;}
     .month-pill.active{background:#eef2ff;border-color:#c7d2fe;color:#3730a3;font-weight:600;}
@@ -99,18 +107,6 @@
     .two-col-card{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
     @media(max-width:600px){.two-col-card{grid-template-columns:1fr;}}
     .two-col-card .card{margin-bottom:0;}
-
-    /* NOVOS ESTILOS PARA ORGANIZAÇÃO POR MÊS E CATEGORIA */
-    .spend-month-block{margin-top:12px;border-radius:14px;background:#fff7fb;border:1px solid #fbcfe8;padding:10px;}
-    .spend-month-title{font-size:0.88rem;font-weight:700;color:#111827;margin-bottom:8px;padding-bottom:4px;border-bottom:1px dashed #fbcfe8;}
-    .spend-category-block{margin-top:8px;border-radius:10px;background:#ffffff;border:1px solid #ffe4f1;padding:8px;}
-    .spend-category-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
-    .spend-category-name{font-size:0.78rem;font-weight:600;color:#111827;}
-    .spend-category-total{font-size:0.76rem;font-weight:600;color:#6b7280;}
-    .spend-item{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #f9fafb;font-size:0.74rem;}
-    .spend-item:last-child{border-bottom:none;}
-    .spend-item-desc{color:#374151;flex-grow:1;}
-    .spend-item-value{color:#111827;font-weight:500;margin-right:6px;}
   </style>
 </head>
 <body>
@@ -207,7 +203,6 @@
           <h2>Gráfico por categoria</h2>
           <small>Distribuição dos gastos no débito/dinheiro.</small>
           <canvas id="spendPieCanvas" width="260" height="260"></canvas>
-          <p class="summary-line">Quanto maior o pedaço, mais aquela categoria está pesando.</p>
         </section>
 
         <section class="card">
@@ -272,7 +267,7 @@
           <button id="cancelEditBtn" class="secondary" style="display:none;">Cancelar edição</button>
         </section>
 
-        <!-- GASTOS NO DÉBITO COM DATA - ORGANIZADO POR MÊS E CATEGORIA -->
+        <!-- GASTOS NO DÉBITO COM BLOQUINHOS CLICÁVEIS -->
         <section class="card">
           <h2>Gastos no débito / dinheiro</h2>
           <small>iFood, mercado, Uber, rolê, etc.</small>
@@ -298,14 +293,24 @@
 
           <button id="addSpendBtn">Adicionar gasto</button>
 
-          <p class="summary-line" id="spendTotalLine">Total no mês: R$ 0,00</p>
-          <p class="summary-line" id="spendByCatLine">Por categoria: —</p>
-          
-          <!-- ÁREA DE GASTOS ORGANIZADA POR MÊS E CATEGORIA -->
-          <div id="spendsOrganized"></div>
+          <!-- ÁREA ORGANIZADA COM BOTÕES DE MÊS E BLOQUINHOS (CHIPS) DE CATEGORIA -->
+          <div style="margin-top:16px; border-top: 1px dashed #ffe4f1; padding-top: 10px;">
+            <span style="font-size:0.8rem; font-weight: 600; color: #111827;">Resumo de Gastos</span>
+            
+            <!-- Seleção de Mês -->
+            <div class="months-select" id="spendMonthsSelect"></div>
+            <p class="summary-line" id="spendTotalLine" style="margin-top:4px; font-weight:bold; color:#111827;"></p>
+            
+            <small style="display:block; margin-top:6px; color:#9ca3af;">Clique na categoria para ver e editar:</small>
+            <!-- Bloquinhos das Categorias -->
+            <div class="chips-row" id="spendCategoryChips" style="margin-top:4px;"></div>
+            
+            <!-- Painel de Detalhes da Categoria -->
+            <div id="spendDetailsPanel" class="person-panel" style="display:none; margin-top:8px;"></div>
+          </div>
         </section>
 
-        <!-- DÍVIDAS NEGATIVADAS + ASSINATURAS LADO A LADO -->
+        <!-- DÍVIDAS NEGATIVADAS + ASSINATURAS -->
         <div class="two-col-card">
           <section class="card">
             <h2>Dívidas negativadas</h2>
@@ -429,7 +434,7 @@
       renderKPIs(data,mk);
       renderThisMonth(data,mk);
       renderMonthsGrid(data);
-      renderSpends(data,mk);
+      renderSpends(data,mk); // Nova renderização de gastos
       renderNegDebts(data);
       renderSubs(data);
       renderIncomeExtras(data);
@@ -450,11 +455,13 @@
       const subsTotal=(data.subs||[]).reduce((a,s)=>a+parseFloat(s.amount||0),0);
       const totalExpenses=parcelasThisMonth+spendsThisMonth+subsTotal;
       const monthBalance=totalIncome-totalExpenses;
+      
+      let yearBalance=0;
       const allMonths=new Set();
       (data.debts||[]).forEach(d=>getDebtMonths(d).forEach(m=>allMonths.add(m)));
       (data.incomeExtras||[]).forEach(e=>{if(e.date)allMonths.add(e.date.slice(0,7));});
       if(data.income)Object.keys(data.income).forEach(m=>allMonths.add(m));
-      let yearBalance=0;
+      
       allMonths.forEach(m=>{
         const inc=data.income&&data.income[m]||{};
         const s=parseFloat(inc.salary)||0;
@@ -637,126 +644,138 @@
       renderAll();
     });
 
-    function renderSpends(data,mk){
-      const spends=(data.spends||[]).filter(s=>s.date&&s.date.startsWith(mk));
-      const total=spends.reduce((a,s)=>a+parseFloat(s.amount||0),0);
-      document.getElementById('spendTotalLine').textContent='Total no mês: '+fmt(total);
+    // ============================================
+    // NOVA RENDERIZAÇÃO DE GASTOS (COM CHIPS)
+    // ============================================
+    function renderSpends(data, mk) {
+      const allSpends = data.spends || [];
+      
+      // Descobrir todos os meses que têm gastos (e garantir que o mês atual apareça)
+      const allMonths = new Set();
+      allSpends.forEach(s => { if(s.date) allMonths.add(s.date.slice(0, 7)); });
+      allMonths.add(mk);
+      const sortedMonths = [...allMonths].sort().reverse(); // Do mais novo pro mais antigo
 
-      const byCat={};
-      spends.forEach(s=>{
-        const c=s.category||'Outros';
-        byCat[c]=(byCat[c]||0)+parseFloat(s.amount||0);
-      });
-      document.getElementById('spendByCatLine').textContent=
-        'Por categoria: '+(Object.entries(byCat).map(([c,v])=>c+' '+fmt(v)).join(' · ')||'—');
+      let activeSpendMonth = data._activeSpendMonth || mk;
+      if (!allMonths.has(activeSpendMonth)) activeSpendMonth = sortedMonths[0];
 
-      // NOVA RENDERIZAÇÃO: ORGANIZADA POR MÊS E CATEGORIA
-      renderSpendsOrganized(data);
-
-      document.getElementById('addSpendBtn').onclick=()=>{
-        const desc=document.getElementById('spendDesc').value.trim();
-        const amount=parseFloat(document.getElementById('spendAmount').value)||0;
-        const category=document.getElementById('spendCategory').value;
-        const dateInput=document.getElementById('spendDate').value;
-
-        if(!desc||!amount){
-          alert('Preencha descrição e valor.');
-          return;
-        }
-
-        const today=new Date();
-        const todayStr=today.toISOString().slice(0,10);
-        const finalDate=dateInput || todayStr;
-
-        const data2=loadData();
-        if(!data2.spends)data2.spends=[];
-
-        data2.spends.push({
-          description:desc,
-          amount,
-          category,
-          date:finalDate
+      // 1. Renderiza os botões de selecionar o mês
+      const sel = document.getElementById('spendMonthsSelect');
+      sel.innerHTML = '';
+      sortedMonths.forEach(m => {
+        const pill = document.createElement('div');
+        pill.className = 'month-pill' + (m === activeSpendMonth ? ' active' : '');
+        pill.textContent = monthLabel(m);
+        pill.addEventListener('click', () => {
+          const d2 = loadData();
+          d2._activeSpendMonth = m;
+          saveData(d2);
+          document.getElementById('spendDetailsPanel').style.display = 'none';
+          renderAll();
         });
+        sel.appendChild(pill);
+      });
+
+      // 2. Filtra os gastos do mês ativo e guarda o index real para poder excluir
+      const monthSpends = allSpends
+        .map((s, i) => ({ ...s, originalIndex: i }))
+        .filter(s => s.date && s.date.startsWith(activeSpendMonth));
+
+      const monthTotal = monthSpends.reduce((a, s) => a + parseFloat(s.amount || 0), 0);
+      document.getElementById('spendTotalLine').textContent = `Total em ${monthLabel(activeSpendMonth)}: ` + fmt(monthTotal);
+
+      // 3. Agrupa por categoria
+      const byCat = {};
+      monthSpends.forEach(s => {
+        const c = s.category || 'Outros';
+        if (!byCat[c]) byCat[c] = { items: [], total: 0 };
+        byCat[c].items.push(s);
+        byCat[c].total += parseFloat(s.amount || 0);
+      });
+
+      // 4. Renderiza os bloquinhos (Chips) de cada categoria
+      const chipsContainer = document.getElementById('spendCategoryChips');
+      chipsContainer.innerHTML = '';
+
+      Object.entries(byCat).forEach(([catName, info]) => {
+        const chip = document.createElement('div');
+        chip.className = 'spend-chip';
+        chip.innerHTML = `<span class="spend-chip-name">${catName}</span><span class="spend-chip-value">${fmt(info.total)}</span>`;
+        // Ao clicar, mostra o painelzinho
+        chip.addEventListener('click', () => showSpendPanel(catName, info));
+        chipsContainer.appendChild(chip);
+      });
+
+      if(Object.keys(byCat).length === 0) {
+        chipsContainer.innerHTML = '<span style="font-size:0.75rem; color:#9ca3af;">Nenhum gasto neste mês ainda.</span>';
+      }
+
+      // Função de Adicionar Gasto
+      document.getElementById('addSpendBtn').onclick = () => {
+        const desc = document.getElementById('spendDesc').value.trim();
+        const amount = parseFloat(document.getElementById('spendAmount').value) || 0;
+        const category = document.getElementById('spendCategory').value;
+        const dateInput = document.getElementById('spendDate').value;
+
+        if (!desc || !amount) { alert('Preencha descrição e valor.'); return; }
+
+        const today = new Date();
+        const todayStr = today.toISOString().slice(0, 10);
+        const finalDate = dateInput || todayStr;
+
+        const data2 = loadData();
+        if (!data2.spends) data2.spends = [];
+
+        data2.spends.push({ description: desc, amount, category, date: finalDate });
+
+        // Muda automaticamente para o mês do gasto que acabou de adicionar
+        data2._activeSpendMonth = finalDate.slice(0, 7);
 
         saveData(data2);
-        document.getElementById('spendDesc').value='';
-        document.getElementById('spendAmount').value='';
-        document.getElementById('spendCategory').value='';
-        document.getElementById('spendDate').value='';
+        document.getElementById('spendDesc').value = '';
+        document.getElementById('spendAmount').value = '';
+        document.getElementById('spendCategory').value = '';
+        document.getElementById('spendDate').value = '';
+        document.getElementById('spendDetailsPanel').style.display = 'none';
         renderAll();
       };
     }
 
-    // NOVA FUNÇÃO: RENDERIZA GASTOS ORGANIZADOS POR MÊS E CATEGORIA
-    function renderSpendsOrganized(data){
-      const container = document.getElementById('spendsOrganized');
-      container.innerHTML = '';
-
-      const allSpends = data.spends || [];
+    // Função que abre o painelzinho ao clicar na categoria
+    function showSpendPanel(catName, info) {
+      const panel = document.getElementById('spendDetailsPanel');
+      let html = `<div class="person-header"><span class="person-name">${catName}</span><span class="person-close" onclick="document.getElementById('spendDetailsPanel').style.display='none'">✕ fechar</span></div>`;
       
-      // Agrupar por mês
-      const byMonth = {};
-      allSpends.forEach((s, i) => {
-        if(!s.date) return;
-        const mk = s.date.slice(0, 7); // YYYY-MM
-        if(!byMonth[mk]) byMonth[mk] = [];
-        byMonth[mk].push({...s, index: i});
+      // Para cada gasto dessa categoria, cria uma linhazinha
+      info.items.slice().reverse().forEach(s => {
+        // formatar a data pra ficar bonitinha (dd/mm/yyyy)
+        const dFormat = s.date ? s.date.split('-').reverse().join('/') : '';
+        html += `
+          <div class="person-item">
+            <div class="person-item-details">
+              <strong>${s.description || 'Sem descrição'}</strong><br/>
+              <span style="font-size:0.7rem;color:#9ca3af;">${dFormat}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <strong style="font-size:0.78rem; color:#111827;">${fmt(s.amount)}</strong>
+              <button class="mini secondary" onclick="removeSpend(${s.originalIndex})">🗑️</button>
+            </div>
+          </div>`;
       });
-
-      // Ordenar meses (mais recente primeiro)
-      const sortedMonths = Object.keys(byMonth).sort().reverse();
-
-      sortedMonths.forEach(mk => {
-        const monthBlock = document.createElement('div');
-        monthBlock.className = 'spend-month-block';
-        
-        const monthTitle = document.createElement('div');
-        monthTitle.className = 'spend-month-title';
-        monthTitle.textContent = monthLabel(mk);
-        monthBlock.appendChild(monthTitle);
-
-        // Agrupar gastos deste mês por categoria
-        const byCategory = {};
-        byMonth[mk].forEach(s => {
-          const cat = s.category || 'Outros';
-          if(!byCategory[cat]) byCategory[cat] = [];
-          byCategory[cat].push(s);
-        });
-
-        // Renderizar cada categoria
-        Object.entries(byCategory).forEach(([category, items]) => {
-          const catBlock = document.createElement('div');
-          catBlock.className = 'spend-category-block';
-
-          const catTotal = items.reduce((a, s) => a + parseFloat(s.amount || 0), 0);
-
-          const catHeader = document.createElement('div');
-          catHeader.className = 'spend-category-header';
-          catHeader.innerHTML = `
-            <span class="spend-category-name">${category}</span>
-            <span class="spend-category-total">${fmt(catTotal)}</span>
-          `;
-          catBlock.appendChild(catHeader);
-
-          items.forEach(s => {
-            const item = document.createElement('div');
-            item.className = 'spend-item';
-            item.innerHTML = `
-              <span class="spend-item-desc">${s.description || 'Sem descrição'}</span>
-              <span class="spend-item-value">${fmt(s.amount)}</span>
-              <button class="mini secondary" onclick="removeSpend(${s.index})">🗑️</button>
-            `;
-            catBlock.appendChild(item);
-          });
-
-          monthBlock.appendChild(catBlock);
-        });
-
-        container.appendChild(monthBlock);
-      });
+      
+      html += `<div class="person-total">Total desta categoria: ${fmt(info.total)}</div>`;
+      panel.innerHTML = html;
+      panel.style.display = 'block';
     }
 
-    function removeSpend(i){const data=loadData();data.spends.splice(i,1);saveData(data);renderAll();}
+    function removeSpend(i){
+      const data=loadData();
+      data.spends.splice(i,1);
+      saveData(data);
+      document.getElementById('spendDetailsPanel').style.display='none';
+      renderAll();
+    }
+    // ============================================
 
     function renderNegDebts(data){
       const grid=document.getElementById('negGrid');grid.innerHTML='';
