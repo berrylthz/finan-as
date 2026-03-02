@@ -33,6 +33,12 @@
     .sync-btn{position:absolute;right:80px;top:10px;padding:4px 10px;border-radius:999px;border:1px solid #c7d2fe;background:#eef2ff;color:#3730a3;font-size:0.72rem;font-weight:600;cursor:pointer;}
     .sync-status{font-size:0.7rem;color:#6b7280;text-align:center;padding:4px;display:none;}
     main{padding:12px;max-width:1200px;margin:0 auto 20px;}
+    
+    /* Global Month Selector */
+    .global-month-bar { background: #fff; border-radius: 16px; padding: 10px 14px; margin-bottom: 12px; border: 1px solid #c7d2fe; box-shadow: 0 4px 10px rgba(199,210,254,0.3); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;}
+    .global-month-label { font-weight: 700; font-size: 0.9rem; color: #3730a3; }
+    .global-month-select { padding: 4px 8px; border-radius: 8px; border: 1px solid #c7d2fe; background: #eef2ff; color: #3730a3; font-weight: 600; font-size: 0.85rem; cursor: pointer; outline: none; }
+    
     .kpi-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:10px;}
     @media(max-width:900px){.kpi-row{grid-template-columns:repeat(2,minmax(0,1fr));}}
     @media(max-width:600px){.kpi-row{grid-template-columns:1fr;}}
@@ -104,26 +110,9 @@
     
     #spendPieCanvas{width:100%;max-width:240px;height:240px;display:block;margin:10px auto 0;}
     
-    /* ESTILOS DA NOVA LEGENDA EM HTML */
-    .chart-legend {
-      display: flex;
-      flex-wrap: wrap; 
-      justify-content: center;
-      gap: 12px;
-      margin-top: 8px;
-    }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.74rem;
-      color: #4b5563;
-    }
-    .legend-color {
-      width: 12px;
-      height: 12px;
-      border-radius: 3px;
-    }
+    .chart-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 8px; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.74rem; color: #4b5563; }
+    .legend-color { width: 12px; height: 12px; border-radius: 3px; }
 
     .two-col-card{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
     @media(max-width:600px){.two-col-card{grid-template-columns:1fr;}}
@@ -164,9 +153,15 @@
   <div class="sync-status" id="syncStatus"></div>
 
   <main>
+    <!-- NOVO SELETOR GLOBAL DE MÊS -->
+    <div class="global-month-bar">
+      <div class="global-month-label">📈 Resumo e Dados do Mês:</div>
+      <select id="globalMonthSelect" class="global-month-select"></select>
+    </div>
+
     <div class="kpi-row">
-      <div class="kpi-card"><div class="kpi-label">Renda do mês</div><div class="kpi-value" id="kpiIncome">R$ 0,00</div><div class="kpi-sub">Salário + VT que sobra + extras</div></div>
-      <div class="kpi-card"><div class="kpi-label">Despesas do mês</div><div class="kpi-value" id="kpiExpenses">R$ 0,00</div><div class="kpi-sub">Parcelas + assinaturas + débito</div></div>
+      <div class="kpi-card"><div class="kpi-label">Renda do mês</div><div class="kpi-value" id="kpiIncome">R$ 0,00</div><div class="kpi-sub">Salário + VT + extras</div></div>
+      <div class="kpi-card"><div class="kpi-label">Despesas do mês</div><div class="kpi-value" id="kpiExpenses">R$ 0,00</div><div class="kpi-sub">Parcelas + gastos + assinaturas</div></div>
       <div class="kpi-card"><div class="kpi-label">Saldo do mês</div><div class="kpi-value" id="kpiMonthBalance">R$ 0,00</div><div class="kpi-sub">Renda − despesas</div></div>
       <div class="kpi-card"><div class="kpi-label">Resultado do ano</div><div class="kpi-value" id="kpiYearBalance">R$ 0,00</div><div class="kpi-sub">Todos os meses somados</div></div>
     </div>
@@ -176,14 +171,14 @@
       <div>
         <section class="card">
           <h2>Renda e resumo</h2>
-          <small>Mês de <span id="currentMonthLabel"></span>.</small>
+          <small>Mês de <span id="currentMonthLabel" style="font-weight:bold;"></span>.</small>
           <label for="salaryInput">Salário base (R$)</label>
           <input id="salaryInput" type="number" min="0" step="0.01" placeholder="Ex: 1600,00" />
           <label for="vtTotal">VT depositado no mês (R$)</label>
           <input id="vtTotal" type="number" min="0" step="0.01" placeholder="Ex: 400,00" />
           <label for="vtCost">Quanto você realmente gasta de transporte (R$)</label>
           <input id="vtCost" type="number" min="0" step="0.01" placeholder="Ex: 200,00" />
-          <button id="saveIncomeBtn">Salvar renda</button>
+          <button id="saveIncomeBtn">Salvar renda do mês</button>
           <p id="incomeInfo" class="summary-line"></p>
           <div class="stats-list">
             <div class="stat"><span>Salário base</span><strong id="statSalary">R$ 0,00</strong></div>
@@ -222,18 +217,14 @@
 
         <section class="card" id="spendChartCard">
           <h2>Gráfico por categoria</h2>
-          <small>Distribuição dos gastos de <span id="spendChartMonthLabel" style="font-weight:bold;"></span> no débito/dinheiro.</small>
-          
-          <!-- AQUI FICA SÓ A PIZZA -->
+          <small>Distribuição dos gastos de <span id="spendChartMonthLabel" style="font-weight:bold;"></span>.</small>
           <canvas id="spendPieCanvas" width="240" height="240"></canvas>
-          
-          <!-- AQUI FICA A LEGENDA FEITA EM HTML (que se organiza sozinha) -->
           <div id="spendLegend" class="chart-legend"></div>
         </section>
 
         <section class="card">
           <h2>Recebimentos extras</h2>
-          <small>Entradas além do salário fixo.</small>
+          <small>Entradas além do salário fixo (Pix de amigos, etc).</small>
           <label for="incDesc">Descrição</label>
           <input id="incDesc" type="text" placeholder="Ex: Pix amiga, pagamento, reembolso" />
           <label for="incAmount">Valor (R$)</label>
@@ -293,13 +284,13 @@
           <button id="cancelEditBtn" class="secondary" style="display:none;">Cancelar edição</button>
         </section>
 
-        <!-- GASTOS NO DÉBITO -->
+        <!-- GASTOS NO DÉBITO E PIX -->
         <section class="card" id="spendsSection">
-          <h2>Gastos no débito / dinheiro</h2>
-          <small>iFood, mercado, Uber, rolê, etc.</small>
+          <h2>Gastos Diários (Débito, Dinheiro, Pix)</h2>
+          <small>iFood, mercado, Uber, Pix para amigos, etc.</small>
 
           <label for="spendDesc">Descrição do gasto</label>
-          <input id="spendDesc" type="text" placeholder="Ex: iFood, Mercado, Uber" />
+          <input id="spendDesc" type="text" placeholder="Ex: iFood, Mercado, Pix racha da conta" />
 
           <label for="spendAmount">Valor (R$)</label>
           <input id="spendAmount" type="number" min="0" step="0.01" placeholder="Ex: 30,00" />
@@ -311,6 +302,7 @@
             <option value="Transporte">Transporte</option>
             <option value="Besteira">Besteira / rolê</option>
             <option value="Pessoal">Pessoal / físico</option>
+            <option value="Pix / Transferência">Pix / Transferência</option>
             <option value="Outros">Outros</option>
           </select>
 
@@ -320,7 +312,7 @@
           <button id="addSpendBtn">Adicionar gasto</button>
 
           <div style="margin-top:16px; border-top: 1px dashed #ffe4f1; padding-top: 10px;">
-            <span style="font-size:0.8rem; font-weight: 600; color: #111827;">Resumo de Gastos</span>
+            <span style="font-size:0.8rem; font-weight: 600; color: #111827;">Resumo de Gastos e Pix</span>
             
             <div class="months-select" id="spendMonthsSelect"></div>
             <p class="summary-line" id="spendTotalLine" style="margin-top:4px; font-weight:bold; color:#111827;"></p>
@@ -410,10 +402,10 @@
         const data=text&&text!=='{}'?JSON.parse(text):{};
         localStorage.setItem('cf_cloud',JSON.stringify(data));
         showSyncStatus('✅ Dados carregados!','#15803d');
-        renderAll();
+        initApp();
       }catch(e){
         showSyncStatus('⚠️ Erro ao carregar. Usando dados locais.','#b91c1c');
-        renderAll();
+        initApp();
       }
     }
 
@@ -437,7 +429,57 @@
     function monthLabel(k){const[y,m]=k.split('-');const names=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];return names[parseInt(m)-1]+'/'+y;}
 
     let editingIndex=null;
-    let isInitialLoad = true; 
+    let globalActiveMonth = monthKey(new Date());
+
+    // Inicialização e preenchimento do select de Mês Global
+    function initApp() {
+      const data = loadData();
+      if(data._globalActiveMonth) {
+        globalActiveMonth = data._globalActiveMonth;
+      } else {
+        data._globalActiveMonth = globalActiveMonth;
+        saveData(data);
+      }
+      
+      // Sincroniza o seletor de gastos (fazer com que seja o mesmo do global na primeira vez)
+      if(!data._activeSpendMonth) {
+        data._activeSpendMonth = globalActiveMonth;
+        saveData(data);
+      }
+
+      updateGlobalMonthSelect(data);
+      renderAll();
+    }
+
+    function updateGlobalMonthSelect(data) {
+      const allMonths = new Set();
+      allMonths.add(monthKey(new Date()));
+      (data.debts||[]).forEach(d=>getDebtMonths(d).forEach(m=>allMonths.add(m)));
+      (data.spends||[]).forEach(s=>{if(s.date)allMonths.add(s.date.slice(0,7));});
+      if(data.income)Object.keys(data.income).forEach(m=>allMonths.add(m));
+
+      const sorted = [...allMonths].sort();
+      const sel = document.getElementById('globalMonthSelect');
+      sel.innerHTML = '';
+      
+      sorted.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = monthLabel(m);
+        if (m === globalActiveMonth) opt.selected = true;
+        sel.appendChild(opt);
+      });
+
+      sel.onchange = (e) => {
+        globalActiveMonth = e.target.value;
+        const d2 = loadData();
+        d2._globalActiveMonth = globalActiveMonth;
+        // Quando muda o global, muda também o dos gastos para não confundir
+        d2._activeSpendMonth = globalActiveMonth; 
+        saveData(d2);
+        renderAll();
+      };
+    }
 
     function populateLenderSelect(){
       const data=loadData();
@@ -450,21 +492,16 @@
 
     function renderAll(scrollToChart = false){
       const data=loadData();
-      const now=new Date();
-      const mk=monthKey(now);
+      const mk = globalActiveMonth; // Tudo agora baseia-se no MÊS GLOBAL selecionado
+      
       document.getElementById('currentMonthLabel').textContent=monthLabel(mk);
       
-      if (isInitialLoad) {
-        data._activeSpendMonth = mk;
-        saveData(data);
-        isInitialLoad = false;
-      }
-      
+      updateGlobalMonthSelect(data);
       populateLenderSelect();
       renderKPIs(data,mk);
       renderThisMonth(data,mk);
       renderMonthsGrid(data);
-      renderSpends(data,mk, scrollToChart); 
+      renderSpends(data, scrollToChart); // Removido o mk daqui porque o gráfico obedece o próprio seletorzinho dele
       renderNegDebts(data);
       renderSubs(data);
       renderIncomeExtras(data);
@@ -480,10 +517,14 @@
       const vtSobra=Math.max(0,(parseFloat(income.vtTotal)||0)-(parseFloat(income.vtCost)||0));
       const extras=(data.incomeExtras||[]).filter(e=>e.date&&e.date.startsWith(mk)).reduce((a,e)=>a+parseFloat(e.amount||0),0);
       const totalIncome=salary+vtSobra+extras;
+      
       const debts=data.debts||[];
       let parcelasThisMonth=0;
       debts.forEach(d=>{if(d.specialType==='congelada')return;if(getDebtMonths(d).includes(mk))parcelasThisMonth+=parseFloat(d.installmentPerPerson)||0;});
+      
+      // Gastos Diários do mês global atual
       const spendsThisMonth=(data.spends||[]).filter(s=>s.date&&s.date.startsWith(mk)).reduce((a,s)=>a+parseFloat(s.amount||0),0);
+      
       const subsTotal=(data.subs||[]).reduce((a,s)=>a+parseFloat(s.amount||0),0);
       const totalExpenses=parcelasThisMonth+spendsThisMonth+subsTotal;
       const monthBalance=totalIncome-totalExpenses;
@@ -676,16 +717,16 @@
       renderAll();
     });
 
-    function renderSpends(data, mk, scrollToChart = false) {
+    function renderSpends(data, scrollToChart = false) {
       const allSpends = data.spends || [];
       
       const allMonths = new Set();
       allSpends.forEach(s => { if(s.date) allMonths.add(s.date.slice(0, 7)); });
-      allMonths.add(mk);
+      allMonths.add(globalActiveMonth); // Garante que o mês global atual exista
       
       const sortedMonths = [...allMonths].sort(); 
 
-      let activeSpendMonth = data._activeSpendMonth || mk;
+      let activeSpendMonth = data._activeSpendMonth || globalActiveMonth;
       if (!allMonths.has(activeSpendMonth)) activeSpendMonth = sortedMonths[0];
 
       if (scrollToChart) {
@@ -706,7 +747,7 @@
           d2._activeSpendMonth = m;
           saveData(d2);
           document.getElementById('spendDetailsPanel').style.display = 'none';
-          renderAll(true);
+          renderAll(true); // renderiza rolando pro gráfico
         });
         sel.appendChild(pill);
       });
@@ -738,7 +779,7 @@
       });
 
       if(Object.keys(byCat).length === 0) {
-        chipsContainer.innerHTML = '<span style="font-size:0.75rem; color:#9ca3af;">Nenhum gasto neste mês ainda.</span>';
+        chipsContainer.innerHTML = '<span style="font-size:0.75rem; color:#9ca3af;">Nenhum gasto neste mês.</span>';
       }
 
       document.getElementById('addSpendBtn').onclick = () => {
@@ -757,6 +798,7 @@
         if (!data2.spends) data2.spends = [];
 
         data2.spends.push({ description: desc, amount, category, date: finalDate });
+        // Força o mês de gastos a ir para o mês do gasto recém criado
         data2._activeSpendMonth = finalDate.slice(0, 7);
 
         saveData(data2);
@@ -905,7 +947,7 @@
 
       const entries = Object.entries(byCat);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      legendDiv.innerHTML = ''; // Limpa a legenda
+      legendDiv.innerHTML = ''; 
 
       if(!entries.length){
         ctx.fillStyle = '#9ca3af';
@@ -916,16 +958,15 @@
       }
 
       const total = entries.reduce((a, [,v]) => a + v, 0);
-      const colors = ['#f9739b', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa', '#fb923c'];
+      // Adicionado uma cor a mais caso tenha muitas categorias (como a nova 'Pix')
+      const colors = ['#f9739b', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa', '#fb923c', '#ec4899'];
 
-      // O gráfico volta a ocupar o canvas todo bonitinho no centro
       const cx = canvas.width / 2;
       const cy = canvas.height / 2; 
       const r = Math.min(cx, cy) - 2; 
       let start = 0;
 
       entries.forEach(([cat, val], i) => {
-        // Desenha a fatia
         const slice = (val / total) * 2 * Math.PI;
         ctx.beginPath();
         ctx.moveTo(cx, cy);
@@ -937,7 +978,6 @@
         ctx.lineWidth = 2.5;
         ctx.stroke();
 
-        // Desenha a porcentagem
         const percent = Math.round((val / total) * 100);
         if (percent > 4) {
           const mid = start + slice / 2;
@@ -951,7 +991,6 @@
         }
         start += slice;
 
-        // Cria a legenda em HTML (isso evita cortar palavras)
         const legendItem = document.createElement('div');
         legendItem.className = 'legend-item';
         
