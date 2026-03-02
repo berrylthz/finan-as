@@ -73,8 +73,9 @@
     .person-header{display:flex;justify-content:space-between;align-items:center;gap:6px;}
     .person-name{font-weight:700;font-size:0.8rem;color:#111827;}
     .person-close{font-size:0.74rem;color:#6b7280;cursor:pointer;}
-    .person-item{padding:4px 0;border-bottom:1px solid #f3f4f6;}
+    .person-item{padding:6px 0;border-bottom:1px solid #f3f4f6;display:flex;justify-content:space-between;align-items:center;}
     .person-item:last-child{border-bottom:none;}
+    .person-item-details{flex-grow:1;}
     .person-total{margin-top:4px;font-size:0.76rem;font-weight:600;color:#111827;}
     .months-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px;margin-top:6px;}
     .month-card{border-radius:14px;padding:7px 8px;color:#111827;font-size:0.76rem;background:#fff7fb;border:1px solid #ffe4f1;}
@@ -168,7 +169,7 @@
 
         <section class="card">
           <h2>Parcelas do mês</h2>
-          <small>O que cai neste mês, por pessoa/conta.</small>
+          <small>O que cai neste mês, por pessoa. Clique para ver detalhes e editar.</small>
           <div class="chips-row" id="thisMonthChips"></div>
           <div style="margin-top:6px;border-top:1px dashed #fbcfe8;padding-top:4px;">
             <span style="font-size:0.72rem;color:#6b7280;">Parcelas congeladas</span>
@@ -222,7 +223,7 @@
 
       <!-- COLUNA DIREITA -->
       <div>
-        <section class="card">
+        <section class="card" id="formDividas">
           <h2>Adicionar / editar dívida</h2>
           <small>Parcelado, à vista, dividido ou congelado.</small>
           <label for="paymentType">Tipo de pagamento</label>
@@ -259,15 +260,9 @@
           <button id="cancelEditBtn" class="secondary" style="display:none;">Cancelar edição</button>
         </section>
 
-        <section class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-            <div><h2>Todas as dívidas cadastradas</h2><small>Bloquinhos com editar/remover.</small></div>
-            <span class="badge-count" id="debtsCountBadge">0 dívidas</span>
-          </div>
-          <div class="banks-grid" id="debtsBlocks"></div>
-        </section>
+        <!-- REMOVIDA A SEÇÃO DE "TODAS AS DÍVIDAS CADASTRADAS" -->
 
-        <!-- NOVO: GASTOS NO DÉBITO COM DATA -->
+        <!-- GASTOS NO DÉBITO COM DATA -->
         <section class="card">
           <h2>Gastos no débito / dinheiro</h2>
           <small>iFood, mercado, Uber, rolê, etc.</small>
@@ -422,7 +417,6 @@
       renderKPIs(data,mk);
       renderThisMonth(data,mk);
       renderMonthsGrid(data);
-      renderDebtsBlocks(data);
       renderSpends(data,mk);
       renderNegDebts(data);
       renderSubs(data);
@@ -474,25 +468,43 @@
       return months;
     }
 
+    // ATUALIZADO: PARCELAS DO MÊS AGORA COM BOTÕES DE EDITAR/EXCLUIR
     function renderThisMonth(data,mk){
       const debts=data.debts||[];
       const byPerson={};const frozen=[];
-      debts.forEach(d=>{
+      
+      debts.forEach((d, globalIndex)=>{
         const months=getDebtMonths(d);
         if(!months.includes(mk))return;
-        if(d.specialType==='congelada'){frozen.push(d);return;}
+        if(d.specialType==='congelada'){
+          d.globalIndex = globalIndex;
+          frozen.push(d);
+          return;
+        }
         const name=d.lender||'Sem nome';
         if(!byPerson[name])byPerson[name]={items:[],total:0};
-        byPerson[name].items.push(d);byPerson[name].total+=parseFloat(d.installmentPerPerson)||0;
+        d.globalIndex = globalIndex; // salva o index real para poder editar depois
+        byPerson[name].items.push(d);
+        byPerson[name].total+=parseFloat(d.installmentPerPerson)||0;
       });
+      
       const chipsEl=document.getElementById('thisMonthChips');chipsEl.innerHTML='';
       Object.entries(byPerson).forEach(([name,info])=>{
         const chip=document.createElement('div');chip.className='person-chip';
         chip.innerHTML=`<span class="person-chip-name">${name}</span><span class="person-chip-value">${fmt(info.total)}</span>`;
-        chip.addEventListener('click',()=>showPersonPanel(name,info,mk));chipsEl.appendChild(chip);
+        chip.addEventListener('click',()=>showPersonPanel(name,info,mk));
+        chipsEl.appendChild(chip);
       });
+      
       const frozenEl=document.getElementById('frozenChips');frozenEl.innerHTML='';
-      frozen.forEach(d=>{const chip=document.createElement('div');chip.className='person-chip';chip.innerHTML=`<span class="person-chip-name">${d.lender||'?'}</span><span class="person-chip-value">${fmt(d.installmentPerPerson)} ❄️</span>`;frozenEl.appendChild(chip);});
+      frozen.forEach(d=>{
+        const chip=document.createElement('div');chip.className='person-chip';
+        chip.innerHTML=`<span class="person-chip-name">${d.lender||'?'}</span><span class="person-chip-value">${fmt(d.installmentPerPerson)} ❄️</span>`;
+        // também permite editar os congelados
+        chip.addEventListener('click',()=>showPersonPanel(d.lender||'?',{items:[d], total:d.installmentPerPerson},mk));
+        frozenEl.appendChild(chip);
+      });
+      
       const sal=document.getElementById('salaryInput');const vtt=document.getElementById('vtTotal');const vtc=document.getElementById('vtCost');
       const inc=data.income&&data.income[mk]||{};
       sal.value=inc.salary||'';vtt.value=inc.vtTotal||'';vtc.value=inc.vtCost||'';
@@ -527,9 +539,25 @@
     function showPersonPanel(name,info,mk){
       const panel=document.getElementById('personDetails');
       let html=`<div class="person-header"><span class="person-name">${name}</span><span class="person-close" onclick="document.getElementById('personDetails').style.display='none'">✕ fechar</span></div>`;
-      info.items.forEach(d=>{const months=getDebtMonths(d);const idx=months.indexOf(mk)+1;html+=`<div class="person-item">${d.description||d.category||'Sem descrição'} — ${fmt(d.installmentPerPerson)} (${idx}/${d.qty})</div>`;});
-      html+=`<div class="person-total">Total: ${fmt(info.total)}</div>`;
-      panel.innerHTML=html;panel.style.display='block';
+      
+      info.items.forEach(d=>{
+        const months=getDebtMonths(d);
+        const idx=months.indexOf(mk)+1;
+        html+=`
+          <div class="person-item">
+            <div class="person-item-details">
+              <strong>${d.description||d.category||'Sem descrição'}</strong><br/>
+              ${fmt(d.installmentPerPerson)} (${idx}/${d.qty})
+            </div>
+            <div>
+              <button class="mini" onclick="editDebt(${d.globalIndex})">✏️</button>
+              <button class="mini secondary" onclick="removeDebt(${d.globalIndex})">🗑️</button>
+            </div>
+          </div>`;
+      });
+      html+=`<div class="person-total">Total no mês: ${fmt(info.total)}</div>`;
+      panel.innerHTML=html;
+      panel.style.display='block';
     }
 
     function renderMonthsGrid(data){
@@ -538,19 +566,6 @@
       const keys=Object.keys(monthTotals).sort();
       const grid=document.getElementById('monthsGrid');grid.innerHTML='';
       keys.forEach(k=>{const card=document.createElement('div');card.className='month-card';card.innerHTML=`<div class="month-name">${monthLabel(k)}</div><div class="month-value">${fmt(monthTotals[k])}</div>`;grid.appendChild(card);});
-    }
-
-    function renderDebtsBlocks(data){
-      const debts=data.debts||[];
-      const grid=document.getElementById('debtsBlocks');grid.innerHTML='';
-      document.getElementById('debtsCountBadge').textContent=debts.length+' dívida'+(debts.length!==1?'s':'');
-      debts.forEach((d,i)=>{
-        const card=document.createElement('div');card.className='bank-card';
-        const months=getDebtMonths(d);
-        const firstM=months[0]?monthLabel(months[0]):'—';const lastM=months[months.length-1]?monthLabel(months[months.length-1]):'—';
-        card.innerHTML=`<div class="bank-card-header"><span class="bank-name">${d.lender||'Sem nome'}</span><span style="font-size:0.68rem;color:#9ca3af;">${d.specialType==='congelada'?'❄️':''}</span></div><div class="bank-total">${d.description||''}</div><div style="font-size:0.7rem;color:#6b7280;">${d.category||''}</div><div style="font-size:0.72rem;margin-top:2px;">Parcela: <strong>${fmt(d.installmentPerPerson)}</strong> × ${d.qty}x</div><div style="font-size:0.7rem;color:#9ca3af;">${firstM} → ${lastM}</div><div style="margin-top:4px;display:flex;gap:4px;"><button class="mini" onclick="editDebt(${i})">✏️</button><button class="mini secondary" onclick="removeDebt(${i})">🗑️</button></div>`;
-        grid.appendChild(card);
-      });
     }
 
     function editDebt(i){
@@ -568,10 +583,20 @@
       document.getElementById('debtStart').value=d.startDate||'';
       document.getElementById('cancelEditBtn').style.display='inline-flex';
       document.getElementById('saveDebtBtn').textContent='Salvar edição';
-      window.scrollTo({top:document.getElementById('saveDebtBtn').offsetTop-80,behavior:'smooth'});
+      
+      // Esconde o painelzinho e rola até o formulário
+      document.getElementById('personDetails').style.display='none';
+      document.getElementById('formDividas').scrollIntoView({behavior:'smooth'});
     }
 
-    function removeDebt(i){if(!confirm('Remover esta dívida?'))return;const data=loadData();data.debts.splice(i,1);saveData(data);renderAll();}
+    function removeDebt(i){
+      if(!confirm('Tem certeza que quer apagar esta dívida do sistema?'))return;
+      const data=loadData();
+      data.debts.splice(i,1);
+      saveData(data);
+      document.getElementById('personDetails').style.display='none';
+      renderAll();
+    }
 
     document.getElementById('cancelEditBtn').addEventListener('click',()=>{editingIndex=null;document.getElementById('cancelEditBtn').style.display='none';document.getElementById('saveDebtBtn').textContent='Adicionar dívida';});
 
@@ -603,7 +628,6 @@
       renderAll();
     });
 
-    // ATUALIZADO: GASTOS NO DÉBITO
     function renderSpends(data,mk){
       const spends=(data.spends||[]).filter(s=>s.date&&s.date.startsWith(mk));
       const total=spends.reduce((a,s)=>a+parseFloat(s.amount||0),0);
