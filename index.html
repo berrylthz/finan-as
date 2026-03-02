@@ -297,7 +297,7 @@
           <div style="margin-top:16px; border-top: 1px dashed #ffe4f1; padding-top: 10px;">
             <span style="font-size:0.8rem; font-weight: 600; color: #111827;">Resumo de Gastos</span>
             
-            <!-- Seleção de Mês -->
+            <!-- Seleção de Mês (AGORA EM ORDEM CRESCENTE) -->
             <div class="months-select" id="spendMonthsSelect"></div>
             <p class="summary-line" id="spendTotalLine" style="margin-top:4px; font-weight:bold; color:#111827;"></p>
             
@@ -434,7 +434,7 @@
       renderKPIs(data,mk);
       renderThisMonth(data,mk);
       renderMonthsGrid(data);
-      renderSpends(data,mk); // Nova renderização de gastos
+      renderSpends(data,mk);
       renderNegDebts(data);
       renderSubs(data);
       renderIncomeExtras(data);
@@ -645,7 +645,7 @@
     });
 
     // ============================================
-    // NOVA RENDERIZAÇÃO DE GASTOS (COM CHIPS)
+    // NOVA RENDERIZAÇÃO DE GASTOS (ORDEM CRESCENTE)
     // ============================================
     function renderSpends(data, mk) {
       const allSpends = data.spends || [];
@@ -654,7 +654,9 @@
       const allMonths = new Set();
       allSpends.forEach(s => { if(s.date) allMonths.add(s.date.slice(0, 7)); });
       allMonths.add(mk);
-      const sortedMonths = [...allMonths].sort().reverse(); // Do mais novo pro mais antigo
+      
+      // MUDANÇA AQUI: Ordem crescente (Jan, Fev, Mar)
+      const sortedMonths = [...allMonths].sort(); 
 
       let activeSpendMonth = data._activeSpendMonth || mk;
       if (!allMonths.has(activeSpendMonth)) activeSpendMonth = sortedMonths[0];
@@ -728,7 +730,6 @@
 
         data2.spends.push({ description: desc, amount, category, date: finalDate });
 
-        // Muda automaticamente para o mês do gasto que acabou de adicionar
         data2._activeSpendMonth = finalDate.slice(0, 7);
 
         saveData(data2);
@@ -748,7 +749,6 @@
       
       // Para cada gasto dessa categoria, cria uma linhazinha
       info.items.slice().reverse().forEach(s => {
-        // formatar a data pra ficar bonitinha (dd/mm/yyyy)
         const dFormat = s.date ? s.date.split('-').reverse().join('/') : '';
         html += `
           <div class="person-item">
