@@ -95,6 +95,9 @@
     .payment-row input[type="checkbox"]{width:16px;height:16px;cursor:pointer;}
     .summary-line{font-size:0.72rem;color:#6b7280;margin-top:4px;}
     #spendPieCanvas{width:100%;max-width:260px;height:260px;display:block;margin:6px auto 0;}
+    .two-col-card{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
+    @media(max-width:600px){.two-col-card{grid-template-columns:1fr;}}
+    .two-col-card .card{margin-bottom:0;}
   </style>
 </head>
 <body>
@@ -139,6 +142,7 @@
     </div>
 
     <div class="grid">
+      <!-- COLUNA ESQUERDA -->
       <div>
         <section class="card">
           <h2>Renda e resumo</h2>
@@ -216,6 +220,7 @@
         </section>
       </div>
 
+      <!-- COLUNA DIREITA -->
       <div>
         <section class="card">
           <h2>Adicionar / editar dívida</h2>
@@ -223,7 +228,7 @@
           <label for="paymentType">Tipo de pagamento</label>
           <select id="paymentType"><option value="parcelado">Parcelado</option><option value="avista">À vista</option></select>
           <label for="lender">De quem é a dívida?</label>
-          <select id="lender"><option value="">Selecione ou digite novo...</option></select>
+          <select id="lender"><option value="">— Selecione um nome cadastrado —</option></select>
           <input id="lenderCustom" type="text" placeholder="Ou digite um nome novo" style="margin-top:4px;" />
           <label for="category">Categoria geral</label>
           <select id="category">
@@ -238,8 +243,6 @@
           </select>
           <label for="specialType">Para onde essa dívida vai?</label>
           <select id="specialType"><option value="normal">Conta normal</option><option value="congelada">Parcela congelada</option></select>
-          <label for="customCategory">Descrição curta da categoria (opcional)</label>
-          <input id="customCategory" type="text" placeholder="Ex: Parcela celular, Empréstimo amigo" />
           <label for="description">Descrição da dívida</label>
           <input id="description" type="text" placeholder="Ex: Fatura cartão, Restaurante, Mensalidade curso" />
           <label for="debtTotal">Valor total (R$)</label>
@@ -286,31 +289,35 @@
           <div class="banks-grid" id="spendsGrid"></div>
         </section>
 
-        <section class="card">
-          <h2>Dívidas negativadas / cartões</h2>
-          <small>Cartões, bancos e limites estourados.</small>
-          <label for="negLender">Banco / cartão</label>
-          <input id="negLender" type="text" placeholder="Ex: Nubank, Santander, Mercado Pago" />
-          <label for="negAmount">Valor em aberto (R$)</label>
-          <input id="negAmount" type="number" min="0" step="0.01" placeholder="Ex: 1500,00" />
-          <label for="negNotes">Observações</label>
-          <textarea id="negNotes" rows="2" placeholder="Ex: em negociação, com juros, acordo x de entrada"></textarea>
-          <button id="addNegDebtBtn">Adicionar dívida negativada</button>
-          <div class="banks-grid" id="negGrid"></div>
-        </section>
+        <!-- DÍVIDAS NEGATIVADAS + ASSINATURAS LADO A LADO -->
+        <div class="two-col-card">
+          <section class="card">
+            <h2>Dívidas negativadas</h2>
+            <small>Cartões e bancos em aberto.</small>
+            <label for="negLender">Banco / cartão</label>
+            <input id="negLender" type="text" placeholder="Ex: Nubank, Santander" />
+            <label for="negAmount">Valor em aberto (R$)</label>
+            <input id="negAmount" type="number" min="0" step="0.01" placeholder="Ex: 1500,00" />
+            <label for="negNotes">Observações</label>
+            <textarea id="negNotes" rows="2" placeholder="Ex: em negociação, com juros"></textarea>
+            <button id="addNegDebtBtn">Adicionar</button>
+            <div class="banks-grid" id="negGrid"></div>
+          </section>
 
-        <section class="card">
-          <h2>Assinaturas mensais</h2>
-          <small>Spotify, iCloud, Google Drive, apps, etc.</small>
-          <label for="subName">Nome da assinatura</label>
-          <input id="subName" type="text" placeholder="Ex: Spotify, iCloud" />
-          <label for="subAmount">Valor mensal (R$)</label>
-          <input id="subAmount" type="number" min="0" step="0.01" placeholder="Ex: 34,90" />
-          <label for="subNotes">Observações</label>
-          <textarea id="subNotes" rows="2" placeholder="Ex: renova dia 10 no cartão tal"></textarea>
-          <button id="addSubBtn">Adicionar assinatura</button>
-          <div class="banks-grid" id="subsGrid"></div>
-        </section>
+          <section class="card">
+            <h2>Assinaturas mensais</h2>
+            <small>Spotify, iCloud, apps, etc.</small>
+            <label for="subName">Nome da assinatura</label>
+            <input id="subName" type="text" placeholder="Ex: Spotify, iCloud" />
+            <label for="subAmount">Valor mensal (R$)</label>
+            <input id="subAmount" type="number" min="0" step="0.01" placeholder="Ex: 34,90" />
+            <label for="subNotes">Observações</label>
+            <textarea id="subNotes" rows="2" placeholder="Ex: renova dia 10 no cartão tal"></textarea>
+            <button id="addSubBtn">Adicionar</button>
+            <div class="banks-grid" id="subsGrid"></div>
+          </section>
+        </div>
+
       </div>
     </div>
     <p style="text-align:center;font-size:0.72rem;color:#9ca3af;margin-top:8px;">Os dados ficam salvos na nuvem e sincronizados entre dispositivos.</p>
@@ -388,11 +395,21 @@
 
     let editingIndex=null;
 
+    function populateLenderSelect(){
+      const data=loadData();
+      const debts=data.debts||[];
+      const names=[...new Set(debts.map(d=>d.lender).filter(Boolean))];
+      const sel=document.getElementById('lender');
+      sel.innerHTML='<option value="">— Selecione um nome cadastrado —</option>';
+      names.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});
+    }
+
     function renderAll(){
       const data=loadData();
       const now=new Date();
       const mk=monthKey(now);
       document.getElementById('currentMonthLabel').textContent=monthLabel(mk);
+      populateLenderSelect();
       renderKPIs(data,mk);
       renderThisMonth(data,mk);
       renderMonthsGrid(data);
@@ -522,7 +539,7 @@
         const card=document.createElement('div');card.className='bank-card';
         const months=getDebtMonths(d);
         const firstM=months[0]?monthLabel(months[0]):'—';const lastM=months[months.length-1]?monthLabel(months[months.length-1]):'—';
-        card.innerHTML=`<div class="bank-card-header"><span class="bank-name">${d.lender||'Sem nome'}</span><span style="font-size:0.68rem;color:#9ca3af;">${d.specialType==='congelada'?'❄️':''}</span></div><div class="bank-total">${d.description||''}</div><div style="font-size:0.7rem;color:#6b7280;">${d.category||''} ${d.customCategory?'· '+d.customCategory:''}</div><div style="font-size:0.72rem;margin-top:2px;">Parcela: <strong>${fmt(d.installmentPerPerson)}</strong> × ${d.qty}x</div><div style="font-size:0.7rem;color:#9ca3af;">${firstM} → ${lastM}</div><div style="margin-top:4px;display:flex;gap:4px;"><button class="mini" onclick="editDebt(${i})">✏️</button><button class="mini secondary" onclick="removeDebt(${i})">🗑️</button></div>`;
+        card.innerHTML=`<div class="bank-card-header"><span class="bank-name">${d.lender||'Sem nome'}</span><span style="font-size:0.68rem;color:#9ca3af;">${d.specialType==='congelada'?'❄️':''}</span></div><div class="bank-total">${d.description||''}</div><div style="font-size:0.7rem;color:#6b7280;">${d.category||''}</div><div style="font-size:0.72rem;margin-top:2px;">Parcela: <strong>${fmt(d.installmentPerPerson)}</strong> × ${d.qty}x</div><div style="font-size:0.7rem;color:#9ca3af;">${firstM} → ${lastM}</div><div style="margin-top:4px;display:flex;gap:4px;"><button class="mini" onclick="editDebt(${i})">✏️</button><button class="mini secondary" onclick="removeDebt(${i})">🗑️</button></div>`;
         grid.appendChild(card);
       });
     }
@@ -530,10 +547,10 @@
     function editDebt(i){
       const data=loadData();const d=data.debts[i];editingIndex=i;
       document.getElementById('paymentType').value=d.paymentType||'parcelado';
-      document.getElementById('lenderCustom').value=d.lender||'';
+      document.getElementById('lender').value=d.lender||'';
+      document.getElementById('lenderCustom').value='';
       document.getElementById('category').value=d.category||'';
       document.getElementById('specialType').value=d.specialType||'normal';
-      document.getElementById('customCategory').value=d.customCategory||'';
       document.getElementById('description').value=d.description||'';
       document.getElementById('debtTotal').value=d.total||'';
       document.getElementById('debtQty').value=d.qty||'';
@@ -553,10 +570,11 @@
     document.getElementById('debtQty').addEventListener('input',()=>{const t=parseFloat(document.getElementById('debtTotal').value)||0;const q=parseInt(document.getElementById('debtQty').value)||1;if(t&&q)document.getElementById('debtInstallment').value=(t/q).toFixed(2);});
 
     document.getElementById('saveDebtBtn').addEventListener('click',()=>{
-      const lender=document.getElementById('lenderCustom').value.trim()||document.getElementById('lender').value;
+      const lenderSel=document.getElementById('lender').value;
+      const lenderCustom=document.getElementById('lenderCustom').value.trim();
+      const lender=lenderCustom||lenderSel;
       const category=document.getElementById('category').value;
       const specialType=document.getElementById('specialType').value;
-      const customCategory=document.getElementById('customCategory').value.trim();
       const description=document.getElementById('description').value.trim();
       const total=parseFloat(document.getElementById('debtTotal').value)||0;
       const qty=parseInt(document.getElementById('debtQty').value)||1;
@@ -566,12 +584,13 @@
       const startDate=document.getElementById('debtStart').value;
       const paymentType=document.getElementById('paymentType').value;
       if(!lender||!startDate){alert('Preencha pelo menos o nome e a data.');return;}
-      const entry={lender,category,specialType,customCategory,description,total,qty,installment,splitParts,installmentPerPerson,startDate,paymentType};
+      const entry={lender,category,specialType,description,total,qty,installment,splitParts,installmentPerPerson,startDate,paymentType};
       const data=loadData();if(!data.debts)data.debts=[];
       if(editingIndex!==null){data.debts[editingIndex]=entry;editingIndex=null;document.getElementById('cancelEditBtn').style.display='none';document.getElementById('saveDebtBtn').textContent='Adicionar dívida';}
       else{data.debts.push(entry);}
       saveData(data);
-      ['lenderCustom','customCategory','description','debtTotal','debtQty','debtInstallment','splitParts','debtStart'].forEach(id=>document.getElementById(id).value='');
+      ['lenderCustom','description','debtTotal','debtQty','debtInstallment','splitParts','debtStart'].forEach(id=>document.getElementById(id).value='');
+      document.getElementById('lender').value='';
       renderAll();
     });
 
