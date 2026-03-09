@@ -110,11 +110,16 @@
     .month-pill{padding:4px 8px;border-radius:999px;font-size:0.7rem;border:1px solid #e5e7eb;background:#f9fafb;color:#4b5563;cursor:pointer;font-weight:500;}
     .month-pill.active{background:#eef2ff;border-color:#c7d2fe;color:#3730a3;font-weight:600;}
 
-    .payments-list{margin-top:6px;font-size:0.76rem;max-height:190px;overflow:auto;}
+    .payments-list{margin-top:6px;font-size:0.76rem;max-height:240px;overflow:auto;}
     .payment-row{display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:1px solid #f3f4f6;}
     .payment-row:last-child{border-bottom:none;}
     .payment-row input[type="checkbox"]{width:16px;height:16px;cursor:pointer;}
     .summary-line{font-size:0.72rem;color:#6b7280;margin-top:4px;}
+    .payment-summary-box{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:6px;}
+    @media(max-width:520px){.payment-summary-box{grid-template-columns:1fr;}}
+    .payment-mini-stat{border-radius:12px;padding:7px 8px;background:#fff7fb;border:1px solid #ffe4f1;}
+    .payment-mini-stat span{display:block;font-size:0.68rem;color:#6b7280;}
+    .payment-mini-stat strong{display:block;font-size:0.85rem;color:#111827;margin-top:1px;}
 
     #spendPieCanvas{width:100%;max-width:240px;height:240px;display:block;margin:10px auto 0;}
     .chart-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:8px;}
@@ -174,17 +179,17 @@
       <div class="kpi-card">
         <div class="kpi-label">Despesas previstas</div>
         <div class="kpi-value" id="kpiExpenses">R$ 0,00</div>
-        <div class="kpi-sub">Parcelas + gastos + assinaturas</div>
+        <div class="kpi-sub">Tudo que está previsto no mês</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Saldo projetado</div>
         <div class="kpi-value" id="kpiMonthBalance">R$ 0,00</div>
-        <div class="kpi-sub">Com saldo carregado do mês anterior</div>
+        <div class="kpi-sub">Se você pagar tudo do mês</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Saldo atual</div>
         <div class="kpi-value" id="kpiYearBalance">R$ 0,00</div>
-        <div class="kpi-sub">Já descontando o que foi pago</div>
+        <div class="kpi-sub">Já descontando o que foi marcado no check</div>
       </div>
     </div>
 
@@ -232,10 +237,25 @@
         </section>
 
         <section class="card">
-          <h2>Pagamentos por mês</h2>
-          <small>Marque o que já foi pago. Isso já desconta no saldo atual.</small>
+          <h2>Marque aqui o que você já pagou</h2>
+          <small>Use o check para parcelas já cadastradas. Não precisa lançar essas parcelas no Pix.</small>
           <div class="months-select" id="monthsSelect"></div>
-          <p class="summary-line" id="paymentsSummaryLine"></p>
+
+          <div class="payment-summary-box">
+            <div class="payment-mini-stat">
+              <span>Total do mês</span>
+              <strong id="payTotalMonth">R$ 0,00</strong>
+            </div>
+            <div class="payment-mini-stat">
+              <span>Já pago</span>
+              <strong id="payAlreadyMonth">R$ 0,00</strong>
+            </div>
+            <div class="payment-mini-stat">
+              <span>Falta pagar</span>
+              <strong id="payMissingMonth">R$ 0,00</strong>
+            </div>
+          </div>
+
           <div class="payments-list" id="paymentsList"></div>
         </section>
 
@@ -247,14 +267,14 @@
 
         <section class="card" id="spendChartCard">
           <h2>Gráfico por categoria</h2>
-          <small>Distribuição dos gastos de <span id="spendChartMonthLabel" style="font-weight:bold;"></span>.</small>
+          <small>Distribuição dos gastos avulsos de <span id="spendChartMonthLabel" style="font-weight:bold;"></span>.</small>
           <canvas id="spendPieCanvas" width="240" height="240"></canvas>
           <div id="spendLegend" class="chart-legend"></div>
         </section>
 
         <section class="card">
           <h2>Recebimentos extras</h2>
-          <small>Entradas além do salário fixo, com data certinha no mês correspondente.</small>
+          <small>Entradas além do salário fixo.</small>
 
           <label for="incDesc">Descrição</label>
           <input id="incDesc" type="text" placeholder="Ex: Pix amiga, pagamento, reembolso" />
@@ -338,10 +358,10 @@
 
         <section class="card" id="spendsSection">
           <h2>Gastos Diários (Débito, Dinheiro, Pix)</h2>
-          <small>iFood, mercado, Uber, Pix para amigos e gastos que não sejam parcelas cadastradas.</small>
+          <small>Use aqui só para gastos avulsos. Não coloque aqui parcelas que já estão cadastradas acima.</small>
 
           <label for="spendDesc">Descrição do gasto</label>
-          <input id="spendDesc" type="text" placeholder="Ex: iFood, Mercado, Pix racha da conta" />
+          <input id="spendDesc" type="text" placeholder="Ex: iFood, Mercado, Uber, Pix racha da conta" />
 
           <label for="spendAmount">Valor (R$)</label>
           <input id="spendAmount" type="number" min="0" step="0.01" placeholder="Ex: 30,00" />
@@ -363,14 +383,11 @@
           <button id="addSpendBtn">Adicionar gasto</button>
 
           <div style="margin-top:16px;border-top:1px dashed #ffe4f1;padding-top:10px;">
-            <span style="font-size:0.8rem;font-weight:600;color:#111827;">Resumo de Gastos e Pix</span>
-
+            <span style="font-size:0.8rem;font-weight:600;color:#111827;">Resumo de gastos avulsos</span>
             <div class="months-select" id="spendMonthsSelect"></div>
             <p class="summary-line" id="spendTotalLine" style="margin-top:4px;font-weight:bold;color:#111827;"></p>
-
             <small style="display:block;margin-top:6px;color:#9ca3af;">Clique na categoria para ver e editar:</small>
             <div class="chips-row" id="spendCategoryChips" style="margin-top:4px;"></div>
-
             <div id="spendDetailsPanel" class="person-panel" style="display:none;margin-top:8px;"></div>
           </div>
         </section>
@@ -436,7 +453,7 @@
         loginError.style.display='none';
         showApp();
         loadFromCloud();
-      } else {
+      }else{
         loginError.style.display='block';
       }
     }
@@ -511,12 +528,10 @@
     function getAllRelevantMonths(data){
       const months=new Set();
       months.add(monthKey(new Date()));
-
       (data.debts||[]).forEach(d=>getDebtMonths(d).forEach(m=>months.add(m)));
       (data.spends||[]).forEach(s=>{if(s.date)months.add(s.date.slice(0,7));});
       (data.incomeExtras||[]).forEach(e=>{if(e.date)months.add(e.date.slice(0,7));});
       if(data.income)Object.keys(data.income).forEach(m=>months.add(m));
-
       return [...months].sort();
     }
 
@@ -545,7 +560,6 @@
           if(debtMonths.includes(month)){
             const installmentValue=parseFloat(d.installmentPerPerson)||0;
             plannedDebts+=installmentValue;
-
             const payKey=`${i}_${month}`;
             if(paidMap[payKey]) paidDebts+=installmentValue;
           }
@@ -598,7 +612,6 @@
 
     function initApp(){
       const data=loadData();
-
       if(data._globalActiveMonth){
         globalActiveMonth=data._globalActiveMonth;
       }else{
@@ -703,6 +716,7 @@
       debts.forEach((d,globalIndex)=>{
         const months=getDebtMonths(d);
         if(!months.includes(mk))return;
+
         if(d.specialType==='congelada'){
           d.globalIndex=globalIndex;
           frozen.push(d);
@@ -762,7 +776,6 @@
       });
 
       const balance=rendaDisponivel-totalParcelas;
-
       document.getElementById('statSalary').textContent=fmt(salary);
       document.getElementById('statVTSobra').textContent=fmt(vtSobra);
       document.getElementById('statRendaDisponivel').textContent=fmt(rendaDisponivel);
@@ -1153,9 +1166,9 @@
         }
 
         const today=new Date().toISOString().slice(0,10);
-
         const data2=loadData();
         if(!data2.incomeExtras)data2.incomeExtras=[];
+
         data2.incomeExtras.push({
           description:desc,
           amount,
@@ -1221,6 +1234,7 @@
         const key=`${i}_${active}`;
         const isPaid=paid[key]||false;
         const installmentValue=parseFloat(d.installmentPerPerson)||0;
+
         totalPlannedMonth+=installmentValue;
         if(isPaid)totalPaidMonth+=installmentValue;
 
@@ -1239,7 +1253,10 @@
         list.appendChild(row);
       });
 
-      document.getElementById('paymentsSummaryLine').textContent=`Pago neste mês: ${fmt(totalPaidMonth)} de ${fmt(totalPlannedMonth)}`;
+      const missing=Math.max(0,totalPlannedMonth-totalPaidMonth);
+      document.getElementById('payTotalMonth').textContent=fmt(totalPlannedMonth);
+      document.getElementById('payAlreadyMonth').textContent=fmt(totalPaidMonth);
+      document.getElementById('payMissingMonth').textContent=fmt(missing);
     }
 
     function renderPieChart(data,mk){
@@ -1252,6 +1269,7 @@
 
       const spends=(data.spends||[]).filter(s=>s.date&&s.date.startsWith(mk));
       const byCat={};
+
       spends.forEach(s=>{
         const c=s.category||'Outros';
         byCat[c]=(byCat[c]||0)+parseFloat(s.amount||0);
