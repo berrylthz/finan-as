@@ -22,19 +22,19 @@
     .login-btn:hover{filter:brightness(1.04);}
     .login-error{margin-top:10px;font-size:0.76rem;color:#b91c1c;display:none;}
     .strawberry-row{display:flex;justify-content:center;gap:8px;margin-top:18px;}
-    .seed-dot{width:7px;height:7px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff 0,#fff 35%,#fb7185 36%,#b91c1c 100%);opacity:0.75;}
-    header{padding:14px 16px 12px;border-bottom:2px solid #111827;background:#ffffff;position:relative;}
+    .seed-dot{largura:7px;altura:7px;borda-raio:50%;fundo:gradiente-radial(círculo em 30% 30%,#fff 0,#fff 35%,#fb7185 36%,#b91c1c 100%);opacidade:0.75;}
+    cabeçalho{preenchimento:14px 16px 12px;borda inferior:2px sólida #111827;fundo:#ffffff;posição:relativa;}
     .header-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;}
-    header h1{margin:0;font-size:1.15rem;color:#111827;display:inline-block;vertical-align:middle;}
+    cabeçalho h1{margem:0;tamanho da fonte:1,15rem;cor:#111827;exibição:bloco em linha;alinhamento vertical:meio;}
     .header-moranguinho{height:32px;margin-left:8px;vertical-align:middle;border-radius:999px;border:1px solid #fecaca;background:#fff0f5;padding:2px 6px;}
-    header p{margin:4px 0 0;font-size:0.82rem;color:#6b7280;}
+    cabeçalho p{margem:4px 0 0;tamanho da fonte:0.82rem;cor:#6b7280;}
     .logout-btn{position:absolute;right:12px;top:10px;padding:4px 10px;border-radius:999px;border:1px solid #fcd5e5;background:#fff7fb;color:#b91c1c;font-size:0.72rem;font-weight:600;cursor:pointer;}
     .logout-btn:hover{background:#ffe4f1;}
     .sync-btn{position:absolute;right:80px;top:10px;padding:4px 10px;border-radius:999px;border:1px solid #c7d2fe;background:#eef2ff;color:#3730a3;font-size:0.72rem;font-weight:600;cursor:pointer;}
     .sync-status{font-size:0.7rem;color:#6b7280;text-align:center;padding:4px;display:none;}
     main{padding:12px;max-width:1200px;margin:0 auto 20px;}
     
-    /* Global Month Selector */
+    /* Seletor de Mês Global */
     .global-month-bar { background: #fff; border-radius: 16px; padding: 10px 14px; margin-bottom: 12px; border: 1px solid #c7d2fe; box-shadow: 0 4px 10px rgba(199,210,254,0.3); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;}
     .global-month-label { font-weight: 700; font-size: 0.9rem; color: #3730a3; }
     .global-month-select { padding: 4px 8px; border-radius: 8px; border: 1px solid #c7d2fe; background: #eef2ff; color: #3730a3; font-weight: 600; font-size: 0.85rem; cursor: pointer; outline: none; }
@@ -54,22 +54,22 @@
     .card::after{right:10px;transform:scaleX(-1) rotate(-18deg);}
     .card h2{margin:0 0 3px;font-size:0.9rem;color:#111827;padding-left:26px;position:relative;}
     .card h2::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:18px;height:18px;background:url("gatinho.png") center/contain no-repeat;opacity:0.9;}
-    .card small{color:#9ca3af;font-size:0.76rem;}
+    .card pequeno{cor:#9ca3af;tamanho da fonte:0.76rem;}
     label{display:block;font-size:0.78rem;margin-top:6px;margin-bottom:3px;color:#4b5563;}
     input,select,textarea{width:100%;padding:6px 8px;border-radius:10px;border:1px solid #fcd5e5;background:#fff7fb;color:#111827;font-size:0.84rem;}
     input::placeholder,textarea::placeholder{color:#9ca3af;}
     input:focus,select:focus,textarea:focus{outline:2px solid #f9a8d4;border-color:transparent;background:#ffffff;}
-    button{margin-top:8px;padding:7px 11px;border-radius:999px;border:none;background:linear-gradient(135deg,#f9739b,#fbbf24);color:#ffffff;font-weight:600;font-size:0.8rem;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 6px 14px rgba(248,113,150,0.35);}
-    button:hover{filter:brightness(1.04);}
-    button.secondary{background:#ffffff;color:#4b5563;border:1px solid #e5e7eb;box-shadow:none;}
-    button.mini{padding:3px 7px;font-size:0.7rem;margin-top:0;margin-left:4px;}
+    botão{margem-superior:8px;preenchimento:7px 11px;raio-da-borda:999px;borda:nenhuma;fundo:gradiente-linear(135deg,#f9739b,#fbbf24);cor:#ffffff;peso-da-fonte:600;tamanho-da-fonte:0.8rem;cursor:ponteiro;exibição:inline-flex;alinhamento-dos-itens:centro;espaçamento:6px;sombra-da-caixa:0 6px 14px rgba(248,113,150,0.35);}
+    botão:hover{filtro:brilho(1.04);}
+    botão.secundário{fundo:#ffffff;cor:#4b5563;borda:1px sólida #e5e7eb;sombra:nenhuma;}
+    botão.mini{padding:3px 7px;font-size:0.7rem;margin-top:0;margin-left:4px;}
     .stats-list{margin-top:6px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;}
     @media(max-width:480px){.stats-list{grid-template-columns:1fr;}}
     .stat{border-radius:12px;padding:7px 8px;background:#fff7fb;border:1px solid #ffe4f1;position:relative;overflow:hidden;}
     .stat::after{content:"";position:absolute;right:-6px;top:-6px;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffffff 0,#ffffff 40%,#fb7185 41%,#b91c1c 100%);opacity:0.8;}
     .stat span{display:block;font-size:0.7rem;color:#6b7280;}
     .stat strong{display:block;margin-top:1px;font-size:0.88rem;color:#111827;}
-    .stat.danger strong{color:#b91c1c;}
+    .stat.danger forte{color:#b91c1c;}
     .stat.ok strong{color:#15803d;}
     .chips-row{margin-top:6px;display:flex;flex-wrap:wrap;gap:5px;font-size:0.73rem;}
     
@@ -129,9 +129,9 @@
       <label for="loginUser">Usuário</label>
       <input id="loginUser" type="text" placeholder="seu usuário" autocomplete="username" />
       <label for="loginPass">Senha</label>
-      <input id="loginPass" type="password" placeholder="sua senha" autocomplete="current-password" />
+      <input id="loginPass" type="password" placeholder="sua senha" autocomplete="senha-atual" />
       <button class="login-btn" id="loginBtn">Entrar</button>
-      <div class="login-error" id="loginError">Usuário ou senha incorretos.</div>
+      <div class="login-error" id="loginError">Usuário ou senha incorreta.</div>
       <div class="strawberry-row">
         <div class="seed-dot"></div><div class="seed-dot"></div><div class="seed-dot"></div>
         <div class="seed-dot"></div><div class="seed-dot"></div>
@@ -144,25 +144,25 @@
       <div>
         <h1>Controle financeiro</h1>
         <img src="moranguinho.png" alt="Moranguinho" class="header-moranguinho">
-        <p>Painel fofinho para acompanhar renda, dívidas e gastos.</p>
+        <p>Painel fofinho para acompanhar rendas, dívidas e gastos.</p>
       </div>
     </div>
-    <button class="sync-btn" id="syncBtn">☁️ Sincronizar</button>
+    <button class="sync-btn" id="syncBtn">â˜ ï¸ Sincronizar</button>
     <button class="logout-btn" id="logoutBtn">Sair</button>
   </header>
   <div class="sync-status" id="syncStatus"></div>
 
-  <main>
-    <!-- NOVO SELETOR GLOBAL DE MÊS -->
+  <principal>
+    <!-- NOVO SELETOR GLOBAL DE MÃŠS -->
     <div class="global-month-bar">
-      <div class="global-month-label">📈 Resumo e Dados do Mês:</div>
+      <div class="global-month-label">ðŸ“ˆ Resumo e Dados do Mês:</div>
       <select id="globalMonthSelect" class="global-month-select"></select>
     </div>
 
     <div class="kpi-row">
       <div class="kpi-card"><div class="kpi-label">Renda do mês</div><div class="kpi-value" id="kpiIncome">R$ 0,00</div><div class="kpi-sub">Salário + VT + extras</div></div>
       <div class="kpi-card"><div class="kpi-label">Despesas do mês</div><div class="kpi-value" id="kpiExpenses">R$ 0,00</div><div class="kpi-sub">Parcelas + gastos + assinaturas</div></div>
-      <div class="kpi-card"><div class="kpi-label">Saldo do mês</div><div class="kpi-value" id="kpiMonthBalance">R$ 0,00</div><div class="kpi-sub">Renda − despesas</div></div>
+      <div class="kpi-card"><div class="kpi-label">Saldo do mês</div><div class="kpi-value" id="kpiMonthBalance">R$ 0,00</div><div class="kpi-sub">Renda âˆ' despesas</div></div>
       <div class="kpi-card"><div class="kpi-label">Resultado do ano</div><div class="kpi-value" id="kpiYearBalance">R$ 0,00</div><div class="kpi-sub">Todos os meses somados</div></div>
     </div>
 
@@ -174,7 +174,7 @@
           <small>Mês de <span id="currentMonthLabel" style="font-weight:bold;"></span>.</small>
           <label for="salaryInput">Salário base (R$)</label>
           <input id="salaryInput" type="number" min="0" step="0.01" placeholder="Ex: 1600,00" />
-          <label for="vtTotal">VT depositado no mês (R$)</label>
+          <label for="vtTotal">VT depositado no mesmo valor (R$)</label>
           <input id="vtTotal" type="number" min="0" step="0.01" placeholder="Ex: 400,00" />
           <label for="vtCost">Quanto você realmente gasta de transporte (R$)</label>
           <input id="vtCost" type="number" min="0" step="0.01" placeholder="Ex: 200,00" />
@@ -183,17 +183,17 @@
           <div class="stats-list">
             <div class="stat"><span>Salário base</span><strong id="statSalary">R$ 0,00</strong></div>
             <div class="stat"><span>VT que sobra</span><strong id="statVTSobra">R$ 0,00</strong></div>
-            <div class="stat"><span>Renda disponível</span><strong id="statRendaDisponivel">R$ 0,00</strong></div>
+            <div class="stat"><span>Aluguel disponível</span><strong id="statRendaDisponivel">R$ 0,00</strong></div>
             <div class="stat"><span>Parcelas deste mês</span><strong id="statThisMonth">R$ 0,00</strong></div>
-            <div class="stat"><span>Total dívidas parceladas</span><strong id="statTotalDebt">R$ 0,00</strong></div>
+            <div class="stat"><span>Total de dívidas parceladas</span><strong id="statTotalDebt">R$ 0,00</strong></div>
             <div class="stat" id="negativityBox"><span>Sobra/falta só com parcelas</span><strong id="statBalance">R$ 0,00</strong></div>
           </div>
-          <p class="summary-line">Dívidas parceladas vão até: <strong id="statEndDate">—</strong></p>
+          <p class="summary-line">Dívidas parceladas até agora: <strong id="statEndDate">—</strong></p>
         </section>
 
         <section class="card">
-          <h2>Parcelas do mês</h2>
-          <small>O que cai neste mês, por pessoa. Clique para ver detalhes e editar.</small>
+          <h2>Parcelas do mÃªs</h2>
+          <small>O que cai neste mesmo, por pessoa. Clique para ver detalhes e editar.</small>
           <div class="chips-row" id="thisMonthChips"></div>
           <div style="margin-top:6px;border-top:1px dashed #fbcfe8;padding-top:4px;">
             <span style="font-size:0.72rem;color:#6b7280;">Parcelas congeladas</span>
@@ -210,7 +210,7 @@
         </section>
 
         <section class="card">
-          <h2>Visão por mês</h2>
+          <h2>Visão por mim</h2>
           <small>Total de parcelas (sua parte) nos próximos meses.</small>
           <div class="months-grid" id="monthsGrid"></div>
         </section>
@@ -225,7 +225,7 @@
         <section class="card">
           <h2>Recebimentos extras</h2>
           <small>Entradas além do salário fixo (Pix de amigos, etc).</small>
-          <label for="incDesc">Descrição</label>
+          <label for="incDesc">Descrición</label>
           <input id="incDesc" type="text" placeholder="Ex: Pix amiga, pagamento, reembolso" />
           <label for="incAmount">Valor (R$)</label>
           <input id="incAmount" type="number" min="0" step="0.01" placeholder="Ex: 200,00" />
@@ -237,9 +237,9 @@
             <option value="Reembolso">Reembolso</option>
             <option value="Outro">Outro</option>
           </select>
-          <label for="incDate">Data do recebimento</label>
+          <label for="incDate">Dados da coleta</label>
           <input id="incDate" type="date" />
-          <button id="addIncomeExtraBtn">Adicionar recebimento</button>
+          <button id="addIncomeExtraBtn">Adição de sorteio</button>
           <p class="summary-line" id="incExtraSummary">Total de extras no ano: R$ 0,00</p>
           <div class="banks-grid" id="incExtrasGrid"></div>
         </section>
@@ -248,7 +248,7 @@
       <!-- COLUNA DIREITA -->
       <div>
         <section class="card" id="formDividas">
-          <h2>Adicionar / editar dívida</h2>
+          <h2>Adicionar / editar dúvida</h2>
           <small>Parcelado, à vista, dividido ou congelado.</small>
           <label for="paymentType">Tipo de pagamento</label>
           <select id="paymentType"><option value="parcelado">Parcelado</option><option value="avista">À vista</option></select>
@@ -261,14 +261,14 @@
             <option value="Cartão de crédito">Cartão de crédito</option>
             <option value="Banco / Empréstimo">Banco / Empréstimo</option>
             <option value="Faculdade / Curso">Faculdade / Curso</option>
-            <option value="Celular / Eletrônico">Celular / Eletrônico</option>
+            <option value="Celular / Elétrico">Celular / Elétrico</option>
             <option value="Moradia / Aluguel / Viagem">Moradia / Aluguel / Viagem</option>
             <option value="Pessoa física">Pessoa física</option>
             <option value="Outro">Outro</option>
           </select>
-          <label for="specialType">Para onde essa dívida vai?</label>
+          <label for="specialType">Para onde essa vida vai?</label>
           <select id="specialType"><option value="normal">Conta normal</option><option value="congelada">Parcela congelada</option></select>
-          <label for="description">Descrição da dívida</label>
+          <label for="description">Descrición da dÃvida</label>
           <input id="description" type="text" placeholder="Ex: Fatura cartão, Restaurante, Mensalidade curso" />
           <label for="debtTotal">Valor total (R$)</label>
           <input id="debtTotal" type="number" min="0" step="0.01" placeholder="Ex: 320,00" />
@@ -276,9 +276,9 @@
           <input id="debtQty" type="number" min="1" step="1" placeholder="Ex: 4" />
           <label for="debtInstallment">Valor da parcela (R$)</label>
           <input id="debtInstallment" type="number" min="0" step="0.01" placeholder="Calculado automaticamente" />
-          <label for="splitParts">Dividindo com alguém? (número de pessoas)</label>
+          <label for="splitParts">Dividindo com algo? (número de pessoas)</label>
           <input id="splitParts" type="number" min="1" step="1" placeholder="Ex: 1 (só você) ou 2 (você + 1)" />
-          <label for="debtStart">Data da primeira parcela/pagamento</label>
+          <label for="debtStart">Dados da primeira parcela/pagamento</label>
           <input id="debtStart" type="date" />
           <button id="saveDebtBtn">Adicionar dívida</button>
           <button id="cancelEditBtn" class="secondary" style="display:none;">Cancelar edição</button>
@@ -298,7 +298,7 @@
           <label for="spendCategory">Categoria</label>
           <select id="spendCategory">
             <option value="">Selecione...</option>
-            <option value="Alimentação">Alimentação</option>
+            <option value="AlimentaÃ§Ã£o">AlimentaÃ§Ã£o</option>
             <option value="Transporte">Transporte</option>
             <option value="Besteira">Besteira / rolê</option>
             <option value="Pessoal">Pessoal / físico</option>
@@ -309,7 +309,7 @@
           <label for="spendDate">Data do gasto</label>
           <input id="spendDate" type="date" />
 
-          <button id="addSpendBtn">Adicionar gasto</button>
+          <button id="addSpendBtn">Adicionar gastos</button>
 
           <div style="margin-top:16px; border-top: 1px dashed #ffe4f1; padding-top: 10px;">
             <span style="font-size:0.8rem; font-weight: 600; color: #111827;">Resumo de Gastos e Pix</span>
@@ -324,7 +324,7 @@
           </div>
         </section>
 
-        <!-- DÍVIDAS NEGATIVADAS + ASSINATURAS -->
+        <!-- DÃ VIDAS NEGATIVADAS + ASSINATURAS -->
         <div class="two-col-card">
           <section class="card">
             <h2>Dívidas negativadas</h2>
@@ -341,7 +341,7 @@
 
           <section class="card">
             <h2>Assinaturas mensais</h2>
-            <small>Spotify, iCloud, apps, etc.</small>
+            Spotify, iCloud, aplicativos, etc.
             <label for="subName">Nome da assinatura</label>
             <input id="subName" type="text" placeholder="Ex: Spotify, iCloud" />
             <label for="subAmount">Valor mensal (R$)</label>
@@ -370,15 +370,15 @@
     function isLoggedIn(){return sessionStorage.getItem('cf_auth')==='ok';}
     function showApp(){loginScreen.style.display='none';}
 
-    function doLogin(){
+    função doLogin(){
       const u=document.getElementById('loginUser').value.trim();
       const p=document.getElementById('loginPass').value;
-      if(u===VALID_USER&&p===VALID_PASS){
+      se(u===USUÁRIO_VÁLIDO&&p===SENHA_VÁLIDA){
         sessionStorage.setItem('cf_auth','ok');
-        loginError.style.display='none';
-        showApp();
-        loadFromCloud();
-      } else {
+        loginError.style.display='nenhum';
+        mostrarApp();
+        carregarDaNuvem();
+      } outro {
         loginError.style.display='block';
       }
     }
@@ -388,34 +388,34 @@
     document.getElementById('logoutBtn').addEventListener('click',()=>{sessionStorage.removeItem('cf_auth');location.reload();});
     if(isLoggedIn()){showApp();loadFromCloud();}
 
-    function showSyncStatus(msg,color='#6b7280'){
+    função showSyncStatus(msg,color='#6b7280'){
       const el=document.getElementById('syncStatus');
       el.textContent=msg;el.style.color=color;el.style.display='block';
       setTimeout(()=>el.style.display='none',3000);
     }
 
-    async function loadFromCloud(){
-      showSyncStatus('⏳ Carregando dados...');
-      try{
+    função assíncrona carregarDaNuvem(){
+      showSyncStatus('â ³ Carregando dados...');
+      tentar{
         const res=await fetch(`${SCRIPT_URL}?sheetId=${SHEET_ID}`);
         const text=await res.text();
         const data=text&&text!=='{}'?JSON.parse(text):{};
         localStorage.setItem('cf_cloud',JSON.stringify(data));
-        showSyncStatus('✅ Dados carregados!','#15803d');
+        showSyncStatus('âœ… Dados carregados!','#15803d');
         initApp();
       }catch(e){
-        showSyncStatus('⚠️ Erro ao carregar. Usando dados locais.','#b91c1c');
+        showSyncStatus('âš ï¸ Erro ao carregar. Usando dados locais.','#b91c1c');
         initApp();
       }
     }
 
-    async function saveToCloud(data){
-      showSyncStatus('⏳ Salvando na nuvem...');
-      try{
+    função assíncrona salvarNaNuvem(dados){
+      showSyncStatus('â ³ Salvando na nuvem...');
+      tentar{
         await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({sheetId:SHEET_ID,payload:data})});
-        showSyncStatus('✅ Salvo na nuvem!','#15803d');
+        showSyncStatus('âœ… Salvo na nuvem!','#15803d');
       }catch(e){
-        showSyncStatus('⚠️ Erro ao salvar na nuvem.','#b91c1c');
+        showSyncStatus('âš ï¸ Erro ao salvar na nuvem.','#b91c1c');
       }
     }
 
@@ -426,34 +426,34 @@
 
     function fmt(v){return'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
     function monthKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
-    function monthLabel(k){const[y,m]=k.split('-');const names=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];return names[parseInt(m)-1]+'/'+y;}
+    function mêsLabel(k){const[y,m]=k.split('-');const nomes=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];return nomes[parseInt(m)-1]+'/'+y;}
 
     let editingIndex=null;
     let globalActiveMonth = monthKey(new Date());
 
     // Inicialização e preenchimento do select de Mês Global
-    function initApp() {
+    função initApp() {
       const data = loadData();
-      if(data._globalActiveMonth) {
+      se(dados._MêsAtivoGlobal) {
         globalActiveMonth = data._globalActiveMonth;
-      } else {
+      } outro {
         data._globalActiveMonth = globalActiveMonth;
-        saveData(data);
+        salvarDados(dados);
       }
       
       // Sincroniza o seletor de gastos (fazer com que seja o mesmo do global na primeira vez)
       if(!data._activeSpendMonth) {
         data._activeSpendMonth = globalActiveMonth;
-        saveData(data);
+        salvarDados(dados);
       }
 
-      updateGlobalMonthSelect(data);
-      renderAll();
+      atualizarGlobalMonthSelect(dados);
+      renderizarTudo();
     }
 
-    function updateGlobalMonthSelect(data) {
-      const allMonths = new Set();
-      allMonths.add(monthKey(new Date()));
+    função atualizarSeleçãoMêsGlobal(dados) {
+      const todosOsMeses = novo Conjunto();
+      todosOsMeses.adicionar(chaveDoMês(novo Date()));
       (data.debts||[]).forEach(d=>getDebtMonths(d).forEach(m=>allMonths.add(m)));
       (data.spends||[]).forEach(s=>{if(s.date)allMonths.add(s.date.slice(0,7));});
       if(data.income)Object.keys(data.income).forEach(m=>allMonths.add(m));
@@ -463,10 +463,10 @@
       sel.innerHTML = '';
       
       sorted.forEach(m => {
-        const opt = document.createElement('option');
+        const opt ​​= document.createElement('option');
         opt.value = m;
         opt.textContent = monthLabel(m);
-        if (m === globalActiveMonth) opt.selected = true;
+        se (m === globalActiveMonth) opt.selected = true;
         sel.appendChild(opt);
       });
 
@@ -474,113 +474,113 @@
         globalActiveMonth = e.target.value;
         const d2 = loadData();
         d2._globalActiveMonth = globalActiveMonth;
-        // Quando muda o global, muda também o dos gastos para não confundir
-        d2._activeSpendMonth = globalActiveMonth; 
-        saveData(d2);
-        renderAll();
+        // Quando muda o global, muda também dos gastos para não confundir
+        d2._activeSpendMonth = globalActiveMonth;
+        salvarDados(d2);
+        renderizarTudo();
       };
     }
 
-    function populateLenderSelect(){
+    função populateLenderSelect(){
       const data=loadData();
       const debts=data.debts||[];
-      const names=[...new Set(debts.map(d=>d.lender).filter(Boolean))];
+      const nomes=[...new Set(dívidas.map(d=>d.lender).filter(Boolean))];
       const sel=document.getElementById('lender');
       sel.innerHTML='<option value="">— Selecione um nome cadastrado —</option>';
-      names.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});
+      nomes.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});
     }
 
-    function renderAll(scrollToChart = false){
+    função renderizarTudo(rolarParaGráfico = falso){
       const data=loadData();
-      const mk = globalActiveMonth; // Tudo agora baseia-se no MÊS GLOBAL selecionado
+      const mk = globalActiveMonth; // Tudo agora se baseia no MÁS GLOBAL selecionado
       
       document.getElementById('currentMonthLabel').textContent=monthLabel(mk);
       
-      updateGlobalMonthSelect(data);
+      atualizarGlobalMonthSelect(dados);
       populateLenderSelect();
-      renderKPIs(data,mk);
-      renderThisMonth(data,mk);
-      renderMonthsGrid(data);
-      renderSpends(data, scrollToChart); // Removido o mk daqui porque o gráfico obedece o próprio seletorzinho dele
-      renderNegDebts(data);
-      renderSubs(data);
-      renderIncomeExtras(data);
-      renderPaymentsSection(data);
+      renderizarKPIs(dados,mk);
+      renderThisMonth(dados,mk);
+      renderMonthsGrid(dados);
+      renderSpends(dados, scrollToChart); // Removido o mk daqui porque o gráfico obedece ao próprio seletorzinho dele
+      renderNegDebts(dados);
+      renderSubs(dados);
+      renderIncomeExtras(dados);
+      renderPaymentsSection(dados);
       
       const chartMonth = data._activeSpendMonth || mk;
-      renderPieChart(data, chartMonth);
+      renderPieChart(dados, mêsDoGráfico);
     }
 
-    function renderKPIs(data,mk){
+    função renderizarKPIs(dados,mk){
       const income=data.income&&data.income[mk]||{};
-      const salary=parseFloat(income.salary)||0;
+      const salário=parseFloat(renda.salário)||0;
       const vtSobra=Math.max(0,(parseFloat(income.vtTotal)||0)-(parseFloat(income.vtCost)||0));
       const extras=(data.incomeExtras||[]).filter(e=>e.date&&e.date.startsWith(mk)).reduce((a,e)=>a+parseFloat(e.amount||0),0);
-      const totalIncome=salary+vtSobra+extras;
+      const rendaTotal = salário + vtSobra + extras;
       
       const debts=data.debts||[];
-      let parcelasThisMonth=0;
+      seja parcelasThisMonth=0;
       debts.forEach(d=>{if(d.specialType==='congelada')return;if(getDebtMonths(d).includes(mk))parcelasThisMonth+=parseFloat(d.installmentPerPerson)||0;});
       
       // Gastos Diários do mês global atual
-      const spendsThisMonth=(data.spends||[]).filter(s=>s.date&&s.date.startsWith(mk)).reduce((a,s)=>a+parseFloat(s.amount||0),0);
+      const gastaEsteMês=(data.gasta||[]).filter(s=>s.date&&s.date.startsWith(mk)).reduce((a,s)=>a+parseFloat(s.amount||0),0);
       
       const subsTotal=(data.subs||[]).reduce((a,s)=>a+parseFloat(s.amount||0),0);
-      const totalExpenses=parcelasThisMonth+spendsThisMonth+subsTotal;
-      const monthBalance=totalIncome-totalExpenses;
+      const totalDespesas=parcelasThisMonth+gastosThisMonth+subtotal;
+      const saldoMês = rendaTotal - despesasTotais;
       
-      let yearBalance=0;
-      const allMonths=new Set();
+      seja saldoAnual=0;
+      const todosOsMeses = novo Conjunto();
       (data.debts||[]).forEach(d=>getDebtMonths(d).forEach(m=>allMonths.add(m)));
       (data.incomeExtras||[]).forEach(e=>{if(e.date)allMonths.add(e.date.slice(0,7));});
       if(data.income)Object.keys(data.income).forEach(m=>allMonths.add(m));
       
-      allMonths.forEach(m=>{
+      todosOsMeses.paraCada(m=>{
         const inc=data.income&&data.income[m]||{};
         const s=parseFloat(inc.salary)||0;
         const vt=Math.max(0,(parseFloat(inc.vtTotal)||0)-(parseFloat(inc.vtCost)||0));
         const ex=(data.incomeExtras||[]).filter(e=>e.date&&e.date.startsWith(m)).reduce((a,e)=>a+parseFloat(e.amount||0),0);
-        let parc=0;
+        seja parc=0;
         (data.debts||[]).forEach(d=>{if(d.specialType==='congelada')return;if(getDebtMonths(d).includes(m))parc+=parseFloat(d.installmentPerPerson)||0;});
         const sp=(data.spends||[]).filter(x=>x.date&&x.date.startsWith(m)).reduce((a,x)=>a+parseFloat(x.amount||0),0);
-        yearBalance+=(s+vt+ex)-parc-sp-subsTotal;
+        saldoAnual+=(s+vt+ex)-parc-sp-subsTotal;
       });
       document.getElementById('kpiIncome').textContent=fmt(totalIncome);
       document.getElementById('kpiExpenses').textContent=fmt(totalExpenses);
-      document.getElementById('kpiMonthBalance').textContent=fmt(monthBalance);
+      document.getElementById('kpiMonthBalance').textContent=fmt(mêsBalance);
       document.getElementById('kpiYearBalance').textContent=fmt(yearBalance);
     }
 
-    function getDebtMonths(d){
-      const months=[];
-      if(!d.startDate)return months;
+    função obterMesesDeDívida(d){
+      const meses=[];
+      if(!d.startDate)retorne meses;
       const start=new Date(d.startDate+'T12:00:00');
       const qty=parseInt(d.qty)||1;
       for(let i=0;i<qty;i++){const dt=new Date(start);dt.setMonth(dt.getMonth()+i);months.push(monthKey(dt));}
-      return months;
+      meses de retorno;
     }
 
-    function renderThisMonth(data,mk){
+    função renderThisMonth(dados,mk){
       const debts=data.debts||[];
       const byPerson={};const frozen=[];
       
-      debts.forEach((d, globalIndex)=>{
-        const months=getDebtMonths(d);
+      dívidas.paraCada((d, índiceGlobal)=>{
+        const meses=getDebtMonths(d);
         if(!months.includes(mk))return;
-        if(d.specialType==='congelada'){
+        se(d.specialType==='congelada'){
           d.globalIndex = globalIndex;
-          frozen.push(d);
-          return;
+          congelado.empurrar(d);
+          retornar;
         }
         const name=d.lender||'Sem nome';
         if(!byPerson[name])byPerson[name]={items:[],total:0};
         d.globalIndex = globalIndex;
-        byPerson[name].items.push(d);
-        byPerson[name].total+=parseFloat(d.installmentPerPerson)||0;
+        porPessoa[nome].itens.push(d);
+        byPerson[nome].total+=parseFloat(d.installmentPerPerson)||0;
       });
       
       const chipsEl=document.getElementById('thisMonthChips');chipsEl.innerHTML='';
-      Object.entries(byPerson).forEach(([name,info])=>{
+      Objeto.entries(porPessoa).forEach(([nome,info])=>{
         const chip=document.createElement('div');chip.className='person-chip';
         chip.innerHTML=`<span class="person-chip-name">${name}</span><span class="person-chip-value">${fmt(info.total)}</span>`;
         chip.addEventListener('click',()=>showPersonPanel(name,info,mk));
@@ -588,9 +588,9 @@
       });
       
       const frozenEl=document.getElementById('frozenChips');frozenEl.innerHTML='';
-      frozen.forEach(d=>{
+      congelado.paraCada(d=>{
         const chip=document.createElement('div');chip.className='person-chip';
-        chip.innerHTML=`<span class="person-chip-name">${d.lender||'?'}</span><span class="person-chip-value">${fmt(d.installmentPerPerson)} ❄️</span>`;
+        chip.innerHTML=`<span class="person-chip-name">${d.lender||'?'}</span><span class="person-chip-value">${fmt(d.installmentPerPerson)} â „ï¸ </span>`;
         chip.addEventListener('click',()=>showPersonPanel(d.lender||'?',{items:[d], total:d.installmentPerPerson},mk));
         frozenEl.appendChild(chip);
       });
@@ -598,25 +598,25 @@
       const sal=document.getElementById('salaryInput');const vtt=document.getElementById('vtTotal');const vtc=document.getElementById('vtCost');
       const inc=data.income&&data.income[mk]||{};
       sal.value=inc.salary||'';vtt.value=inc.vtTotal||'';vtc.value=inc.vtCost||'';
-      const salary=parseFloat(inc.salary)||0;
+      const salário=parseFloat(inc.salário)||0;
       const vtSobra=Math.max(0,(parseFloat(inc.vtTotal)||0)-(parseFloat(inc.vtCost)||0));
-      const rendaDisponivel=salary+vtSobra;
-      let totalParcelas=0;let totalDebt=0;let lastMonth='';
-      debts.forEach(d=>{
+      const rendaDisponivel=salário+vtSobra;
+      let totalParcelas=0;let ​​totalDebt=0;let ​​lastMonth='';
+      dívidas.paraCada(d=>{
         if(d.specialType==='congelada')return;
-        const months=getDebtMonths(d);
+        const meses=getDebtMonths(d);
         if(months.includes(mk))totalParcelas+=parseFloat(d.installmentPerPerson)||0;
         totalDebt+=parseFloat(d.installmentPerPerson||0)*(parseInt(d.qty)||1);
-        const last=months[months.length-1];if(last>lastMonth)lastMonth=last;
+        const último=meses[meses.comprimento-1];if(último>últimoMês)últimoMês=último;
       });
-      const balance=rendaDisponivel-totalParcelas;
-      document.getElementById('statSalary').textContent=fmt(salary);
+      const saldo=rendaDisponivel-totalParcelas;
+      document.getElementById('statSalary').textContent=fmt(salário);
       document.getElementById('statVTSobra').textContent=fmt(vtSobra);
       document.getElementById('statRendaDisponivel').textContent=fmt(rendaDisponivel);
       document.getElementById('statThisMonth').textContent=fmt(totalParcelas);
       document.getElementById('statTotalDebt').textContent=fmt(totalDebt);
       document.getElementById('statBalance').textContent=fmt(balance);
-      document.getElementById('statEndDate').textContent=lastMonth?monthLabel(lastMonth):'—';
+      document.getElementById('statEndDate').textContent=lastMonth?monthLabel(lastMonth):'â--';
       document.getElementById('negativityBox').className='stat'+(balance<0?' danger':' ok');
       document.getElementById('saveIncomeBtn').onclick=()=>{
         const data2=loadData();if(!data2.income)data2.income={};
@@ -626,13 +626,13 @@
       };
     }
 
-    function showPersonPanel(name,info,mk){
+    função showPersonPanel(name,info,mk){
       const panel=document.getElementById('personDetails');
-      let html=`<div class="person-header"><span class="person-name">${name}</span><span class="person-close" onclick="document.getElementById('personDetails').style.display='none'">✕ fechar</span></div>`;
+      let html=`<div class="person-header"><span class="person-name">${name}</span><span class="person-close" onclick="document.getElementById('personDetails').style.display='none'">âœ• fechar</span></div>`;
       
       info.items.forEach(d=>{
-        const months=getDebtMonths(d);
-        const idx=months.indexOf(mk)+1;
+        const meses=getDebtMonths(d);
+        const idx=meses.indexOf(mk)+1;
         html+=`
           <div class="person-item">
             <div class="person-item-details">
@@ -640,17 +640,17 @@
               ${fmt(d.installmentPerPerson)} (${idx}/${d.qty})
             </div>
             <div>
-              <button class="mini" onclick="editDebt(${d.globalIndex})">✏️</button>
-              <button class="mini secondary" onclick="removeDebt(${d.globalIndex})">🗑️</button>
+              <button class="mini" onclick="editDebt(${d.globalIndex})">âœ ï¸ </button>
+              <button class="mini secondary" onclick="removeDebt(${d.globalIndex})">ðŸ—'ï¸ </button>
             </div>
           </div>`;
       });
-      html+=`<div class="person-total">Total no mês: ${fmt(info.total)}</div>`;
-      panel.innerHTML=html;
-      panel.style.display='block';
+      html+=`<div class="person-total">Total não mais: ${fmt(info.total)}</div>`;
+      painel.innerHTML=html;
+      painel.estilo.exibir='bloco';
     }
 
-    function renderMonthsGrid(data){
+    função renderizarGradeMeses(dados){
       const debts=data.debts||[];const monthTotals={};
       debts.forEach(d=>{if(d.specialType==='congelada')return;getDebtMonths(d).forEach(m=>{monthTotals[m]=(monthTotals[m]||0)+parseFloat(d.installmentPerPerson||0);});});
       const keys=Object.keys(monthTotals).sort();
@@ -658,7 +658,7 @@
       keys.forEach(k=>{const card=document.createElement('div');card.className='month-card';card.innerHTML=`<div class="month-name">${monthLabel(k)}</div><div class="month-value">${fmt(monthTotals[k])}</div>`;grid.appendChild(card);});
     }
 
-    function editDebt(i){
+    função editarDívida(i){
       const data=loadData();const d=data.debts[i];editingIndex=i;
       document.getElementById('paymentType').value=d.paymentType||'parcelado';
       document.getElementById('lender').value=d.lender||'';
@@ -678,13 +678,13 @@
       document.getElementById('formDividas').scrollIntoView({behavior:'smooth'});
     }
 
-    function removeDebt(i){
-      if(!confirm('Tem certeza que quer apagar esta dívida do sistema?'))return;
+    função removerDívida(i){
+      if(!confirm('Tem certeza de que quer apagar esta vida do sistema?'))return;
       const data=loadData();
-      data.debts.splice(i,1);
-      saveData(data);
+      dados.dívidas.splice(i,1);
+      salvarDados(dados);
       document.getElementById('personDetails').style.display='none';
-      renderAll();
+      renderizarTudo();
     }
 
     document.getElementById('cancelEditBtn').addEventListener('click',()=>{editingIndex=null;document.getElementById('cancelEditBtn').style.display='none';document.getElementById('saveDebtBtn').textContent='Adicionar dívida';});
@@ -695,41 +695,41 @@
     document.getElementById('saveDebtBtn').addEventListener('click',()=>{
       const lenderSel=document.getElementById('lender').value;
       const lenderCustom=document.getElementById('lenderCustom').value.trim();
-      const lender=lenderCustom||lenderSel;
+      const credor=credorPersonalizado||credorSel;
       const category=document.getElementById('category').value;
       const specialType=document.getElementById('specialType').value;
       const description=document.getElementById('description').value.trim();
       const total=parseFloat(document.getElementById('debtTotal').value)||0;
       const qty=parseInt(document.getElementById('debtQty').value)||1;
-      const installment=parseFloat(document.getElementById('debtInstallment').value)||(total/qty);
+      const instalação=parseFloat(document.getElementById('debtInstallment').value)||(total/qty);
       const splitParts=parseInt(document.getElementById('splitParts').value)||1;
-      const installmentPerPerson=installment/splitParts;
+      const instalaçãoPorPessoa=instalação/partesDivididas;
       const startDate=document.getElementById('debtStart').value;
       const paymentType=document.getElementById('paymentType').value;
-      if(!lender||!startDate){alert('Preencha pelo menos o nome e a data.');return;}
+      if(!lender||!startDate){alert('Preencha pelo menos o nome e os dados.');return;}
       const entry={lender,category,specialType,description,total,qty,installment,splitParts,installmentPerPerson,startDate,paymentType};
       const data=loadData();if(!data.debts)data.debts=[];
       if(editingIndex!==null){data.debts[editingIndex]=entry;editingIndex=null;document.getElementById('cancelEditBtn').style.display='none';document.getElementById('saveDebtBtn').textContent='Adicionar dívida';}
       else{data.debts.push(entry);}
-      saveData(data);
+      salvarDados(dados);
       ['lenderCustom','description','debtTotal','debtQty','debtInstallment','splitParts','debtStart'].forEach(id=>document.getElementById(id).value='');
       document.getElementById('lender').value='';
-      renderAll();
+      renderizarTudo();
     });
 
-    function renderSpends(data, scrollToChart = false) {
+    função renderSpends(dados, scrollToChart = false) {
       const allSpends = data.spends || [];
       
-      const allMonths = new Set();
+      const todosOsMeses = novo Conjunto();
       allSpends.forEach(s => { if(s.date) allMonths.add(s.date.slice(0, 7)); });
-      allMonths.add(globalActiveMonth); // Garante que o mês global atual exista
+      allMonths.add(globalActiveMonth); // Garantir que o mais atual global exista
       
-      const sortedMonths = [...allMonths].sort(); 
+      const sortedMonths = [...allMonths].sort();
 
       let activeSpendMonth = data._activeSpendMonth || globalActiveMonth;
       if (!allMonths.has(activeSpendMonth)) activeSpendMonth = sortedMonths[0];
 
-      if (scrollToChart) {
+      se (rolarParaGráfico) {
         setTimeout(() => {
           const el = document.getElementById('spendChartCard');
           if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -740,37 +740,37 @@
       sel.innerHTML = '';
       sortedMonths.forEach(m => {
         const pill = document.createElement('div');
-        pill.className = 'month-pill' + (m === activeSpendMonth ? ' active' : '');
-        pill.textContent = monthLabel(m);
+        pill.className = 'pílula-do-mês' + (m === activeSpendMonth ? ' ativo' : '');
+        pílula.textContent = mêsLabel(m);
         pill.addEventListener('click', () => {
           const d2 = loadData();
           d2._activeSpendMonth = m;
-          saveData(d2);
+          salvarDados(d2);
           document.getElementById('spendDetailsPanel').style.display = 'none';
-          renderAll(true); // renderiza rolando pro gráfico
+          renderTodos(verdadeiro); // renderiza rolando pro gráfico
         });
-        sel.appendChild(pill);
+        sel.appendChild(pílula);
       });
 
-      const monthSpends = allSpends
+      const gastosmensais = gastostotais
         .map((s, i) => ({ ...s, originalIndex: i }))
         .filter(s => s.date && s.date.startsWith(activeSpendMonth));
 
-      const monthTotal = monthSpends.reduce((a, s) => a + parseFloat(s.amount || 0), 0);
+      const totalDoMês = gastosDoMês.reduce((a, s) => a + parseFloat(s.amount || 0), 0);
       document.getElementById('spendTotalLine').textContent = `Total em ${monthLabel(activeSpendMonth)}: ` + fmt(monthTotal);
 
       const byCat = {};
-      monthSpends.forEach(s => {
-        const c = s.category || 'Outros';
-        if (!byCat[c]) byCat[c] = { items: [], total: 0 };
-        byCat[c].items.push(s);
+      gastosMês.paraCada(s => {
+        const c = s.categoria || 'Outros';
+        se (!byCat[c]) byCat[c] = { itens: [], total: 0 };
+        porCat[c].itens.push(s);
         byCat[c].total += parseFloat(s.amount || 0);
       });
 
       const chipsContainer = document.getElementById('spendCategoryChips');
       chipsContainer.innerHTML = '';
 
-      Object.entries(byCat).forEach(([catName, info]) => {
+      Objeto.entries(porGato).forEach(([nomeDoGato, info]) => {
         const chip = document.createElement('div');
         chip.className = 'spend-chip';
         chip.innerHTML = `<span class="spend-chip-name">${catName}</span><span class="spend-chip-value">${fmt(info.total)}</span>`;
@@ -779,41 +779,41 @@
       });
 
       if(Object.keys(byCat).length === 0) {
-        chipsContainer.innerHTML = '<span style="font-size:0.75rem; color:#9ca3af;">Nenhum gasto neste mês.</span>';
+        chipsContainer.innerHTML = '<span style="font-size:0.75rem; color:#9ca3af;">Nenhum gasto neste mesmo.</span>';
       }
 
       document.getElementById('addSpendBtn').onclick = () => {
         const desc = document.getElementById('spendDesc').value.trim();
         const amount = parseFloat(document.getElementById('spendAmount').value) || 0;
-        const category = document.getElementById('spendCategory').value;
+        const categoria = document.getElementById('spendCategory').value;
         const dateInput = document.getElementById('spendDate').value;
 
-        if (!desc || !amount) { alert('Preencha descrição e valor.'); return; }
+        if (!desc || !amount) { alert('Pré-descrição e valor.'); retornar; }
 
-        const today = new Date();
+        const hoje = novo Date();
         const todayStr = today.toISOString().slice(0, 10);
-        const finalDate = dateInput || todayStr;
+        const dataFinal = entradaData || stringHoje;
 
         const data2 = loadData();
-        if (!data2.spends) data2.spends = [];
+        se (!data2.spends) data2.spends = [];
 
         data2.spends.push({ description: desc, amount, category, date: finalDate });
-        // Força o mês de gastos a ir para o mês do gasto recém criado
+        // Forçao mais de gastos a ir para o mês do gasto recém criado
         data2._activeSpendMonth = finalDate.slice(0, 7);
 
-        saveData(data2);
+        salvarDados(dados2);
         document.getElementById('spendDesc').value = '';
         document.getElementById('spendAmount').value = '';
         document.getElementById('spendCategory').value = '';
         document.getElementById('spendDate').value = '';
         document.getElementById('spendDetailsPanel').style.display = 'none';
-        renderAll();
+        renderizarTudo();
       };
     }
 
-    function showSpendPanel(catName, info) {
+    função showSpendPanel(catName, info) {
       const panel = document.getElementById('spendDetailsPanel');
-      let html = `<div class="person-header"><span class="person-name">${catName}</span><span class="person-close" onclick="document.getElementById('spendDetailsPanel').style.display='none'">✕ fechar</span></div>`;
+      let html = `<div class="person-header"><span class="person-name">${catName}</span><span class="person-close" onclick="document.getElementById('spendDetailsPanel').style.display='none'">âœ• fechar</span></div>`;
       
       info.items.slice().reverse().forEach(s => {
         const dFormat = s.date ? s.date.split('-').reverse().join('/') : '';
@@ -825,30 +825,30 @@
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
               <strong style="font-size:0.78rem; color:#111827;">${fmt(s.amount)}</strong>
-              <button class="mini secondary" onclick="removeSpend(${s.originalIndex})">🗑️</button>
+              <button class="mini secondary" onclick="removeSpend(${s.originalIndex})">ðŸ—'ï¸ </button>
             </div>
           </div>`;
       });
       
       html += `<div class="person-total">Total desta categoria: ${fmt(info.total)}</div>`;
-      panel.innerHTML = html;
-      panel.style.display = 'block';
+      painel.innerHTML = html;
+      panel.style.display = 'bloco';
     }
 
-    function removeSpend(i){
+    função removerGasto(i){
       const data=loadData();
-      data.spends.splice(i,1);
-      saveData(data);
+      dados.gastos.splice(i,1);
+      salvarDados(dados);
       document.getElementById('spendDetailsPanel').style.display='none';
-      renderAll();
+      renderizarTudo();
     }
 
-    function renderNegDebts(data){
+    função renderizarDívidasNeg(dados){
       const grid=document.getElementById('negGrid');grid.innerHTML='';
       (data.negDebts||[]).forEach((n,i)=>{
         const card=document.createElement('div');card.className='bank-card';
-        card.innerHTML=`<div class="bank-card-header"><span class="bank-name">${n.lender}</span></div><div class="bank-total">${fmt(n.amount)}</div><div style="font-size:0.7rem;color:#6b7280;">${n.notes||''}</div><div style="margin-top:4px;"><button class="mini secondary" onclick="removeNeg(${i})">🗑️</button></div>`;
-        grid.appendChild(card);
+        card.innerHTML=`<div class="bank-card-header"><span class="bank-name">${n.lender}</span></div><div class="bank-total">${fmt(n.amount)}</div><div style="font-size:0.7rem;color:#6b7280;">${n.notes||''}</div><div style="margin-top:4px;"><button class="mini secondary" onclick="removeNeg(${i})">ðŸ—'ï¸ </button></div>`;
+        grade.appendChild(cartão);
       });
       document.getElementById('addNegDebtBtn').onclick=()=>{
         const lender=document.getElementById('negLender').value.trim();
@@ -862,12 +862,12 @@
     }
     function removeNeg(i){const data=loadData();data.negDebts.splice(i,1);saveData(data);renderAll();}
 
-    function renderSubs(data){
+    função renderSubs(dados){
       const grid=document.getElementById('subsGrid');grid.innerHTML='';
       (data.subs||[]).forEach((s,i)=>{
         const card=document.createElement('div');card.className='bank-card';
-        card.innerHTML=`<div class="bank-card-header"><span class="bank-name">${s.name}</span><span style="font-size:0.72rem;color:#374151;">${fmt(s.amount)}/mês</span></div><div style="font-size:0.7rem;color:#6b7280;">${s.notes||''}</div><div style="margin-top:4px;"><button class="mini secondary" onclick="removeSub(${i})">🗑️</button></div>`;
-        grid.appendChild(card);
+        card.innerHTML=`<div class="bank-card-header"><span class="bank-name">${s.name}</span><span style="font-size:0.72rem;color:#374151;">${fmt(s.amount)}/mÃªs</span></div><div style="font-size:0.7rem;color:#6b7280;">${s.notes||''}</div><div style="margin-top:4px;"><button class="mini secondary" onclick="removeSub(${i})">ðŸ—'ï¸ </button></div>`;
+        grade.appendChild(cartão);
       });
       document.getElementById('addSubBtn').onclick=()=>{
         const name=document.getElementById('subName').value.trim();
@@ -881,7 +881,7 @@
     }
     function removeSub(i){const data=loadData();data.subs.splice(i,1);saveData(data);renderAll();}
 
-    function renderIncomeExtras(data){
+    função renderIncomeExtras(dados){
       const extras=data.incomeExtras||[];
       const total=extras.reduce((a,e)=>a+parseFloat(e.amount||0),0);
       document.getElementById('incExtraSummary').textContent='Total de extras no ano: '+fmt(total);
@@ -889,48 +889,48 @@
       extras.slice().reverse().forEach((e,ri)=>{
         const i=extras.length-1-ri;
         const card=document.createElement('div');card.className='bank-card';
-        card.innerHTML=`<div class="bank-card-header"><span class="bank-name">${e.description||'Extra'}</span><span style="font-size:0.7rem;color:#6b7280;">${e.date||''}</span></div><div class="bank-total">${fmt(e.amount)} · ${e.category||''}</div><div style="margin-top:4px;"><button class="mini secondary" onclick="removeIncExtra(${i})">🗑️</button></div>`;
-        grid.appendChild(card);
+        card.innerHTML=`<div class="bank-card-header"><span class="bank-name">${e.description||'Extra'}</span><span style="font-size:0.7rem;color:#6b7280;">${e.date||''}</span></div><div class="bank-total">${fmt(e.amount)} · ${e.category||''}</div><div style="margin-top:4px;"><button class="mini secondary" onclick="removeIncExtra(${i})">ðŸ—'ï¸ </button></div>`;
+        grade.appendChild(cartão);
       });
       document.getElementById('addIncomeExtraBtn').onclick=()=>{
         const desc=document.getElementById('incDesc').value.trim();
         const amount=parseFloat(document.getElementById('incAmount').value)||0;
         const category=document.getElementById('incCategory').value;
         const date=document.getElementById('incDate').value;
-        if(!desc||!amount){alert('Preencha descrição e valor.');return;}
+        if(!desc||!amount){alert('Pré-descrição e valor.');return;}
         const data2=loadData();if(!data2.incomeExtras)data2.incomeExtras=[];
         data2.incomeExtras.push({description:desc,amount,category,date:date||monthKey(new Date())});
-        saveData(data2);document.getElementById('incDesc').value='';document.getElementById('incAmount').value='';document.getElementById('incDate').value='';renderAll();
+        salvarDados(dados2);document.getElementById('incDesc').value='';document.getElementById('incAmount').value='';document.getElementById('incDate').value='';renderizarTudo();
       };
     }
     function removeIncExtra(i){const data=loadData();data.incomeExtras.splice(i,1);saveData(data);renderAll();}
 
-    function renderPaymentsSection(data){
+    função renderizarSeçãoDePagamentos(dados){
       const debts=data.debts||[];const allMonths=new Set();
-      debts.forEach(d=>getDebtMonths(d).forEach(m=>allMonths.add(m)));
+      dívidas.paraCada(d=>obterMesesDeDívida(d).paraCada(m=>todosOsMeses.adicionar(m)));
       const sorted=[...allMonths].sort();const now=monthKey(new Date());
       let active=data._activePayMonth||now;
       if(!allMonths.has(active)&&sorted.length)active=sorted[0];
       const sel=document.getElementById('monthsSelect');sel.innerHTML='';
       sorted.forEach(m=>{
         const pill=document.createElement('div');pill.className='month-pill'+(m===active?' active':'');
-        pill.textContent=monthLabel(m);
+        pílula.textContent=mêsLabel(m);
         pill.addEventListener('click',()=>{const d2=loadData();d2._activePayMonth=m;saveData(d2);renderAll();});
-        sel.appendChild(pill);
+        sel.appendChild(pílula);
       });
       const list=document.getElementById('paymentsList');list.innerHTML='';
-      const paid=data.paid||{};
-      debts.forEach((d,i)=>{
+      const pago=dados.pago||{};
+      dívidas.paraCada((d,i)=>{
         const months=getDebtMonths(d);if(!months.includes(active))return;
         const idx=months.indexOf(active)+1;const key=`${i}_${active}`;const isPaid=paid[key]||false;
         const row=document.createElement('div');row.className='payment-row';
-        row.innerHTML=`<input type="checkbox" ${isPaid?'checked':''} data-key="${key}"><span style="${isPaid?'text-decoration:line-through;color:#9ca3af;':''}">${d.lender||'?'} — ${d.description||d.category||''} ${fmt(d.installmentPerPerson)} (${idx}/${d.qty})</span>`;
+        row.innerHTML=`<input type="checkbox" ${isPaid?'checked':''} data-key="${key}"><span style="${isPaid?'text-decoration:line-through;color:#9ca3af;':''}">${d.lender||'?'} â— ${d.description||d.category||''} ${fmt(d.installmentPerPerson)} (${idx}/${d.qty})</span>`;
         row.querySelector('input').addEventListener('change',function(){const d2=loadData();if(!d2.paid)d2.paid={};d2.paid[this.dataset.key]=this.checked;saveData(d2);renderAll();});
-        list.appendChild(row);
+        lista.appendChild(linha);
       });
     }
 
-    function renderPieChart(data, mk) {
+    função renderizarPieChart(dados, mk) {
       const label = document.getElementById('spendChartMonthLabel');
       if(label) label.textContent = monthLabel(mk);
 
@@ -940,46 +940,46 @@
 
       const spends = (data.spends||[]).filter(s => s.date && s.date.startsWith(mk));
       const byCat = {};
-      spends.forEach(s => {
-        const c = s.category || 'Outros';
+      gastos.paraCada(s => {
+        const c = s.categoria || 'Outros';
         byCat[c] = (byCat[c] || 0) + parseFloat(s.amount || 0);
       });
 
       const entries = Object.entries(byCat);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      legendDiv.innerHTML = ''; 
+      legendDiv.innerHTML = '';
 
-      if(!entries.length){
+      se(!entradas.comprimento){
         ctx.fillStyle = '#9ca3af';
         ctx.font = '13px system-ui';
         ctx.textAlign = 'center';
         ctx.fillText('Nenhum gasto registrado', canvas.width/2, canvas.height/2);
-        return;
+        retornar;
       }
 
       const total = entries.reduce((a, [,v]) => a + v, 0);
       // Adicionado uma cor a mais caso tenha muitas categorias (como a nova 'Pix')
-      const colors = ['#f9739b', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa', '#fb923c', '#ec4899'];
+      const cores = ['#f9739b', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa', '#fb923c', '#ec4899'];
 
       const cx = canvas.width / 2;
-      const cy = canvas.height / 2; 
-      const r = Math.min(cx, cy) - 2; 
-      let start = 0;
+      const cy = canvas.height / 2;
+      const r = Math.min(cx, cy) - 2;
+      seja start = 0;
 
-      entries.forEach(([cat, val], i) => {
+      entradas.forEach(([cat, val], i) => {
         const slice = (val / total) * 2 * Math.PI;
         ctx.beginPath();
         ctx.moveTo(cx, cy);
         ctx.arc(cx, cy, r, start, start + slice);
         ctx.closePath();
-        ctx.fillStyle = colors[i % colors.length];
+        ctx.fillStyle = cores[i % cores.length];
         ctx.fill();
         ctx.strokeStyle = '#fff';
         ctx.lineWidth = 2.5;
         ctx.stroke();
 
         const percent = Math.round((val / total) * 100);
-        if (percent > 4) {
+        se (percentual > 4) {
           const mid = start + slice / 2;
           const lx = cx + Math.cos(mid) * (r * 0.65);
           const ly = cy + Math.sin(mid) * (r * 0.65);
@@ -989,7 +989,7 @@
           ctx.textBaseline = 'middle';
           ctx.fillText(percent + '%', lx, ly);
         }
-        start += slice;
+        início += fatia;
 
         const legendItem = document.createElement('div');
         legendItem.className = 'legend-item';
@@ -999,7 +999,7 @@
         colorBox.style.backgroundColor = colors[i % colors.length];
         
         const catName = document.createElement('span');
-        catName.textContent = cat;
+        catName.textContent = gato;
         
         legendItem.appendChild(colorBox);
         legendItem.appendChild(catName);
