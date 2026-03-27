@@ -39,7 +39,8 @@
  button.mini{padding:3px 7px;font-size:0.7rem;margin-top:0;margin-left:4px;}
  .stats-list{margin-top:6px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;}
  @media(max-width:480px){.stats-list{grid-template-columns:1fr;}}
- .stat{border-radius:12px;padding:7px 8px;background:#fff7fb;border:1px solid #ffe4f1;position:relati .stat::after{content:"";position:absolute;right:-6px;top:-6px;width:18px;height:18px;border-radius:5 .stat span{display:block;font-size:0.7rem;color:#6b7280;}
+ .stat{border-radius:12px;padding:7px 8px;background:#fff7fb;border:1px solid #ffe4f1;position:relati
+ .stat::after{content:"";position:absolute;right:-6px;top:-6px;width:18px;height:18px;border-radius:5 .stat span{display:block;font-size:0.7rem;color:#6b7280;}
  .stat strong{display:block;margin-top:1px;font-size:0.88rem;color:#111827;}
  .stat.danger strong{color:#b91c1c;}
  .stat.ok strong{color:#15803d;}
@@ -76,7 +77,38 @@
  .two-col-card{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
  @media(max-width:600px){.two-col-card{grid-template-columns:1fr;}}
  .two-col-card .card{margin-bottom:0;}
- </style>
+
+/* ===== VISUAL NUBANK ===== */
+body{background:#f5f5f7 !important;}
+header{background:#820ad1 !important;color:#fff !important;border-bottom:none !important;}
+.card, .kpi-card{
+ border:none !important;
+ border-radius:18px !important;
+ box-shadow:0 6px 20px rgba(0,0,0,0.06) !important;
+ transition: all 0.25s ease;
+}
+.card:hover, .kpi-card:hover{
+ transform: translateY(-3px);
+ box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+input, select, textarea{
+ background:#f9fafb !important;
+ border:1px solid #e5e7eb !important;
+}
+button{
+ background:#820ad1 !important;
+ box-shadow:0 6px 14px rgba(130,10,209,0.3) !important;
+}
+.person-chip, .spend-chip{
+ background:#f3f4f6 !important;
+ border:none !important;
+}
+.fade-in{animation:fadeIn 0.4s ease;}
+@keyframes fadeIn{
+ from{opacity:0; transform:translateY(10px);}
+ to{opacity:1; transform:translateY(0);}
+}
+</style>
 </head>
 <body>
  <div id="loginScreen">
@@ -524,6 +556,9 @@
  renderPaymentsSection(data);
  const chartMonth=data._activeSpendMonth||mk;
  renderPieChart(data,chartMonth);
+ document.querySelectorAll('.card, .kpi-card').forEach(el=>{
+ el.classList.add('fade-in');
+ });
  }
  function renderKPIs(data,mk){
  const summary=getMonthFinancialSummary(data,mk);
