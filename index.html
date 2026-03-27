@@ -1139,51 +1139,69 @@
     }
 
     function renderIncomeExtras(data){
-      const extras=data.incomeExtras||[];
-      const total=extras.reduce((a,e)=>a+parseFloat(e.amount||0),0);
-      document.getElementById('incExtraSummary').textContent='Total de extras no ano: '+fmt(total);
+  const extras = data.incomeExtras || [];
 
-      const grid=document.getElementById('incExtrasGrid');
-      grid.innerHTML='';
+  const total = extras.reduce((a,e)=>a + parseFloat(e.amount||0),0);
+  document.getElementById('incExtraSummary').textContent =
+    'Total de extras no ano: ' + fmt(total);
 
-      extras.slice().reverse().forEach((e,ri)=>{
-        const i=extras.length-1-ri;
-        const card=document.createElement('div');
-        card.className='bank-card';
-        card.innerHTML=`<div class="bank-card-header"><span class="bank-name">${e.description||'Extra'}</span><span style="font-size:0.7rem;color:#6b7280;">${e.date||''}</span></div><div class="bank-total">${fmt(e.amount)} · ${e.category||''}</div><div style="margin-top:4px;"><button class="mini secondary" onclick="removeIncExtra(${i})">🗑️</button></div>`;
-        grid.appendChild(card);
-      });
+  const grid = document.getElementById('incExtrasGrid');
+  grid.innerHTML = '';
 
-      document.getElementById('addIncomeExtraBtn').onclick=()=>{
-        const desc=document.getElementById('incDesc').value.trim();
-        const amount=parseFloat(document.getElementById('incAmount').value)||0;
-        const category=document.getElementById('incCategory').value;
-        const date=document.getElementById('incDate').value;
+  const byCategory = {};
 
-        if(!desc||!amount){
-          alert('Preencha descrição e valor.');
-          return;
-        }
+  extras.forEach(e=>{
+    const cat = e.category || 'Outros';
+    if(!byCategory[cat]) byCategory[cat] = 0;
+    byCategory[cat] += parseFloat(e.amount || 0);
+  });
 
-        const today=new Date().toISOString().slice(0,10);
-        const data2=loadData();
-        if(!data2.incomeExtras)data2.incomeExtras=[];
+  Object.entries(byCategory).forEach(([cat,totalCat])=>{
+    const card = document.createElement('div');
+    card.className = 'bank-card';
 
-        data2.incomeExtras.push({
-          description:desc,
-          amount,
-          category,
-          date:date||today
-        });
+    card.innerHTML = `
+      <div class="bank-card-header">
+        <span class="bank-name">${cat}</span>
+      </div>
+      <div class="bank-total">${fmt(totalCat)}</div>
+    `;
 
-        saveData(data2);
-        document.getElementById('incDesc').value='';
-        document.getElementById('incAmount').value='';
-        document.getElementById('incCategory').value='';
-        document.getElementById('incDate').value='';
-        renderAll();
-      };
+    grid.appendChild(card);
+  });
+
+  document.getElementById('addIncomeExtraBtn').onclick = ()=>{
+    const desc = document.getElementById('incDesc').value.trim();
+    const amount = parseFloat(document.getElementById('incAmount').value) || 0;
+    const category = document.getElementById('incCategory').value;
+    const date = document.getElementById('incDate').value;
+
+    if(!desc || !amount){
+      alert('Preencha descrição e valor.');
+      return;
     }
+
+    const today = new Date().toISOString().slice(0,10);
+    const data2 = loadData();
+    if(!data2.incomeExtras) data2.incomeExtras = [];
+
+    data2.incomeExtras.push({
+      description: desc,
+      amount,
+      category,
+      date: date || today
+    });
+
+    saveData(data2);
+
+    document.getElementById('incDesc').value='';
+    document.getElementById('incAmount').value='';
+    document.getElementById('incCategory').value='';
+    document.getElementById('incDate').value='';
+
+    renderAll();
+  };
+}
 
     function removeIncExtra(i){
       const data=loadData();
