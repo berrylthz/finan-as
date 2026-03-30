@@ -881,54 +881,116 @@
     }
     function removeSub(i){const data=loadData();data.subs.splice(i,1);saveData(data);renderAll();}
 
-    function renderIncomeExtras(data){
-      const extras=data.incomeExtras||[];
-      const total=extras.reduce((a,e)=>a+parseFloat(e.amount||0),0);
-      document.getElementById('incExtraSummary').textContent='Total de extras no ano: '+fmt(total);
-      const grid=document.getElementById('incExtrasGrid');grid.innerHTML='';
-      extras.slice().reverse().forEach((e,ri)=>{
-        const i=extras.length-1-ri;
-        const card=document.createElement('div');card.className='bank-card';
-        card.innerHTML=`<div class="bank-card-header"><span class="bank-name">${e.description||'Extra'}</span><span style="font-size:0.7rem;color:#6b7280;">${e.date||''}</span></div><div class="bank-total">${fmt(e.amount)} · ${e.category||''}</div><div style="margin-top:4px;"><button class="mini secondary" onclick="removeIncExtra(${i})">🗑️</button></div>`;
-        grid.appendChild(card);
-      });
-      document.getElementById('addIncomeExtraBtn').onclick=()=>{
-        const desc=document.getElementById('incDesc').value.trim();
-        const amount=parseFloat(document.getElementById('incAmount').value)||0;
-        const category=document.getElementById('incCategory').value;
-        const date=document.getElementById('incDate').value;
-        if(!desc||!amount){alert('Preencha descrição e valor.');return;}
-        const data2=loadData();if(!data2.incomeExtras)data2.incomeExtras=[];
-        data2.incomeExtras.push({description:desc,amount,category,date:date||monthKey(new Date())});
-        saveData(data2);document.getElementById('incDesc').value='';document.getElementById('incAmount').value='';document.getElementById('incDate').value='';renderAll();
-      };
-    }
-    function removeIncExtra(i){const data=loadData();data.incomeExtras.splice(i,1);saveData(data);renderAll();}
+   function renderIncomeExtras(data){
+  const extras = data.incomeExtras || [];
 
-    function renderPaymentsSection(data){
-      const debts=data.debts||[];const allMonths=new Set();
-      debts.forEach(d=>getDebtMonths(d).forEach(m=>allMonths.add(m)));
-      const sorted=[...allMonths].sort();const now=monthKey(new Date());
-      let active=data._activePayMonth||now;
-      if(!allMonths.has(active)&&sorted.length)active=sorted[0];
-      const sel=document.getElementById('monthsSelect');sel.innerHTML='';
-      sorted.forEach(m=>{
-        const pill=document.createElement('div');pill.className='month-pill'+(m===active?' active':'');
-        pill.textContent=monthLabel(m);
-        pill.addEventListener('click',()=>{const d2=loadData();d2._activePayMonth=m;saveData(d2);renderAll();});
-        sel.appendChild(pill);
-      });
-      const list=document.getElementById('paymentsList');list.innerHTML='';
-      const paid=data.paid||{};
-      debts.forEach((d,i)=>{
-        const months=getDebtMonths(d);if(!months.includes(active))return;
-        const idx=months.indexOf(active)+1;const key=`${i}_${active}`;const isPaid=paid[key]||false;
-        const row=document.createElement('div');row.className='payment-row';
-        row.innerHTML=`<input type="checkbox" ${isPaid?'checked':''} data-key="${key}"><span style="${isPaid?'text-decoration:line-through;color:#9ca3af;':''}">${d.lender||'?'} — ${d.description||d.category||''} ${fmt(d.installmentPerPerson)} (${idx}/${d.qty})</span>`;
-        row.querySelector('input').addEventListener('change',function(){const d2=loadData();if(!d2.paid)d2.paid={};d2.paid[this.dataset.key]=this.checked;saveData(d2);renderAll();});
-        list.appendChild(row);
-      });
+  // Total geral no ano
+  const total = extras.reduce((a,e)=>a+parseFloat(e.amount||0),0);
+  document.getElementById('incExtraSummary').textContent = 'Total de extras no ano: ' + fmt(total);
+
+  const grid = document.getElementById('incExtrasGrid');
+  grid.innerHTML = '';
+
+  // Agrupar por descrição/pessoa
+  const porPessoa = {};
+  extras.forEach((e, indexOriginal) => {
+    const pessoa = (e.description || 'Sem descrição').trim();
+    if (!porPessoa[pessoa]) {
+      porPessoa[pessoa] = { items: [], total: 0 };
     }
+    porPessoa[pessoa].items.push({
+      ...e,
+      originalIndex: indexOriginal
+    });
+    porPessoa[pessoa].total += parseFloat(e.amount || 0);
+  });
+
+  // Criar um card/bloco por pessoa
+  Object.keys(porPessoa).forEach((pessoa) => {
+    const grupo = porPessoa[pessoa];
+
+    const card = document.createElement('div');
+    card.className = 'bank-card';
+
+    // Lista de entradas dessa pessoa (mais recentes primeiro)
+    const itensHTML = grupo.items
+      .slice()
+      .reverse()
+      .map((e) => {
+        const idx = e.originalIndex;
+        const dataFmt = e.date
+          ? (e.date.includes('-') ? e.date : e.date + '-01')
+          : '';
+        return `
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:2px;border-bottom:1px solid #f3f4f6;padding:2px 0;">
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:0.78rem;color:#111827;">${e.description || 'Extra'}</div>
+              <div style="font-size:0.68rem;color:#9ca3af;">${dataFmt}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
+              <span style="font-size:0.78rem;color:#111827;font-weight:600;">${fmt(e.amount)}</span>
+              <span style="font-size:0.68rem;color:#6b7280;">${e.category || ''}</span>
+              <button class="mini secondary" onclick="removeIncExtra(${idx})">🗑️</button>
+            </div>
+          </div>
+        `;
+      })
+      .join('');
+
+    card.innerHTML = `
+      <div class="bank-card-header">
+        <span class="bank-name">${pessoa}</span>
+        <span style="font-size:0.72rem;color:#374151;">Total: ${fmt(grupo.total)}</span>
+      </div>
+      <div style="margin-top:4px;max-height:150px;overflow:auto;">
+        ${itensHTML || '<span style="font-size:0.7rem;color:#9ca3af;">Nenhum lançamento.</span>'}
+      </div>
+    `;
+
+    grid.appendChild(card);
+  });
+
+  // Botão de adicionar novo recebimento extra
+  document.getElementById('addIncomeExtraBtn').onclick = () => {
+    const desc = document.getElementById('incDesc').value.trim();
+    const amount = parseFloat(document.getElementById('incAmount').value) || 0;
+    const category = document.getElementById('incCategory').value;
+    const date = document.getElementById('incDate').value;
+
+    if (!desc || !amount) {
+      alert('Preencha descrição e valor.');
+      return;
+    }
+
+    const data2 = loadData();
+    if (!data2.incomeExtras) data2.incomeExtras = [];
+
+    // Se não tiver data, usa o mês atual (AAAA-MM) igual já fazia antes
+    const finalDate = date || monthKey(new Date());
+
+    data2.incomeExtras.push({
+      description: desc,
+      amount,
+      category,
+      date: finalDate
+    });
+
+    saveData(data2);
+    document.getElementById('incDesc').value = '';
+    document.getElementById('incAmount').value = '';
+    document.getElementById('incCategory').value = '';
+    document.getElementById('incDate').value = '';
+
+    renderAll();
+  };
+}
+
+function removeIncExtra(i){
+  const data = loadData();
+  data.incomeExtras.splice(i,1);
+  saveData(data);
+  renderAll();
+}
 
     function renderPieChart(data, mk) {
       const label = document.getElementById('spendChartMonthLabel');
