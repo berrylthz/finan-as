@@ -1051,82 +1051,98 @@ function removeIncExtra(i){
   saveData(data);
   renderAll();
 }
-    function renderPieChart(data, mk) {
-      const label = document.getElementById('spendChartMonthLabel');
-      if(label) label.textContent = monthLabel(mk);
+ function renderPieChart(data, mk){
+  const spends = (data.spends || []).filter(s => s.date && s.date.startsWith(mk));
+  const canvas = document.getElementById('spendPieCanvas');
+  const legendDiv = document.getElementById('spendLegend');
+  const labelSpan = document.getElementById('spendChartMonthLabel');
 
-      const canvas = document.getElementById('spendPieCanvas');
-      const ctx = canvas.getContext('2d');
-      const legendDiv = document.getElementById('spendLegend');
+  if (!canvas || !legendDiv || !labelSpan) return;
 
-      const spends = (data.spends||[]).filter(s => s.date && s.date.startsWith(mk));
-      const byCat = {};
-      spends.forEach(s => {
-        const c = s.category || 'Outros';
-        byCat[c] = (byCat[c] || 0) + parseFloat(s.amount || 0);
-      });
+  labelSpan.textContent = monthLabel(mk);
 
-      const entries = Object.entries(byCat);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      legendDiv.innerHTML = ''; 
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  legendDiv.innerHTML = '';
 
-      if(!entries.length){
-        ctx.fillStyle = '#9ca3af';
-        ctx.font = '13px system-ui';
-        ctx.textAlign = 'center';
-        ctx.fillText('Nenhum gasto registrado', canvas.width/2, canvas.height/2);
-        return;
-      }
+  if (!spends.length) {
+    ctx.fillStyle = '#9ca3af';
+    ctx.font = '13px system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Sem gastos nesse mês', canvas.width / 2, canvas.height / 2);
+    return;
+  }
 
-      const total = entries.reduce((a, [,v]) => a + v, 0);
-      // Adicionado uma cor a mais caso tenha muitas categorias (como a nova 'Pix')
-      const colors = ['#f9739b', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa', '#fb923c', '#ec4899'];
+  // somar por categoria
+  const byCat = {};
+  spends.forEach(s => {
+    const cat = s.category || 'Sem categoria';
+    const val = parseFloat(s.amount || 0) || 0;
+    byCat[cat] = (byCat[cat] || 0) + val;
+  });
 
-      const cx = canvas.width / 2;
-      const cy = canvas.height / 2; 
-      const r = Math.min(cx, cy) - 2; 
-      let start = 0;
+  const entries = Object.entries(byCat);
+  const total = entries.reduce((a, [,v]) => a + v, 0);
+  if (!total) {
+    ctx.fillStyle = '#9ca3af';
+    ctx.font = '13px system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Sem valores válidos', canvas.width / 2, canvas.height / 2);
+    return;
+  }
 
-      entries.forEach(([cat, val], i) => {
-        const slice = (val / total) * 2 * Math.PI;
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.arc(cx, cy, r, start, start + slice);
-        ctx.closePath();
-        ctx.fillStyle = colors[i % colors.length];
-        ctx.fill();
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 2.5;
-        ctx.stroke();
+  const colors = [
+    '#fb7185', '#f97316', '#fbbf24',
+    '#34d399', '#60a5fa', '#a855f7',
+    '#f472b6', '#22c55e', '#6366f1'
+  ];
 
-        const percent = Math.round((val / total) * 100);
-        if (percent > 4) {
-          const mid = start + slice / 2;
-          const lx = cx + Math.cos(mid) * (r * 0.65);
-          const ly = cy + Math.sin(mid) * (r * 0.65);
-          ctx.fillStyle = '#fff';
-          ctx.font = 'bold 12px system-ui';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(percent + '%', lx, ly);
-        }
-        start += slice;
+  let start = -Math.PI / 2;
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
+  const r = Math.min(cx, cy) - 6;
 
-        const legendItem = document.createElement('div');
-        legendItem.className = 'legend-item';
-        
-        const colorBox = document.createElement('div');
-        colorBox.className = 'legend-color';
-        colorBox.style.backgroundColor = colors[i % colors.length];
-        
-        const catName = document.createElement('span');
-        catName.textContent = cat;
-        
-        legendItem.appendChild(colorBox);
-        legendItem.appendChild(catName);
-        legendDiv.appendChild(legendItem);
-      });
+  entries.forEach(([cat, val], i) => {
+    const slice = (val / total) * 2 * Math.PI;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, start, start + slice);
+    ctx.closePath();
+    ctx.fillStyle = colors[i % colors.length];
+    ctx.fill();
+
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    const percent = Math.round((val / total) * 100);
+    if (percent > 4) {
+      const mid = start + slice / 2;
+      const lx = cx + Math.cos(mid) * (r * 0.65);
+      const ly = cy + Math.sin(mid) * (r * 0.65);
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 12px system-ui';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(percent + '%', lx, ly);
     }
+    start += slice;
+
+    const legendItem = document.createElement('div');
+    legendItem.className = 'legend-item';
+
+    const colorBox = document.createElement('div');
+    colorBox.className = 'legend-color';
+    colorBox.style.backgroundColor = colors[i % colors.length];
+
+    const catName = document.createElement('span');
+    catName.textContent = cat;
+
+    legendItem.appendChild(colorBox);
+    legendItem.appendChild(catName);
+    legendDiv.appendChild(legendItem);
+  });
+}
   </script>
 </body>
 </html>
