@@ -881,7 +881,9 @@
     }
     function removeSub(i){const data=loadData();data.subs.splice(i,1);saveData(data);renderAll();}
 
-  function renderIncomeExtras(data){
+  // ====== RECEBIMENTOS EXTRAS ======
+
+function renderIncomeExtras(data){
   const extras = data.incomeExtras || [];
 
   const total = extras.reduce((a,e)=>a+parseFloat(e.amount||0),0);
@@ -891,7 +893,7 @@
   const grid = document.getElementById('incExtrasGrid');
   grid.innerHTML = '';
 
-  // agrupar por pessoa/descrição
+  // agrupar por pessoa/descrição (igual "por pessoa" em parcelas do mês)
   const porPessoa = {};
   extras.forEach((e, indexOriginal) => {
     const pessoa = (e.description || 'Sem descrição').trim();
@@ -902,26 +904,19 @@
     porPessoa[pessoa].total += parseFloat(e.amount || 0);
   });
 
-  // um card compacto por pessoa
-  Object.keys(porPessoa).forEach((pessoa) => {
-    const grupo = porPessoa[pessoa];
+  // card compacto por pessoa (como os chips de "parcelas do mês")
+  Object.entries(porPessoa).forEach(([pessoa, info]) => {
     const card = document.createElement('div');
-    card.className = 'bank-card';
-    card.style.cursor = 'pointer';
-
+    card.className = 'person-chip'; // mesmo visual de pessoa
     card.innerHTML = `
-      <div class="bank-card-header">
-        <span class="bank-name">${pessoa}</span>
-        <span style="font-size:0.72rem;color:#374151;">
-          ${grupo.items.length} lançamento(s) · Total: ${fmt(grupo.total)}
-        </span>
-      </div>
+      <span class="person-chip-name">${pessoa}</span>
+      <span class="person-chip-value">
+        ${info.items.length} lançamento(s) · ${fmt(info.total)}
+      </span>
     `;
-
     card.addEventListener('click', () => {
-      showIncExtrasPanel(pessoa, grupo);
+      showIncExtrasPanel(pessoa, info);
     });
-
     grid.appendChild(card);
   });
 
@@ -959,17 +954,18 @@
   };
 }
 
-// painel lateral para detalhes dos recebimentos extras
-function showIncExtrasPanel(pessoa, grupo){
-  const panel = document.getElementById('personDetails'); // reaproveitando o mesmo painel
+// painel lateral reutilizando #personDetails, igual parcelas do mês
+function showIncExtrasPanel(pessoa, info){
+  const panel = document.getElementById('personDetails');
   let html = `
     <div class="person-header">
-      <span class="person-name">${pessoa} — ${grupo.items.length} lançamento(s)</span>
-      <span class="person-close" onclick="document.getElementById('personDetails').style.display='none'">✕ fechar</span>
+      <span class="person-name">${pessoa} — ${info.items.length} lançamento(s)</span>
+      <span class="person-close"
+            onclick="document.getElementById('personDetails').style.display='none'">✕ fechar</span>
     </div>
   `;
 
-  grupo.items
+  info.items
     .slice()
     .reverse()
     .forEach((e) => {
@@ -985,25 +981,76 @@ function showIncExtrasPanel(pessoa, grupo){
             <span style="font-size:0.7rem;color:#9ca3af;">${dataFmt}</span>
           </div>
           <div>
+            <button class="mini" onclick="editIncExtra(${idx})">✏️</button>
             <button class="mini secondary" onclick="removeIncExtra(${idx})">🗑️</button>
           </div>
         </div>
       `;
     });
 
-  html += `<div class="person-total">Total dessa pessoa: ${fmt(grupo.total)}</div>`;
+  html += `<div class="person-total">Total dessa pessoa: ${fmt(info.total)}</div>`;
 
   panel.innerHTML = html;
   panel.style.display = 'block';
 }
 
+// preencher o formulário de recebimentos extras para editar
+function editIncExtra(i){
+  const data = loadData();
+  const e = (data.incomeExtras || [])[i];
+  if (!e) return;
+
+  document.getElementById('incDesc').value = e.description || '';
+  document.getElementById('incAmount').value = e.amount || '';
+  document.getElementById('incCategory').value = e.category || '';
+  document.getElementById('incDate').value = (e.date && e.date.length > 7) ? e.date : '';
+
+  // guardar índice sendo editado
+  window._editingIncExtraIndex = i;
+  document.getElementById('addIncomeExtraBtn').textContent = 'Salvar edição';
+}
+
+// adaptar o botão para salvar edição ou novo
+document.getElementById('addIncomeExtraBtn').onclick = () => {
+  const desc = document.getElementById('incDesc').value.trim();
+  const amount = parseFloat(document.getElementById('incAmount').value) || 0;
+  const category = document.getElementById('incCategory').value;
+  const date = document.getElementById('incDate').value;
+
+  if (!desc || !amount) {
+    alert('Preencha descrição e valor.');
+    return;
+  }
+
+  const data2 = loadData();
+  if (!data2.incomeExtras) data2.incomeExtras = [];
+
+  const finalDate = date || monthKey(new Date());
+  const payload = { description: desc, amount, category, date: finalDate };
+
+  if (typeof window._editingIncExtraIndex === 'number') {
+    data2.incomeExtras[window._editingIncExtraIndex] = payload;
+  } else {
+    data2.incomeExtras.push(payload);
+  }
+
+  saveData(data2);
+  document.getElementById('incDesc').value = '';
+  document.getElementById('incAmount').value = '';
+  document.getElementById('incCategory').value = '';
+  document.getElementById('incDate').value = '';
+  window._editingIncExtraIndex = undefined;
+  document.getElementById('addIncomeExtraBtn').textContent = 'Adicionar recebimento';
+
+  renderAll();
+};
+
 function removeIncExtra(i){
   const data = loadData();
-  data.incomeExtras.splice(i,1);
+  (data.incomeExtras || []).splice(i,1);
   saveData(data);
   renderAll();
 }
-
     function renderPieChart(data, mk) {
       const label = document.getElementById('spendChartMonthLabel');
       if(label) label.textContent = monthLabel(mk);
